@@ -104,7 +104,7 @@ const Home = () => {
             <ul className="navbar-nav align-items-center">
               <li className="nav-item hover-underline">
                 <a className="nav-link" href="#servicios">
-                  Servicios
+                  Servicioasa
                 </a>
               </li>
               <li className="nav-item hover-underline">

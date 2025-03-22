@@ -5,5 +5,8 @@
     background-color: #f2f2f2 !important;
     color: #aaa !important;
     cursor: not-allowed !important;
+    -webkit-appearance: button;
+    appearance: button;
+
   }
   

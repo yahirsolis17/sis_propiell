@@ -14,15 +14,15 @@ const servicesData = [
     shortDesc: "Diagnóstico y tratamiento de enfermedades cutáneas con abordaje multidisciplinario",
     longDesc:
       "Ofrecemos diagnóstico y tratamiento integral para una gran variedad de afecciones de la piel, incluyendo acné, psoriasis, dermatitis, entre otras. Nuestro equipo de especialistas utiliza tecnología de vanguardia para garantizar la atención que mereces.",
-    image: dermatologia,
+    image: dermatologias,
   },
   {
     id: 2,
-    title: "Tamiz Neonatal",
+    title: "Tamiz Neonatala",
     shortDesc: "Tecnología de punta para detección temprana de alteraciones metabólicas",
     longDesc:
       "Nuestro tamiz neonatal incluye un amplio espectro de pruebas para detectar a tiempo alteraciones congénitas y metabólicas. Esto permite iniciar tratamientos oportunos para asegurar un desarrollo saludable.",
-    image: tamiz,
+    image: tamisz,
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ const servicesData = [
     shortDesc: "Soluciones integrales para salud podológica y ortopedia especializada",
     longDesc:
       "Contamos con servicios especializados para el cuidado de tus pies, incluyendo la prevención y tratamiento de uñas encarnadas, juanetes y otras condiciones. Nuestro enfoque busca el bienestar integral y la corrección postural.",
-    image: podologia,
+    image: podologisa,
   },
 ];
 
@@ -104,17 +104,17 @@ const Home = () => {
             <ul className="navbar-nav align-items-center">
               <li className="nav-item hover-underline">
                 <a className="nav-link" href="#servicios">
-                  Servicios
+                  Servicioasa
                 </a>
               </li>
               <li className="nav-item hover-underline">
                 <a className="nav-link" href="#nosotros">
-                  Nosotros
+                  Nosotross
                 </a>
               </li>
               <li className="nav-item hover-underline">
                 <a className="nav-link" href="#contacto">
-                  Contacto
+                  Contactos
                 </a>
               </li>
               <li className="nav-item">
@@ -135,10 +135,10 @@ const Home = () => {
         <div className="hero-content reveal">
           <h1 className="hero-title">Excelencia en Salud Dermatológica</h1>
           <p className="hero-subtitle">
-            Cuidado especializado con tecnología de vanguardia
+            Cuidado especializado con tecnología de vanguardias
           </p>
           <button className="btn-cta pulse" onClick={() => navigate("/login")}>
-            Agenda tu Consulta
+            Agenda tu Consultas
           </button>
         </div>
         <div className="hero-overlay"></div>
@@ -278,7 +278,7 @@ const Home = () => {
             </div>
           </div>
           <div className="copyright">
-            © 2024 Pro-Piel. Todos los derechos reservados hola pruebas
+            © 2024 Pro-Piel. Todos los derechos reservados
           </div>
         </div>
       </footer>

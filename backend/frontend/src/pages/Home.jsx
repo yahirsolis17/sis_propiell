@@ -18,7 +18,7 @@ const servicesData = [
   },
   {
     id: 2,
-    title: "Tamiz Neonatala",
+    title: "Tamiz Neonatal",
     shortDesc: "Tecnología de punta para detección temprana de alteraciones metabólicas",
     longDesc:
       "Nuestro tamiz neonatal incluye un amplio espectro de pruebas para detectar a tiempo alteraciones congénitas y metabólicas. Esto permite iniciar tratamientos oportunos para asegurar un desarrollo saludable.",
@@ -104,7 +104,7 @@ const Home = () => {
             <ul className="navbar-nav align-items-center">
               <li className="nav-item hover-underline">
                 <a className="nav-link" href="#servicios">
-                  Servicioa
+                  Servicios
                 </a>
               </li>
               <li className="nav-item hover-underline">
@@ -278,7 +278,7 @@ const Home = () => {
             </div>
           </div>
           <div className="copyright">
-            © 2024 Pro-Piel. Todos los derechos reservados pruebas uno de actualizacion al servidor
+            © 2024 Pro-Piel. Todos los derechos reservados
           </div>
         </div>
       </footer>

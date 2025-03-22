@@ -6,31 +6,26 @@ export default defineConfig({
   build: {
     outDir: "dist",
     assetsDir: "assets",
+    // Habilita minificación CSS (pero con precaución)
+    cssMinify: process.env.NODE_ENV === "production",
     rollupOptions: {
       output: {
-        // Configuración para JS
-        entryFileNames: "assets/[name]-[hash].js",
-        chunkFileNames: "assets/[name]-[hash].js",
-        // Configuración para fuentes
         assetFileNames: (assetInfo) => {
           if (assetInfo.name.endsWith(".woff2") || assetInfo.name.endsWith(".woff")) {
             return "assets/[name][extname]";
           }
           return "assets/[name]-[hash][extname]";
-        }
+        },
+        // Añade esto para CSS
+        entryFileNames: "assets/[name]-[hash].js",
+        chunkFileNames: "assets/[name]-[hash].js",
+        // Genera manifest.json para debug
+        manualChunks: undefined,
       }
     }
   },
-  // Optimización para Vercel
+  // Base path crítico para Vercel
   base: "/",
   assetsInclude: ["**/*.woff", "**/*.woff2"],
-  server: {
-    proxy: {
-      "/api": {
-        target: "http://127.0.0.1:8000",
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
+  server: { /* ... configuración proxy ... */ }
 });

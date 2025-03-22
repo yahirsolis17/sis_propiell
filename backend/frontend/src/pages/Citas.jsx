@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { getCurrentUser } from "../services/authService";
-
-// Componentes del formulario de citas
 import CalendarPicker from "../components/citas/CalendarPicker";
 import TimeSlotSelector from "../components/citas/TimeSlotSelector";
 import EspecialidadSelector from "../components/citas/EspecialidadSelector";

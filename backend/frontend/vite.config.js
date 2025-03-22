@@ -5,21 +5,18 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: "dist",
-    assetsDir: "assets",  // Directorio para assets
+    assetsDir: "assets",
     rollupOptions: {
       output: {
-        assetFileNames: "assets/[name]-[hash][extname]"  // Estructura de archivos
+        // Mantén nombres originales para fuentes
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name.endsWith(".woff2") || assetInfo.name.endsWith(".woff")) {
+            return "assets/[name][extname]";
+          }
+          return "assets/[name]-[hash][extname]";
+        }
       }
     }
   },
-  assetsInclude: ["**/*.woff", "**/*.woff2"],
-  server: {
-    proxy: {
-      "/api": {
-        target: "http://127.0.0.1:8000",
-        changeOrigin: true,
-        secure: false,
-      },
-    },
-  },
+  assetsInclude: ["**/*.woff", "**/*.woff2"]
 });

@@ -8,7 +8,9 @@ import Dashboard from "./pages/Dashboard";
 import Citas from './pages/Citas';
 import PaymentPage from './pages/PaymentPage';
 import { API_URL } from './config'; // Importas la configuración
-
+// main.jsx o App.jsx
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
 function App() {
   console.log("Base URL del backend:", API_URL);
 

@@ -278,7 +278,7 @@ const Home = () => {
             </div>
           </div>
           <div className="copyright">
-            © 2024 Pro-Piel. Todos los derechos reservados
+            © 2024 Pro-Piel. Todos los derechos reservados hola prueba
           </div>
         </div>
       </footer>

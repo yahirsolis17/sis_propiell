@@ -9,19 +9,24 @@
   "routes": [
     {
       "src": "/assets/(.*)\\.woff2",
-      "headers": {
-        "Content-Type": "font/woff2"
-      }
+      "headers": { "Content-Type": "font/woff2" }
     },
     {
       "src": "/assets/(.*)\\.woff",
-      "headers": {
-        "Content-Type": "font/woff"
-      }
+      "headers": { "Content-Type": "font/woff" }
+    },
+    {
+      "src": "/assets/(.*\\.js)",
+      "headers": { "Content-Type": "application/javascript" }
+    },
+    {
+      "src": "/assets/(.*\\.css)",
+      "headers": { "Content-Type": "text/css" }
     },
     {
       "src": "/(.*)",
-      "dest": "/index.html"
+      "dest": "/index.html",
+      "headers": { "Content-Type": "text/html" }
     }
   ]
 }

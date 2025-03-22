@@ -6,17 +6,19 @@ export default defineConfig({
   build: {
     outDir: "dist",
     assetsDir: "assets",
-    cssMinify: false, // Desactiva minificación CSS temporalmente
+    cssMinify: false,
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
-          // Mantén nombres originales para fuentes
           if (assetInfo.name.endsWith(".woff2") || assetInfo.name.endsWith(".woff")) {
             return "assets/[name][extname]";
           }
-          // Hashea otros assets
           return "assets/[name]-[hash][extname]";
-        }
+        },
+        // Nuevas líneas para módulos ES
+        entryFileNames: "assets/[name]-[hash].js",
+        chunkFileNames: "assets/[name]-[hash].js",
+        format: "esm"
       }
     }
   },

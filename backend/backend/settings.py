@@ -10,7 +10,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 import os
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'clave-secreta-de-desarrollo')
+SECRET_KEY = os.environ.get('SECRET_KEY', '1234')
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 

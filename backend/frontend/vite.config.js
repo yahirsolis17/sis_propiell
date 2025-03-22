@@ -7,6 +7,7 @@ export default defineConfig({
   build: {
     outDir: "dist",  // Carpeta donde se genera el build
   },
+  assetsInclude: ["**/*.woff", "**/*.woff2"],
   server: {
     proxy: {
       "/api": {

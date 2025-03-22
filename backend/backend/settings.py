@@ -8,7 +8,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-SECRET_KEY = 'django-insecure-si+0)rv4=8$1959#...'
+import os
+
+SECRET_KEY = os.environ.get('SECRET_KEY', 'clave-secreta-de-desarrollo')
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 

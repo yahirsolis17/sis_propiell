@@ -10,7 +10,7 @@ import CalendarPicker from "../components/citas/CalendarPicker";
 import TimeSlotSelector from "../components/citas/TimeSlotSelector";
 import EspecialidadSelector from "../components/citas/EspecialidadSelector";
 
-import "./citas.css";
+import "./Citas.css";
 
 const Citas = () => {
   const [especialidades, setEspecialidades] = useState([]);

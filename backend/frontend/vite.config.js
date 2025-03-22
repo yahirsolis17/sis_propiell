@@ -6,22 +6,23 @@ export default defineConfig({
   build: {
     outDir: "dist",
     assetsDir: "assets",
-    cssMinify: false,
     rollupOptions: {
       output: {
+        // Configuración para JS
+        entryFileNames: "assets/[name]-[hash].js",
+        chunkFileNames: "assets/[name]-[hash].js",
+        // Configuración para fuentes
         assetFileNames: (assetInfo) => {
           if (assetInfo.name.endsWith(".woff2") || assetInfo.name.endsWith(".woff")) {
             return "assets/[name][extname]";
           }
           return "assets/[name]-[hash][extname]";
-        },
-        // Nuevas líneas para módulos ES
-        entryFileNames: "assets/[name]-[hash].js",
-        chunkFileNames: "assets/[name]-[hash].js",
-        format: "esm"
+        }
       }
     }
   },
+  // Optimización para Vercel
+  base: "/",
   assetsInclude: ["**/*.woff", "**/*.woff2"],
   server: {
     proxy: {

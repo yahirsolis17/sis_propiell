@@ -14,7 +14,7 @@ const servicesData = [
     shortDesc: "Diagnóstico y tratamiento de enfermedades cutáneas con abordaje multidisciplinario",
     longDesc:
       "Ofrecemos diagnóstico y tratamiento integral para una gran variedad de afecciones de la piel, incluyendo acné, psoriasis, dermatitis, entre otras. Nuestro equipo de especialistas utiliza tecnología de vanguardia para garantizar la atención que mereces.",
-    image: dermatologias,
+    image: dermatologia,
   },
   {
     id: 2,
@@ -22,7 +22,7 @@ const servicesData = [
     shortDesc: "Tecnología de punta para detección temprana de alteraciones metabólicas",
     longDesc:
       "Nuestro tamiz neonatal incluye un amplio espectro de pruebas para detectar a tiempo alteraciones congénitas y metabólicas. Esto permite iniciar tratamientos oportunos para asegurar un desarrollo saludable.",
-    image: tamisz,
+    image: tamiz,
   },
   {
     id: 3,
@@ -30,7 +30,7 @@ const servicesData = [
     shortDesc: "Soluciones integrales para salud podológica y ortopedia especializada",
     longDesc:
       "Contamos con servicios especializados para el cuidado de tus pies, incluyendo la prevención y tratamiento de uñas encarnadas, juanetes y otras condiciones. Nuestro enfoque busca el bienestar integral y la corrección postural.",
-    image: podologisa,
+    image: podologia,
   },
 ];
 
@@ -104,12 +104,12 @@ const Home = () => {
             <ul className="navbar-nav align-items-center">
               <li className="nav-item hover-underline">
                 <a className="nav-link" href="#servicios">
-                  Servicioasa
+                  Servicioa
                 </a>
               </li>
               <li className="nav-item hover-underline">
                 <a className="nav-link" href="#nosotros">
-                  Nosotross
+                  Nosotros
                 </a>
               </li>
               <li className="nav-item hover-underline">

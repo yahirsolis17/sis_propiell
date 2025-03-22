@@ -8,21 +8,19 @@
   ],
   "routes": [
     {
-      "src": "^/assets/(.*)\\.woff2$",
-      "headers": { "Content-Type": "font/woff2" },
-      "dest": "/assets/$1.woff2"
+      "src": "/assets/(.*)\\.woff2",
+      "headers": {
+        "Content-Type": "font/woff2"
+      }
     },
     {
-      "src": "^/assets/(.*)\\.woff$",
-      "headers": { "Content-Type": "font/woff" },
-      "dest": "/assets/$1.woff"
+      "src": "/assets/(.*)\\.woff",
+      "headers": {
+        "Content-Type": "font/woff"
+      }
     },
     {
-      "src": "^/.*\\.(js|css|map|png|jpg|jpeg|svg)$",
-      "dest": "/$0"
-    },
-    {
-      "src": "/.*",
+      "src": "/(.*)",
       "dest": "/index.html"
     }
   ]

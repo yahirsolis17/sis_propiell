@@ -3,9 +3,9 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "./",  // Esto es importante para rutas relativas
+  base: "/", // Usar la raíz en producción
   build: {
-    outDir: "dist",  // Carpeta donde se genera el build
+    outDir: "dist", // Carpeta donde se genera el build
   },
   assetsInclude: ["**/*.woff", "**/*.woff2"],
   server: {

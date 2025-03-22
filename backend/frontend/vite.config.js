@@ -3,10 +3,11 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/", // Usar la raíz en producción
+  base: "/", // Cambia a "/" para producción (las rutas relativas pueden afectar la carga de assets)
   build: {
     outDir: "dist", // Carpeta donde se genera el build
   },
+  // Aseguramos que se incluyan las fuentes .woff y .woff2
   assetsInclude: ["**/*.woff", "**/*.woff2"],
   server: {
     proxy: {

@@ -18,7 +18,7 @@ const servicesData = [
   },
   {
     id: 2,
-    title: "Tamiz Neonatal",
+    title: "Tamiz Neonatala",
     shortDesc: "Tecnología de punta para detección temprana de alteraciones metabólicas",
     longDesc:
       "Nuestro tamiz neonatal incluye un amplio espectro de pruebas para detectar a tiempo alteraciones congénitas y metabólicas. Esto permite iniciar tratamientos oportunos para asegurar un desarrollo saludable.",

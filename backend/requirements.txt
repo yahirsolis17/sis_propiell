@@ -1,1 +1,7 @@
+django
+mysqlclient
+djangorestframework
+djangorestframework-simplejwt
+gunicorn
+corsheaders
 

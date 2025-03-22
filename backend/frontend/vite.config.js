@@ -3,14 +3,14 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  base: "./",  // Esto es importante para rutas relativas
   build: {
-    outDir: "dist", // 👈 asegura que se compile ahí
+    outDir: "dist",  // Carpeta donde se genera el build
   },
-  base: "./", // 👈 necesario si usas rutas relativas en React
   server: {
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:8000", // solo para desarrollo local
+        target: "http://127.0.0.1:8000",
         changeOrigin: true,
         secure: false,
       },

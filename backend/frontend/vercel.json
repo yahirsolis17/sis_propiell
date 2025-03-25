@@ -24,6 +24,10 @@
       "headers": { "Content-Type": "font/woff" }
     },
     {
+      "src": "/assets/(.*\\.(png|jpg|jpeg|gif|svg))",
+      "headers": { "Content-Type": "image/*" }
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html",
       "headers": { "Content-Type": "text/html" }

@@ -2,8 +2,7 @@ import axios from 'axios';
 
 // Lee la variable de entorno; si no existe, usa localhost para desarrollo.
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/';
-
-console.log("baseURL:", baseURL); // (Temporal) para confirmar que se está leyendo correctamente
+console.log("baseURL:", baseURL); // Para confirmar que se está leyendo correctamente
 
 const api = axios.create({
   baseURL: baseURL,
@@ -13,7 +12,7 @@ const api = axios.create({
   },
 });
 
-// Interceptor para añadir el header Authorization a cada request
+// Interceptor para adjuntar el header Authorization
 api.interceptors.request.use(config => {
   const accessToken = localStorage.getItem('accessToken');
   if (accessToken) {
@@ -22,7 +21,7 @@ api.interceptors.request.use(config => {
   return config;
 });
 
-// Interceptor para manejar respuestas y refrescar token si es necesario
+// Interceptor para manejar errores y refrescar el token
 api.interceptors.response.use(
   response => response,
   async error => {
@@ -32,7 +31,6 @@ api.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('refreshToken');
         if (!refreshToken) throw new Error("No hay refresh token");
-
         const { data } = await axios.post(`${baseURL}auth/refresh/`, {
           refresh: refreshToken
         });

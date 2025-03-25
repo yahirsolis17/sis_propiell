@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
@@ -14,7 +13,6 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Efecto para crear partículas en el fondo
   useEffect(() => {
     const createParticle = () => {
       const particle = document.createElement("div");
@@ -62,11 +60,9 @@ const Login = () => {
     try {
       const data = await login(telefono, password);
       console.log("Login exitoso. Datos recibidos:", data);
-
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
-
       const rolePath = data.user.role?.toLowerCase() || "paciente";
       console.log("Redirigiendo a:", `/dashboard/${rolePath}`);
       navigate(`/dashboard/${rolePath}`);

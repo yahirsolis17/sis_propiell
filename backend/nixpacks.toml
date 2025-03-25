@@ -1,18 +1,12 @@
+# nixpacks.toml
 [build]
 packages = [
     "pkg-config",
-    "libmariadb-dev",  # Paquete de desarrollo correcto para MariaDB
+    "libmariadb-dev-compat",  # Paquete clave para Debian/Ubuntu
     "gcc",
     "python3-dev"
 ]
 
 [build.environment]
-# Configuración crítica para que pkg-config encuentre MariaDB
-PKG_CONFIG_PATH = "/usr/lib/x86_64-linux-gnu/pkgconfig"
-MYSQLCLIENT_CFLAGS = "$(pkg-config --cflags mariadb)"  # Flags dinámicos
-MYSQLCLIENT_LDFLAGS = "$(pkg-config --libs mariadb)"   # Flags dinámicos
-
-[build.command]
-# No es necesario crear el venv manualmente, Nixpacks lo gestiona
-echo "=== Instalando dependencias ===" && \
-pip install --no-cache-dir -r requirements.txt
+MYSQLCLIENT_CFLAGS = "-I/usr/include/mariadb"
+MYSQLCLIENT_LDFLAGS = "-L/usr/lib/x86_64-linux-gnu -lmariadb"

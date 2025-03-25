@@ -82,16 +82,18 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 #   DB_HOST = interchange.proxy.rlwy.net
 #   DB_PORT = 19331
 # ------------------------------------------------------------------------------
+# Configuración de la base de datos usando variables de entorno con valores por defecto.
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Backend de mysqlclient
-        'NAME': os.getenv('railway'),
-        'USER': os.getenv('root'),
-        'PASSWORD': os.getenv('KMQqSQMXpwsFVdchaSyyYMyHjApNDvAj'),
-        'HOST': os.getenv('interchange.proxy.rlwy.net'),
-        'PORT': os.getenv('19331'),
+        'ENGINE': 'django.db.backends.mysql',  # Usamos mysqlclient (más común y probado)
+        'NAME': os.getenv('DB_NAME', 'railway'),         # Nombre de la base de datos
+        'USER': os.getenv('DB_USER', 'root'),            # Usuario
+        'PASSWORD': os.getenv('DB_PASSWORD', 'KMQqSQMXpwsFVdchaSyyYMyHjApNDvAj'),  # Contraseña
+        'HOST': os.getenv('DB_HOST', 'interchange.proxy.rlwy.net'),  # Host público de Railway
+        'PORT': os.getenv('DB_PORT', '19331'),           # Puerto público de Railway
     }
 }
+
 
 AUTH_USER_MODEL = 'users.User'
 

@@ -85,12 +85,16 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # ------------------------------------------------------------------------------
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql.connector.django',  # Usamos mysql-connector-python
-        'NAME': os.getenv('railway'),
-        'USER': os.getenv('root'),
-        'PASSWORD': os.getenv('KMQqSQMXpwsFVdchaSyyYMyHjApNDvAj'),
-        'HOST': os.getenv('interchange.proxy.rlwy.net'),
-        'PORT': os.getenv('19331'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'railway',
+        'USER': 'root',
+        'PASSWORD': 'KWQqSQWXpwsFVdchaSyyYMyHjApNDvAj',
+        'HOST': 'mysql.railway.internal',  # Nuevo host de Railway
+        'PORT': '3366',  # Nuevo puerto
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+            'ssl': {}  # SSL desactivado explícitamente
+        }
     }
 }
 

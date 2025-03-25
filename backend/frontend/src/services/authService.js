@@ -4,7 +4,7 @@ import api from './api';
 export const login = async (telefono, password) => {
   try {
     const response = await axios.post(
-      'https://sis-propiell.onrender.com/auth/login/',
+      'https://sis-propiell.onrender.com/api/auth/login/',
       { telefono, password },
       {
         headers: {

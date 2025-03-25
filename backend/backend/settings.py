@@ -39,8 +39,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Configuración CORS
-# Ajusta según tus dominios (local y producción)
+# Configuración CORS (ajusta según tus dominios)
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
@@ -48,7 +47,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
+    "http://localhost:5173", 
     "https://sis-propiell-yahirsolis17s-projects.vercel.app",
 ]
 
@@ -73,28 +72,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 # ------------------------------------------------------------------------------
-# CONFIGURACIÓN DE LA BASE DE DATOS
-# Usa variables de entorno para DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT.
-# En Render, define estas variables de entorno con los datos que te proporciona Railway.
-# Ejemplo:
+# Configuración de la base de datos
+# Se usan las variables de entorno para la conexión.
+#
+# En Render, define estas variables con los datos de Railway (utiliza la URL pública):
 #   DB_NAME = railway
 #   DB_USER = root
 #   DB_PASSWORD = KMQqSQMXpwsFVdchaSyyYMyHjApNDvAj
 #   DB_HOST = interchange.proxy.rlwy.net
 #   DB_PORT = 19331
 # ------------------------------------------------------------------------------
-# settings.py
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Usa el driver estándar
-        'NAME': os.getenv('MYSQLDATABASE', 'railway'),
-        'USER': os.getenv('MYSQLUSER', 'root'),
-        'PASSWORD': os.getenv('MYSQLPASSWORD', 'KWQqSQWXpwsFVdchaSyyYMyHjApNDvAj'),
-        'HOST': os.getenv('MYSQLHOST', 'containers-us-west-146.railway.app'),
-        'PORT': os.getenv('MYSQLPORT', '3366'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        }
+        'ENGINE': 'django.db.backends.mysql',  # Backend de mysqlclient
+        'NAME': os.getenv('railway'),
+        'USER': os.getenv('root'),
+        'PASSWORD': os.getenv('KMQqSQMXpwsFVdchaSyyYMyHjApNDvAj'),
+        'HOST': os.getenv('interchange.proxy.rlwy.net'),
+        'PORT': os.getenv('19331'),
     }
 }
 
@@ -108,7 +103,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# ------------------------------------------------------------------------------
 # Configuración de Django REST Framework y SimpleJWT
+# ------------------------------------------------------------------------------
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',

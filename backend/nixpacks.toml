@@ -5,5 +5,17 @@ packages = ["pkg-config", "mariadb-connector-c"]
 MYSQLCLIENT_CFLAGS = "-I/usr/include/mariadb"
 MYSQLCLIENT_LDFLAGS = "-L/usr/lib/x86_64-linux-gnu -lmariadb"
 
-# Agregamos un paso para imprimir las variables antes de continuar
-command = "echo MYSQLCLIENT_CFLAGS=$MYSQLCLIENT_CFLAGS && echo MYSQLCLIENT_LDFLAGS=$MYSQLCLIENT_LDFLAGS && python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install -r requirements.txt"
+# Comando de build con logs en cada paso para depuración:
+command = "\
+echo '=== ENVIRONMENT VARIABLES ==='; \
+echo 'MYSQLCLIENT_CFLAGS=' $MYSQLCLIENT_CFLAGS; \
+echo 'MYSQLCLIENT_LDFLAGS=' $MYSQLCLIENT_LDFLAGS; \
+echo '=== pkg-config outputs ==='; \
+pkg-config --cflags mariadb-connector-c || echo 'pkg-config mariadb-connector-c no encontrado'; \
+pkg-config --libs mariadb-connector-c || echo 'pkg-config libs mariadb-connector-c no encontrado'; \
+echo '=== Iniciando creación del entorno virtual ==='; \
+python -m venv --copies /opt/venv && \
+echo 'Virtualenv creado. Activando entorno...'; \
+. /opt/venv/bin/activate && \
+echo 'Entorno virtual activado. Instalando dependencias desde requirements.txt...'; \
+pip install -r requirements.txt"

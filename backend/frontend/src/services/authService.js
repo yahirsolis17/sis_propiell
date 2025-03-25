@@ -2,13 +2,20 @@ import api from './api';
 
 export const login = async (telefono, password) => {
   try {
+    console.log("Realizando login con:", { telefono, password });
     const response = await api.post('auth/login/', { telefono, password });
+    console.log("Respuesta del login:", response.data);
     const { user, access, refresh } = response.data;
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('accessToken', access);
     localStorage.setItem('refreshToken', refresh);
     return response.data;
   } catch (error) {
+    console.error("Error en login - Detalles completos:", {
+      response: error.response,
+      request: error.request,
+      message: error.message,
+    });
     const errorData = error.response?.data || {};
     throw {
       telefono: errorData.telefono?.[0] || '',

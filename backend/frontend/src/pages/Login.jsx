@@ -13,6 +13,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Efecto para crear partículas en el fondo
   useEffect(() => {
     const createParticle = () => {
       const particle = document.createElement("div");

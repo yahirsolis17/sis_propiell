@@ -14,65 +14,72 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-    useEffect(() => {
-      const createParticle = () => {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = `${Math.random() * 100}%`;
-        particle.style.animationDuration = `${Math.random() * 3 + 2}s`;
-        particle.style.setProperty('--particle-size', `${Math.random() * 3 + 2}px`);
-  
-        const randomXStart = Math.random() * 100 + 'vw';
-        const randomYStart = Math.random() * 100 + 'vh';
-        const randomXMid = Math.random() * 100 + 'vw';
-        const randomYMid = Math.random() * 100 + 'vh';
-        const randomXEnd = Math.random() * 100 + 'vw';
-        const randomYEnd = Math.random() * 100 + 'vh';
-  
-        particle.style.setProperty('--random-x-start', randomXStart);
-        particle.style.setProperty('--random-y-start', randomYStart);
-        particle.style.setProperty('--random-x-mid', randomXMid);
-        particle.style.setProperty('--random-y-mid', randomYMid);
-        particle.style.setProperty('--random-x-end', randomXEnd);
-        particle.style.setProperty('--random-y-end', randomYEnd);
-  
-        document.querySelector('.register-container').appendChild(particle);
-  
-        particle.addEventListener('animationend', () => {
-          particle.remove();
-        });
-      };
-  
-      const particleInterval = setInterval(createParticle, 400);
-      return () => clearInterval(particleInterval);
-    }, []);
+  // Efecto para crear partículas en el fondo (verifica que el contenedor exista)
+  useEffect(() => {
+    const createParticle = () => {
+      const particle = document.createElement("div");
+      particle.className = "particle";
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.animationDuration = `${Math.random() * 3 + 2}s`;
+      particle.style.setProperty("--particle-size", `${Math.random() * 3 + 2}px`);
+
+      const randomXStart = `${Math.random() * 100}vw`;
+      const randomYStart = `${Math.random() * 100}vh`;
+      const randomXMid = `${Math.random() * 100}vw`;
+      const randomYMid = `${Math.random() * 100}vh`;
+      const randomXEnd = `${Math.random() * 100}vw`;
+      const randomYEnd = `${Math.random() * 100}vh`;
+
+      particle.style.setProperty("--random-x-start", randomXStart);
+      particle.style.setProperty("--random-y-start", randomYStart);
+      particle.style.setProperty("--random-x-mid", randomXMid);
+      particle.style.setProperty("--random-y-mid", randomYMid);
+      particle.style.setProperty("--random-x-end", randomXEnd);
+      particle.style.setProperty("--random-y-end", randomYEnd);
+
+      // Cambié el selector a .login-container, que es el contenedor principal
+      const container = document.querySelector(".login-container");
+      if (container) {
+        container.appendChild(particle);
+      } else {
+        console.warn("No se encontró el contenedor '.login-container'");
+      }
+
+      particle.addEventListener("animationend", () => {
+        particle.remove();
+      });
+    };
+
+    const particleInterval = setInterval(createParticle, 400);
+    return () => clearInterval(particleInterval);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
     setIsLoading(true);
+    console.log("Intentando login con:", { telefono, password });
 
     try {
-      // Llamada al servicio de login (ya retorna { user, access, refresh })
+      // Llamada al servicio de login
       const data = await login(telefono, password);
-      // data => { user, access, refresh }
+      console.log("Login exitoso. Datos recibidos:", data);
 
-      // Guardar tokens y user en localStorage
+      // Guardar tokens y usuario en localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
 
-      // Redirección según rol
-      const rolePath = data.user.role?.toLowerCase() || 'paciente';
+      // Redirigir según rol
+      const rolePath = data.user.role?.toLowerCase() || "paciente";
+      console.log("Redirigiendo a:", `/dashboard/${rolePath}`);
       navigate(`/dashboard/${rolePath}`);
-
     } catch (err) {
-      // err contiene { telefono, password, nonField }
+      console.error("Error en login:", JSON.stringify(err, null, 2));
       setErrors({
         telefono: err.telefono || err.nonField || "Credenciales inválidas",
-        password: err.password || ""
+        password: err.password || "",
       });
-      console.error("Error en login:", err);
     } finally {
       setIsLoading(false);
     }
@@ -96,7 +103,7 @@ const Login = () => {
               className={`form-control ${errors.telefono ? "is-invalid" : ""}`}
               value={telefono}
               onChange={(e) => {
-                const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                const onlyDigits = e.target.value.replace(/\D/g, "").slice(0, 10);
                 setTelefono(onlyDigits);
               }}
               required
@@ -123,26 +130,15 @@ const Login = () => {
             )}
           </div>
 
-          <button
-            type="submit"
-            className="login-button btn-primary"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <LoadingSpinner size="sm" variant="light" />
-            ) : (
-              'Iniciar Sesión'
-            )}
+          <button type="submit" className="login-button btn-primary" disabled={isLoading}>
+            {isLoading ? <LoadingSpinner size="sm" variant="light" /> : "Iniciar Sesión"}
           </button>
         </form>
 
         <div className="login-footer mt-3">
           <span className="text-muted">¿Primera vez aquí? </span>
-          <button
-            onClick={() => navigate("/register")}
-            className="btn btn-link p-0"
-          >
-            Crea una cuentaa
+          <button onClick={() => navigate("/register")} className="btn btn-link p-0">
+            Crea una cuenta
           </button>
         </div>
       </div>

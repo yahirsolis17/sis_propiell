@@ -14,7 +14,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Efecto para crear partículas en el fondo (verifica que el contenedor exista)
+  // Efecto para crear partículas en el fondo
   useEffect(() => {
     const createParticle = () => {
       const particle = document.createElement("div");
@@ -37,7 +37,6 @@ const Login = () => {
       particle.style.setProperty("--random-x-end", randomXEnd);
       particle.style.setProperty("--random-y-end", randomYEnd);
 
-      // Cambié el selector a .login-container, que es el contenedor principal
       const container = document.querySelector(".login-container");
       if (container) {
         container.appendChild(particle);
@@ -61,16 +60,13 @@ const Login = () => {
     console.log("Intentando login con:", { telefono, password });
 
     try {
-      // Llamada al servicio de login
       const data = await login(telefono, password);
       console.log("Login exitoso. Datos recibidos:", data);
 
-      // Guardar tokens y usuario en localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
 
-      // Redirigir según rol
       const rolePath = data.user.role?.toLowerCase() || "paciente";
       console.log("Redirigiendo a:", `/dashboard/${rolePath}`);
       navigate(`/dashboard/${rolePath}`);

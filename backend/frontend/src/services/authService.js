@@ -2,18 +2,17 @@ import api from './api';
 
 export const login = async (telefono, password) => {
   try {
-    // Usamos la instancia 'api' para que se aplique el baseURL y los interceptores.
+    // Usamos la instancia 'api' para que se aplique la baseURL y los interceptores.
     const response = await api.post('auth/login/', { telefono, password });
     // Se espera que el backend retorne { user, access, refresh }
     const { user, access, refresh } = response.data;
-    // Guardar datos en localStorage
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('accessToken', access);
     localStorage.setItem('refreshToken', refresh);
     return response.data;
   } catch (error) {
     const errorData = error.response?.data || {};
-    // Nota: Django devuelve errores de validación en la clave 'non_field_errors'
+    // Nota: Django suele enviar errores en 'non_field_errors'
     throw {
       telefono: errorData.telefono?.[0] || '',
       password: errorData.password?.[0] || '',

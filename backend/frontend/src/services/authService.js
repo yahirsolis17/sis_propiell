@@ -1,33 +1,23 @@
 import api from './api';
 
-// Modifica el servicio authService.js
 export const login = async (telefono, password) => {
   try {
-    const response = await axios.post(
-      'https://sis-propiell.onrender.com/api/auth/login/',
-      { telefono, password },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        timeout: 10000  // Timeout de 10 segundos
-      }
-    );
-
-    // Verificar respuesta del servidor
-    if (!response.data.access || !response.data.user) {
-      throw new Error('Respuesta del servidor inválida');
-    }
-
+    // Usamos la instancia 'api' para que se aplique el baseURL y los interceptores.
+    const response = await api.post('auth/login/', { telefono, password });
+    // Se espera que el backend retorne { user, access, refresh }
+    const { user, access, refresh } = response.data;
+    // Guardar datos en localStorage
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('accessToken', access);
+    localStorage.setItem('refreshToken', refresh);
     return response.data;
   } catch (error) {
-    // Mejor manejo de errores
     const errorData = error.response?.data || {};
+    // Nota: Django devuelve errores de validación en la clave 'non_field_errors'
     throw {
       telefono: errorData.telefono?.[0] || '',
       password: errorData.password?.[0] || '',
-      nonField: errorData.nonField?.[0] || 'Error de conexión con el servidor'
+      nonField: errorData.non_field_errors?.[0] || 'Error de conexión con el servidor'
     };
   }
 };

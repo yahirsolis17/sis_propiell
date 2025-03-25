@@ -1,7 +1,10 @@
 import axios from 'axios';
 
-// Usa la variable de entorno VITE_API_URL; si no existe, usa localhost para desarrollo.
+// Usa la variable de entorno VITE_API_URL definida en tu .env; 
+// si no existe, se usa el valor por defecto para desarrollo.
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/';
+
+console.log("baseURL:", baseURL); // Temporal: para verificar que se esté leyendo la variable
 
 const api = axios.create({
   baseURL: baseURL,
@@ -11,7 +14,7 @@ const api = axios.create({
   },
 });
 
-// Interceptor para adjuntar el header Authorization
+// Interceptor para adjuntar el header Authorization en cada request
 api.interceptors.request.use(config => {
   const accessToken = localStorage.getItem('accessToken');
   if (accessToken) {
@@ -20,11 +23,11 @@ api.interceptors.request.use(config => {
   return config;
 });
 
+// Interceptor para manejar errores de respuesta, refrescar el token si es necesario
 api.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
-    // Si recibimos un 401 y no se ha reintentado
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
@@ -40,7 +43,7 @@ api.interceptors.response.use(
         originalRequest.headers['Authorization'] = `Bearer ${data.access}`;
         return axios(originalRequest);
       } catch (e) {
-        // Si falla, hacemos logout
+        // Si falla el refresco, eliminamos tokens y redirigimos al login
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');

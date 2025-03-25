@@ -75,11 +75,11 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',  # Usamos mysql-connector-python
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'NAME': os.getenv('railway'),
+        'USER': os.getenv('root'),
+        'PASSWORD': os.getenv('KMQqSQMXpwsFVdchaSyyYMyHjApNDvAj'),
+        'HOST': os.getenv('interchange.proxy.rlwy.net'),
+        'PORT': os.getenv('19331'),
     }
 }
 

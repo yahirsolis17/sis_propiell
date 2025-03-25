@@ -17,6 +17,7 @@ urlpatterns = [
     path('auth/refresh/', TokenRefreshView.as_view(), name="token_refresh"),
     path('auth/verify/', VerifyAuthView.as_view(), name='verify-auth'),
     path('auth/login/', LoginView.as_view(), name="login"),
+    path('auth/register/', RegisterView.as_view(), name="register"),  # <-- Agrega esta línea
     path('auth/logout/', LogoutView.as_view(), name="logout"),
     path('create-user/', AdminUserView.as_view(), name="admin-create-user"),
     path('dashboard/<str:role>/', DashboardView.as_view(), name="dashboard"),

@@ -1,8 +1,6 @@
-// src/services/api.js
 import axios from 'axios';
 
-// Usa la variable de entorno VITE_API_URL definida en el .env; 
-// si no existe, usa localhost para desarrollo.
+// Usa la variable de entorno VITE_API_URL; si no existe, usa localhost para desarrollo.
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/';
 
 const api = axios.create({
@@ -26,7 +24,6 @@ api.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
-    // Si recibimos un 401 y no se ha reintentado
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
@@ -36,13 +33,10 @@ api.interceptors.response.use(
         const { data } = await axios.post(`${baseURL}auth/refresh/`, {
           refresh: refreshToken
         });
-        // Guardamos el nuevo access token
         localStorage.setItem('accessToken', data.access);
-        // Reintentamos la request original con el nuevo token
         originalRequest.headers['Authorization'] = `Bearer ${data.access}`;
         return axios(originalRequest);
       } catch (e) {
-        // Si falla, hacemos logout
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');

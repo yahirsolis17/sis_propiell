@@ -1,18 +1,14 @@
-// src/services/authService.js
 import api from './api';
 
 export const login = async (telefono, password) => {
   try {
-    const response = await api.post('/auth/login/', { telefono, password });
-    
-    // El backend envía => { user, access, refresh }
+    const response = await api.post('auth/login/', { telefono, password });
+    // Se espera que el backend retorne { user, access, refresh }
     const { user, access, refresh } = response.data;
-
     // Guardar en localStorage
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('accessToken', access);
     localStorage.setItem('refreshToken', refresh);
-
     return response.data;
   } catch (error) {
     const errorData = error.response?.data || {};
@@ -40,21 +36,17 @@ export const getCurrentUser = () => {
   }
 };
 
-export const getAccessToken = () => {
-  return localStorage.getItem("accessToken"); 
-};
+export const getAccessToken = () => localStorage.getItem("accessToken");
 
 export const registerPatient = async (data) => {
-  // Ajusta la ruta y la lógica según tu backend
-  const response = await api.post('/auth/register/', data);
+  // Ajusta la ruta según tu backend
+  const response = await api.post('auth/register/', data);
   return response.data;
 };
 
-// Ejemplo verificación:
 export const verifyAuth = async () => {
   try {
-    // Ver si el user existe
-    const response = await api.get('/auth/verify/');
+    const response = await api.get('auth/verify/');
     return response.status === 200;
   } catch (error) {
     return false;
@@ -63,6 +55,6 @@ export const verifyAuth = async () => {
 
 export const createAppointment = async (citaData) => {
   // POST /citas/ con citaData => {doctor, especialidad, fecha_hora, ...}
-  const response = await api.post('/citas/', citaData);
+  const response = await api.post('citas/', citaData);
   return response.data;
 };

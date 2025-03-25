@@ -76,9 +76,14 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # En producción, se espera que la variable de entorno DB_URL contenga la URL de conexión que Railway te proporciona,
 # por ejemplo: mysql://usuario:contraseña@containers-us-west1.railway.app:3306/nombre_basedatos
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DB_URL', 'mysql://yahir:12345678@localhost:3306/sis_propiel')
-    )
+    'default': {
+        'ENGINE': 'mysql.connector.django',  # ¡Este es el cambio clave!
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+    }
 }
 
 # Modelo de usuario personalizado

@@ -83,18 +83,17 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 #   DB_HOST = interchange.proxy.rlwy.net
 #   DB_PORT = 19331
 # ------------------------------------------------------------------------------
-# settings.py (Django en Render)
+# settings.py
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.mysql',  # Usa el driver estándar
         'NAME': os.getenv('MYSQLDATABASE', 'railway'),
         'USER': os.getenv('MYSQLUSER', 'root'),
         'PASSWORD': os.getenv('MYSQLPASSWORD', 'KWQqSQWXpwsFVdchaSyyYMyHjApNDvAj'),
-        'HOST': os.getenv('MYSQLHOST', 'containers-us-west-146.railway.app'),  # <-- ¡Host público!
+        'HOST': os.getenv('MYSQLHOST', 'containers-us-west-146.railway.app'),
         'PORT': os.getenv('MYSQLPORT', '3366'),
         'OPTIONS': {
             'charset': 'utf8mb4',
-            'ssl': {}  # Si Railway lo requiere, usa 'ssl': {'ca': '/ruta/a/cert.pem'}
         }
     }
 }

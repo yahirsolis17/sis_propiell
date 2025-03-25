@@ -1,17 +1,9 @@
 [build]
 packages = ["pkg-config", "mariadb-connector-c"]
 
-command = "\
-echo '=== Listado del directorio PKG_CONFIG_PATH esperado: /usr/lib/x86_64-linux-gnu/pkgconfig ==='; \
-ls -la /usr/lib/x86_64-linux-gnu/pkgconfig || echo 'No existe /usr/lib/x86_64-linux-gnu/pkgconfig'; \
-echo '=== Exportando flags de compilación para mysqlclient ==='; \
-export MYSQLCLIENT_CFLAGS='-I/usr/include/mariadb'; \
-export MYSQLCLIENT_LDFLAGS='-L/usr/lib/x86_64-linux-gnu -lmariadb'; \
-echo 'MYSQLCLIENT_CFLAGS=' $MYSQLCLIENT_CFLAGS; \
-echo 'MYSQLCLIENT_LDFLAGS=' $MYSQLCLIENT_LDFLAGS; \
-echo '=== Creando entorno virtual ==='; \
-python -m venv --copies /opt/venv && \
-echo 'Entorno virtual creado. Activando entorno...'; \
-. /opt/venv/bin/activate && \
-echo 'Entorno virtual activado. Instalando dependencias...'; \
-pip install -r requirements.txt"
+[build.env]
+MYSQLCLIENT_CFLAGS = "-I/usr/include/mariadb"
+MYSQLCLIENT_LDFLAGS = "-L/usr/lib/x86_64-linux-gnu -lmariadb"
+PKG_CONFIG_PATH = "/usr/lib/x86_64-linux-gnu/pkgconfig"
+
+command = "python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install -r requirements.txt"

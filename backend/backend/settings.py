@@ -1,9 +1,9 @@
+# backend/settings.py
 from pathlib import Path
 from datetime import timedelta
 import os
-import dj_database_url  # Asegúrate de instalar dj-database-url
+import dj_database_url
 
-# Directorio base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Configuración de medios
@@ -12,10 +12,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # Clave secreta y Debug
 SECRET_KEY = os.environ.get('SECRET_KEY', '1234')
-DEBUG = True
+DEBUG = True  # En producción, recuerda poner DEBUG=False
 ALLOWED_HOSTS = ['*']
 
-# Aplicaciones instaladas
 INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.admin',
@@ -29,7 +28,6 @@ INSTALLED_APPS = [
     'users',  # Tu aplicación
 ]
 
-# Middleware
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -41,17 +39,18 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Configuración CORS
+# Configuración CORS (ajusta según tus dominios)
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Ajusta si tu front usa otro dominio o puerto
+    "http://localhost:5173",
+    "https://sis-propiell-yahirsolis17s-projects.vercel.app",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
+    "http://localhost:5173", 
+    "https://sis-propiell-yahirsolis17s-projects.vercel.app",  
 ]
 
-# URLs y Templates
 ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
@@ -72,12 +71,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Configuración de la base de datos usando dj-database-url
-# En producción, se espera que la variable de entorno DB_URL contenga la URL de conexión que Railway te proporciona,
-# por ejemplo: mysql://usuario:contraseña@containers-us-west1.railway.app:3306/nombre_basedatos
+# Configuración de la base de datos usando variables de entorno
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql.connector.django',  # ¡Este es el cambio clave!
+        'ENGINE': 'mysql.connector.django',  # Usamos mysql-connector-python
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
@@ -86,20 +83,16 @@ DATABASES = {
     }
 }
 
-# Modelo de usuario personalizado
 AUTH_USER_MODEL = 'users.User'
 
-# Configuración de internacionalización y zona horaria
 LANGUAGE_CODE = 'es-es'
 TIME_ZONE = 'America/Mexico_City'
 USE_I18N = True
 USE_TZ = True
 
-# Configuración de archivos estáticos
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Configuración de Django REST Framework y SimpleJWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -116,5 +109,5 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,
     "ALGORITHM": "HS256",
     "SIGNING_KEY": SECRET_KEY,
-    "AUTH_HEADER_TYPES": ("Bearer",),  # Autenticación con "Bearer <token>"
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }

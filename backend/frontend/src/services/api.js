@@ -1,6 +1,8 @@
+// src/services/api.js
 import axios from 'axios';
 
-// Usa la variable de entorno VITE_API_URL definida en Vercel; si no existe, usa localhost para desarrollo.
+// Usa la variable de entorno VITE_API_URL definida en el .env; 
+// si no existe, usa localhost para desarrollo.
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/';
 
 const api = axios.create({

@@ -1,19 +1,18 @@
 [build]
 packages = [
     "pkg-config",
-    "default-libmysqlclient-dev", # Alternativa a libmariadb-dev
+    "libmariadb-dev",  # Paquete de desarrollo correcto para MariaDB
     "gcc",
     "python3-dev"
 ]
 
-command = '''\
-  echo "=== Configurando entorno para mysqlclient ==="; \
-  export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig"; \
-  export MYSQLCLIENT_CFLAGS=$(pkg-config --cflags mariadb); \
-  export MYSQLCLIENT_LDFLAGS=$(pkg-config --libs mariadb); \
-  echo "PKG_CONFIG_PATH: $PKG_CONFIG_PATH"; \
-  echo "CFLAGS: $MYSQLCLIENT_CFLAGS"; \
-  echo "LDFLAGS: $MYSQLCLIENT_LDFLAGS"; \
-  python -m venv --copies /opt/venv && \
-  . /opt/venv/bin/activate && \
-  pip install -r requirements.txt'''
+[build.environment]
+# Configuración crítica para que pkg-config encuentre MariaDB
+PKG_CONFIG_PATH = "/usr/lib/x86_64-linux-gnu/pkgconfig"
+MYSQLCLIENT_CFLAGS = "$(pkg-config --cflags mariadb)"  # Flags dinámicos
+MYSQLCLIENT_LDFLAGS = "$(pkg-config --libs mariadb)"   # Flags dinámicos
+
+[build.command]
+# No es necesario crear el venv manualmente, Nixpacks lo gestiona
+echo "=== Instalando dependencias ===" && \
+pip install --no-cache-dir -r requirements.txt

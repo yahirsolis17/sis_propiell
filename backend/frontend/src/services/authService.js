@@ -1,4 +1,3 @@
-// src/services/authService.js
 import api from './api';
 
 export const login = async (telefono, password) => {
@@ -40,7 +39,6 @@ export const getCurrentUser = () => {
 export const getAccessToken = () => localStorage.getItem("accessToken");
 
 export const registerPatient = async (data) => {
-  // Ajusta la ruta según tu backend
   const response = await api.post('auth/register/', data);
   return response.data;
 };
@@ -55,7 +53,6 @@ export const verifyAuth = async () => {
 };
 
 export const createAppointment = async (citaData) => {
-  // POST /citas/ con citaData => {doctor, especialidad, fecha_hora, ...}
   const response = await api.post('citas/', citaData);
   return response.data;
 };

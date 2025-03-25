@@ -39,7 +39,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Configuración CORS (ajusta según tus dominios)
+# Configuración CORS
+# Ajusta según tus dominios (local y producción)
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
@@ -47,8 +48,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173", 
-    "https://sis-propiell-yahirsolis17s-projects.vercel.app",  
+    "http://localhost:5173",
+    "https://sis-propiell-yahirsolis17s-projects.vercel.app",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -71,15 +72,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Configuración de la base de datos usando variables de entorno
+# ------------------------------------------------------------------------------
+# CONFIGURACIÓN DE LA BASE DE DATOS
+# Usa variables de entorno para DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT.
+# En Render, define estas variables de entorno con los datos que te proporciona Railway.
+# Ejemplo:
+#   DB_NAME = railway
+#   DB_USER = root
+#   DB_PASSWORD = KMQqSQMXpwsFVdchaSyyYMyHjApNDvAj
+#   DB_HOST = interchange.proxy.rlwy.net
+#   DB_PORT = 19331
+# ------------------------------------------------------------------------------
 DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',  # Usamos mysql-connector-python
         'NAME': os.getenv('railway'),
         'USER': os.getenv('root'),
         'PASSWORD': os.getenv('KMQqSQMXpwsFVdchaSyyYMyHjApNDvAj'),
-        'HOST': os.getenv('interchange.proxy.rlwy.net'),
-        'PORT': os.getenv('19331'),
+        'HOST': os.getenv('mysql.railway.internal'),
+        'PORT': os.getenv('3306'),
     }
 }
 
@@ -93,6 +104,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Configuración de Django REST Framework y SimpleJWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',

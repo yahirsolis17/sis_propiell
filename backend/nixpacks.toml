@@ -4,12 +4,15 @@ packages = ["pkg-config", "mariadb-connector-c"]
 [build.env]
 MYSQLCLIENT_CFLAGS = "-I/usr/include/mariadb"
 MYSQLCLIENT_LDFLAGS = "-L/usr/lib/x86_64-linux-gnu -lmariadb"
+PKG_CONFIG_PATH = "/usr/lib/x86_64-linux-gnu/pkgconfig"
 
-# Comando de build con logs en cada paso para depuración:
 command = "\
 echo '=== ENVIRONMENT VARIABLES ==='; \
 echo 'MYSQLCLIENT_CFLAGS=' $MYSQLCLIENT_CFLAGS; \
 echo 'MYSQLCLIENT_LDFLAGS=' $MYSQLCLIENT_LDFLAGS; \
+echo 'PKG_CONFIG_PATH=' $PKG_CONFIG_PATH; \
+echo '=== Listando directorio PKG_CONFIG_PATH ==='; \
+ls -la $PKG_CONFIG_PATH || echo 'No existe PKG_CONFIG_PATH'; \
 echo '=== pkg-config outputs ==='; \
 pkg-config --cflags mariadb-connector-c || echo 'pkg-config mariadb-connector-c no encontrado'; \
 pkg-config --libs mariadb-connector-c || echo 'pkg-config libs mariadb-connector-c no encontrado'; \

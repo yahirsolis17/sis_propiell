@@ -1,9 +1,19 @@
 [build]
-packages = ["pkg-config", "mariadb-connector-c"]
+packages = [
+    "pkg-config",
+    "default-libmysqlclient-dev", # Alternativa a libmariadb-dev
+    "gcc",
+    "python3-dev"
+]
 
-[build.env]
-MYSQLCLIENT_CFLAGS = "-I/usr/include/mariadb"
-MYSQLCLIENT_LDFLAGS = "-L/usr/lib/x86_64-linux-gnu -lmariadb"
-PKG_CONFIG_PATH = "/usr/lib/x86_64-linux-gnu/pkgconfig"
-
-command = "python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install -r requirements.txt"
+command = '''\
+  echo "=== Configurando entorno para mysqlclient ==="; \
+  export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig"; \
+  export MYSQLCLIENT_CFLAGS=$(pkg-config --cflags mariadb); \
+  export MYSQLCLIENT_LDFLAGS=$(pkg-config --libs mariadb); \
+  echo "PKG_CONFIG_PATH: $PKG_CONFIG_PATH"; \
+  echo "CFLAGS: $MYSQLCLIENT_CFLAGS"; \
+  echo "LDFLAGS: $MYSQLCLIENT_LDFLAGS"; \
+  python -m venv --copies /opt/venv && \
+  . /opt/venv/bin/activate && \
+  pip install -r requirements.txt'''

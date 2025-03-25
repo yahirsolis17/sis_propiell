@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// Lee la variable de entorno VITE_API_URL; si no existe, usa localhost para desarrollo.
+// Asegúrate de que en el archivo .env esté: VITE_API_URL=https://sis-propiell.onrender.com/api/
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/';
-console.log("baseURL:", baseURL); // Para confirmar el valor
+console.log("baseURL:", baseURL);
 
 const api = axios.create({
   baseURL: baseURL,
@@ -12,17 +12,15 @@ const api = axios.create({
   },
 });
 
-// Interceptor para adjuntar el header Authorization
 api.interceptors.request.use(config => {
   const accessToken = localStorage.getItem('accessToken');
   if (accessToken) {
     config.headers['Authorization'] = `Bearer ${accessToken}`;
   }
-  console.log("Request Config:", config); // Log de la configuración de la request
+  console.log("Request Config:", config);
   return config;
 });
 
-// Interceptor para manejar errores y refrescar token si es necesario
 api.interceptors.response.use(
   response => {
     console.log("Response:", response);
@@ -32,7 +30,6 @@ api.interceptors.response.use(
     console.error("Response Error:", error.response);
     console.error("Request Error:", error.request);
     console.error("Error Message:", error.message);
-    
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;

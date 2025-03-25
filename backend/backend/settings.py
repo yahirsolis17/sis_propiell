@@ -40,7 +40,7 @@ MIDDLEWARE = [
 ]
 
 # Configuración CORS (ajusta según tus dominios)
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://sis-propiell-yahirsolis17s-projects.vercel.app",

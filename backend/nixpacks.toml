@@ -1,9 +1,10 @@
 [build]
-# No es necesario instalar paquetes específicos para MySQL, solo las dependencias básicas
+# Instalamos paquetes básicos que pueden ser necesarios para compilar dependencias u otros módulos.
 packages = [
     "gcc",
     "python3-dev",
     "libssl-dev"
 ]
 
+# Comando de build: crea el entorno virtual y, sin usar cache, instala las dependencias definidas en requirements.txt.
 command = "python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install --no-cache-dir -r requirements.txt"

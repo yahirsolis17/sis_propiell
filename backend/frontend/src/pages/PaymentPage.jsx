@@ -1,4 +1,3 @@
-// src/pages/PaymentPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { getCurrentUser, verifyAuth } from "../services/authService";
@@ -14,11 +13,10 @@ const PaymentPage = () => {
   const [comprobante, setComprobante] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
-  // Verificar autenticación con JWT, similar a otros componentes
   useEffect(() => {
     const controller = new AbortController();
-
     const checkAuth = async () => {
       try {
         const valid = await verifyAuth();
@@ -33,14 +31,12 @@ const PaymentPage = () => {
         }
       }
     };
-
     if (user) checkAuth();
     return () => controller.abort();
   }, [user, navigate]);
 
   if (!user) return <Navigate to="/login" replace />;
 
-  // Función para manejar la selección del archivo
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type.startsWith('image/')) {
@@ -50,7 +46,6 @@ const PaymentPage = () => {
     }
   };
 
-  // Función para enviar el comprobante al backend
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!comprobante) {
@@ -63,26 +58,35 @@ const PaymentPage = () => {
       formData.append("cita", citaId);
       formData.append("comprobante", comprobante);
 
-      // Obtener el token JWT almacenado y agregarlo a la cabecera
       const token = localStorage.getItem("token");
-
       const response = await api.post("pagos/create/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: token ? `Bearer ${token}` : '',
-        },
+          "Authorization": token ? `Bearer ${token}` : ""
+        }
       });
-      console.log("Pago creado:", response.data);
+      
       if (response.status === 201) {
-        // Redirigir al dashboard del paciente u otra página de confirmación
-        navigate("/dashboard/paciente");
+        setShowModal(true);
       }
     } catch (err) {
-      console.error("Error al subir el comprobante:", err.response || err);
       setError(err.response?.data?.error || "Error al subir el comprobante.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDownloadAndRedirect = (e) => {
+    e.preventDefault();
+    // Forzar descarga del PDF
+    const link = document.createElement('a');
+    link.href = "/pagos/consentimiento.pdf";
+    link.download = "comprobante_pago.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    // Redirigir después de descargar
+    setTimeout(() => navigate('/Dashboard'), 500);
   };
 
   return (
@@ -113,6 +117,42 @@ const PaymentPage = () => {
           </form>
         </div>
       </div>
+
+      {/* Modal de éxito con advertencia de descarga */}
+      {showModal && (
+        <div className="payment-modal">
+          <div className="payment-modal-overlay" onClick={() => {
+            setShowModal(false);
+            navigate('/Dashboard');
+          }}></div>
+          <div className="payment-modal-content">
+            <button 
+              className="close-modal" 
+              onClick={() => {
+                setShowModal(false);
+                navigate('/Dashboard');
+              }}
+            >
+              &times;
+            </button>
+            <h3 className="modal-title">✅ Comprobante Subido Exitosamente</h3>
+            <p className="modal-text">Gracias por subir su comprobante de pago.</p>
+            
+            <div className="download-notice">
+              <p className="notice-text">
+                ⚠ IMPORTANTE: Descargue el consentimiento informando y presentelo el dia de la cita.
+              </p>
+            </div>
+
+            <button
+              onClick={handleDownloadAndRedirect}
+              className="modal-download-btn"
+            >
+              Descargar consentimiento informado
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 };

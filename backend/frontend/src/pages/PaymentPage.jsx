@@ -77,7 +77,6 @@ const PaymentPage = () => {
 
   const handleDownloadAndRedirect = (e) => {
     e.preventDefault();
-    // Forzar descarga del PDF
     const link = document.createElement('a');
     link.href = "/pagos/consentimiento.pdf";
     link.download = "coonsentimiento.pdf";

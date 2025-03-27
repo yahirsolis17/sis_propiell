@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { getCurrentUser, verifyAuth } from "../services/authService";
 import api from '../services/api';
 import Navbar from '../components/Navbar';
@@ -42,14 +44,20 @@ const PaymentPage = () => {
     if (file && file.type.startsWith('image/')) {
       setComprobante(file);
     } else {
-      alert("Solo se permiten imágenes (PNG, JPG o JPEG)");
+      toast.error("Solo se permiten imágenes (PNG, JPG o JPEG)", {
+        position: "top-right",
+        autoClose: 5000,
+      });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!comprobante) {
-      setError("Debe subir un comprobante");
+      toast.warning("Debe subir un comprobante", {
+        position: "top-right",
+        autoClose: 5000,
+      });
       return;
     }
     setLoading(true);
@@ -62,15 +70,21 @@ const PaymentPage = () => {
       const response = await api.post("pagos/create/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          "Authorization": token ? `Bearer ${token}` : ""
-        }
+          Authorization: token ? Bearer ${token} : '',
+        },
       });
-      
       if (response.status === 201) {
+        toast.success("Comprobante subido exitosamente", {
+          position: "top-right",
+          autoClose: 5000,
+        });
         setShowModal(true);
       }
     } catch (err) {
-      setError(err.response?.data?.error || "Error al subir el comprobante.");
+      toast.error(err.response?.data?.error || "Error al subir el comprobante.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
     } finally {
       setLoading(false);
     }
@@ -92,6 +106,19 @@ const PaymentPage = () => {
   return (
     <>
       <Navbar />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      
       <div className="citas-container" style={{ paddingTop: "100px" }}>
         <div className="cita-form-card">
           <h2 className="citas-title">Subir Comprobante de Pago</h2>
@@ -140,7 +167,7 @@ const PaymentPage = () => {
             
             <div className="download-notice">
               <p className="notice-text">
-                ⚠ IMPORTANTE: Descargue el consentimiento informando y presentelo el dia de la cita.
+                ⚠ IMPORTANTE: Descargue el consentimiento informado y preséntelo el día de la cita.
               </p>
             </div>
 

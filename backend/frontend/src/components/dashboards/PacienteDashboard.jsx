@@ -1,11 +1,14 @@
 // src/components/dashboards/PacienteDashboard.jsx
 import React, { useState, useEffect } from 'react';
 import { animated } from '@react-spring/web';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../services/api';
 import { getCurrentUser } from '../../services/authService';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PacienteDashboard = ({ cardAnimation }) => {
+  const location = useLocation();
   const [citas, setCitas] = useState([]);
   const [pagos, setPagos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,14 +16,34 @@ const PacienteDashboard = ({ cardAnimation }) => {
   const user = getCurrentUser();
   const navigate = useNavigate();
 
+  // Efecto para mostrar el toast solo cuando viene del login
+  useEffect(() => {
+    if (location.state?.fromLogin) {
+      toast.success('¡Inicio de sesión exitoso!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      
+      // Limpiamos el estado para que no se muestre al volver
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location, navigate]);
+
+  // Efecto para cargar los datos del dashboard
   useEffect(() => {
     const controller = new AbortController();
 
     const fetchData = async () => {
       try {
         const [resCitas, resPagos] = await Promise.all([
-          api.get(`/citas/?paciente=${user.id}`, { signal: controller.signal }),
-          api.get(`/pagos/?paciente=${user.id}`, { signal: controller.signal })
+          api.get(/citas/?paciente=${user.id}, { signal: controller.signal }),
+          api.get(/pagos/?paciente=${user.id}, { signal: controller.signal })
         ]);
         setCitas(resCitas.data);
         setPagos(resPagos.data);
@@ -40,7 +63,6 @@ const PacienteDashboard = ({ cardAnimation }) => {
 
   const formatoFecha = (fechaStr) => {
     const fecha = new Date(fechaStr);
-    // Ejemplo de formateo en español (puedes ajustarlo a tu gusto)
     return fecha.toLocaleString('es-MX', {
       day: 'numeric',
       month: 'long',
@@ -52,6 +74,8 @@ const PacienteDashboard = ({ cardAnimation }) => {
 
   return (
     <animated.div style={cardAnimation} className="dashboard-card">
+      <ToastContainer />
+      
       {loading ? (
         <div className="loading-spinner">Cargando...</div>
       ) : error ? (

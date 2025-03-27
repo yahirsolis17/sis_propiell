@@ -40,8 +40,11 @@
       }
     },
     {
-      "src": "/pagos/(.*)",
-      "dest": "/pagos/$1"
+      "src": "/consentimiento\\.pdf",
+      "dest": "/consentimiento.pdf",
+      "headers": {
+        "Content-Type": "application/pdf"
+      }
     },
     {
       "src": "/(.*)",

@@ -77,16 +77,15 @@ const PaymentPage = () => {
 
   const handleDownloadAndRedirect = (e) => {
     e.preventDefault();
+    // Crear un enlace de descarga para el PDF
     const link = document.createElement('a');
-    
-    // Usa process.env.PUBLIC_URL para rutas en producción
-    link.href = `${process.env.PUBLIC_URL}/pagos/consentimiento.pdf`;
-    link.download = "consentimiento.pdf";  // Fuerza la descarga
+    link.href = "/consentimiento.pdf";  // El PDF está en public/consentimiento.pdf
+    link.download = "consentimiento.pdf";  // Fuerza la descarga con este nombre
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
-    // Redirige después de 500ms
+
+    // Redirigir después de un breve lapso
     setTimeout(() => navigate('/Dashboard'), 500);
   };
 
@@ -100,9 +99,9 @@ const PaymentPage = () => {
           <form onSubmit={handleSubmit} className="cita-form">
             <div className="mb-3">
               <label className="form-label">Subir comprobante de pago (Imagen):</label>
-              <input 
-                type="file" 
-                accept="image/*" 
+              <input
+                type="file"
+                accept="image/*"
                 onChange={handleFileChange}
                 className="form-control"
                 disabled={loading}
@@ -122,13 +121,16 @@ const PaymentPage = () => {
       {/* Modal de éxito con advertencia de descarga */}
       {showModal && (
         <div className="payment-modal">
-          <div className="payment-modal-overlay" onClick={() => {
-            setShowModal(false);
-            navigate('/Dashboard');
-          }}></div>
+          <div
+            className="payment-modal-overlay"
+            onClick={() => {
+              setShowModal(false);
+              navigate('/Dashboard');
+            }}
+          ></div>
           <div className="payment-modal-content">
-            <button 
-              className="close-modal" 
+            <button
+              className="close-modal"
               onClick={() => {
                 setShowModal(false);
                 navigate('/Dashboard');
@@ -138,10 +140,10 @@ const PaymentPage = () => {
             </button>
             <h3 className="modal-title">✅ Comprobante Subido Exitosamente</h3>
             <p className="modal-text">Cita agendada con éxito.</p>
-            
+
             <div className="download-notice">
               <p className="notice-text">
-                ⚠ IMPORTANTE: Descargue el consentimiento informando y presentelo el dia de la cita.
+                ⚠ IMPORTANTE: Descargue el consentimiento informado y preséntelo el día de la cita.
               </p>
             </div>
 

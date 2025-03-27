@@ -41,9 +41,10 @@ const PacienteDashboard = ({ cardAnimation }) => {
 
     const fetchData = async () => {
       try {
+        // Corregimos las URL con backticks
         const [resCitas, resPagos] = await Promise.all([
-          api.get(/citas/?paciente=${user.id}, { signal: controller.signal }),
-          api.get(/pagos/?paciente=${user.id}, { signal: controller.signal })
+          api.get(`/citas/?paciente=${user.id}`, { signal: controller.signal }),
+          api.get(`/pagos/?paciente=${user.id}`, { signal: controller.signal })
         ]);
         setCitas(resCitas.data);
         setPagos(resPagos.data);

@@ -70,7 +70,7 @@ const PaymentPage = () => {
       const response = await api.post("pagos/create/", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: token ? Bearer ${token} : '',
+          Authorization: token ? `Bearer ${token}` : '',
         },
       });
       if (response.status === 201) {
@@ -148,10 +148,13 @@ const PaymentPage = () => {
       {/* Modal de éxito con advertencia de descarga */}
       {showModal && (
         <div className="payment-modal">
-          <div className="payment-modal-overlay" onClick={() => {
-            setShowModal(false);
-            navigate('/Dashboard');
-          }}></div>
+          <div 
+            className="payment-modal-overlay" 
+            onClick={() => {
+              setShowModal(false);
+              navigate('/Dashboard');
+            }}
+          ></div>
           <div className="payment-modal-content">
             <button 
               className="close-modal" 

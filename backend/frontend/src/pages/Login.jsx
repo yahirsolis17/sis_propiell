@@ -20,9 +20,10 @@ const Login = () => {
     const createParticle = () => {
       const particle = document.createElement('div');
       particle.className = 'particle';
-      particle.style.left = ${Math.random() * 100}%;
-      particle.style.animationDuration = ${Math.random() * 3 + 2}s;
-      particle.style.setProperty('--particle-size', ${Math.random() * 3 + 2}px);
+      // Se usan backticks para interpolar correctamente:
+      particle.style.left = `${Math.random() * 100}%`;
+      particle.style.animationDuration = `${Math.random() * 3 + 2}s`;
+      particle.style.setProperty('--particle-size', `${Math.random() * 3 + 2}px`);
 
       const randomXStart = Math.random() * 100 + 'vw';
       const randomYStart = Math.random() * 100 + 'vh';
@@ -62,7 +63,8 @@ const Login = () => {
       localStorage.setItem("refreshToken", data.refresh);
 
       const rolePath = data.user.role?.toLowerCase() || 'paciente';
-      navigate(/dashboard/${rolePath}, { 
+      // También corregimos la interpolación en navigate:
+      navigate(`/dashboard/${rolePath}`, { 
         state: { fromLogin: true }
       });
 
@@ -108,7 +110,8 @@ const Login = () => {
               type="text"
               inputMode="numeric"
               pattern="[0-9]{10}"
-              className={form-control ${errors.telefono ? "is-invalid" : ""}}
+              // Corregimos la interpolación del className
+              className={`form-control ${errors.telefono ? "is-invalid" : ""}`}
               value={telefono}
               onChange={(e) => {
                 const onlyDigits = e.target.value.replace(/\D/g, '').slice(0, 10);
@@ -126,7 +129,8 @@ const Login = () => {
             <label className="form-label">Contraseña</label>
             <input
               type="password"
-              className={form-control ${errors.password ? "is-invalid" : ""}}
+              // Igual aquí:
+              className={`form-control ${errors.password ? "is-invalid" : ""}`}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

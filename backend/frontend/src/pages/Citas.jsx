@@ -1,5 +1,8 @@
+// src/pages/Citas.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { getCurrentUser } from "../services/authService";
@@ -57,6 +60,7 @@ const Citas = () => {
     try {
       const formData = new FormData();
       formData.append("especialidad", selectedEspecialidad);
+      // Corrección de backticks al armar fecha+hora
       formData.append(
         "fecha_hora",
         `${selectedDate.toISOString().split("T")[0]}T${selectedTime}`
@@ -68,8 +72,21 @@ const Citas = () => {
       });
       
       if (response.status === 201) {
+        toast.success("Cita pendiente, suba su comprobante de pago", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: false,
+          theme: "light",
+        });
+
         const newCitaId = response.data.id;
-        navigate(`/pago/${newCitaId}`);
+        // Corrección para navegar con backticks
+        setTimeout(() => {
+          navigate(`/pago/${newCitaId}`);
+        }, 3000);
       }
     } catch (err) {
       console.error("Error al crear la cita:", err.response || err);
@@ -85,6 +102,7 @@ const Citas = () => {
   return (
     <>
       <Navbar />
+      <ToastContainer />
       <div className="citas-page-container">
         <div className="cita-form-wrapper">
           <div className="cita-form-card">

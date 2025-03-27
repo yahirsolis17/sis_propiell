@@ -1,3 +1,4 @@
+// src/pages/PaymentPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -73,6 +74,7 @@ const PaymentPage = () => {
           Authorization: token ? `Bearer ${token}` : '',
         },
       });
+
       if (response.status === 201) {
         toast.success("Comprobante subido exitosamente", {
           position: "top-right",
@@ -154,7 +156,7 @@ const PaymentPage = () => {
               setShowModal(false);
               navigate('/Dashboard');
             }}
-          ></div>
+          />
           <div className="payment-modal-content">
             <button 
               className="close-modal" 

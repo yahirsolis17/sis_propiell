@@ -78,12 +78,15 @@ const PaymentPage = () => {
   const handleDownloadAndRedirect = (e) => {
     e.preventDefault();
     const link = document.createElement('a');
-    link.href = "/pagos/consentimiento.pdf";
-    link.download = "coonsentimiento.pdf";
+    
+    // Usa process.env.PUBLIC_URL para rutas en producción
+    link.href = `${process.env.PUBLIC_URL}/pagos/consentimiento.pdf`;
+    link.download = "consentimiento.pdf";  // Fuerza la descarga
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    // Redirigir después de descargar
+    
+    // Redirige después de 500ms
     setTimeout(() => navigate('/Dashboard'), 500);
   };
 

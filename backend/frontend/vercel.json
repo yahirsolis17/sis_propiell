@@ -3,34 +3,52 @@
     {
       "src": "package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
+      "config": {
+        "distDir": "dist"
+      }
     }
   ],
   "routes": [
     {
       "src": "/assets/(.*\\.js)",
-      "headers": { "Content-Type": "application/javascript" }
+      "headers": {
+        "Content-Type": "application/javascript"
+      }
     },
     {
       "src": "/assets/(.*\\.css)",
-      "headers": { "Content-Type": "text/css" }
+      "headers": {
+        "Content-Type": "text/css"
+      }
     },
     {
       "src": "/assets/(.*\\.woff2)",
-      "headers": { "Content-Type": "font/woff2" }
+      "headers": {
+        "Content-Type": "font/woff2"
+      }
     },
     {
       "src": "/assets/(.*\\.woff)",
-      "headers": { "Content-Type": "font/woff" }
+      "headers": {
+        "Content-Type": "font/woff"
+      }
     },
     {
       "src": "/assets/(.*\\.(png|jpg|jpeg|gif|svg))",
-      "headers": { "Content-Type": "image/*" }
+      "headers": {
+        "Content-Type": "image/*"
+      }
+    },
+    {
+      "src": "/pagos/(.*)",
+      "dest": "/pagos/$1"
     },
     {
       "src": "/(.*)",
       "dest": "/index.html",
-      "headers": { "Content-Type": "text/html" }
+      "headers": {
+        "Content-Type": "text/html"
+      }
     }
   ]
 }

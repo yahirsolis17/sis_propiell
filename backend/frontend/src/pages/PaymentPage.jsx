@@ -1,8 +1,5 @@
-// src/pages/PaymentPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { getCurrentUser, verifyAuth } from "../services/authService";
 import api from '../services/api';
 import Navbar from '../components/Navbar';
@@ -45,20 +42,14 @@ const PaymentPage = () => {
     if (file && file.type.startsWith('image/')) {
       setComprobante(file);
     } else {
-      toast.error("Solo se permiten imágenes (PNG, JPG o JPEG)", {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      alert("Solo se permiten imágenes (PNG, JPG o JPEG)");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!comprobante) {
-      toast.warning("Debe subir un comprobante", {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      setError("Debe subir un comprobante");
       return;
     }
     setLoading(true);
@@ -74,19 +65,11 @@ const PaymentPage = () => {
           Authorization: token ? `Bearer ${token}` : '',
         },
       });
-
       if (response.status === 201) {
-        toast.success("Comprobante subido exitosamente", {
-          position: "top-right",
-          autoClose: 5000,
-        });
         setShowModal(true);
       }
     } catch (err) {
-      toast.error(err.response?.data?.error || "Error al subir el comprobante.", {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      setError(err.response?.data?.error || "Error al subir el comprobante.");
     } finally {
       setLoading(false);
     }
@@ -97,7 +80,7 @@ const PaymentPage = () => {
     // Forzar descarga del PDF
     const link = document.createElement('a');
     link.href = "/pagos/consentimiento.pdf";
-    link.download = "comprobante_pago.pdf";
+    link.download = "coonsentimiento.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -108,19 +91,6 @@ const PaymentPage = () => {
   return (
     <>
       <Navbar />
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      
       <div className="citas-container" style={{ paddingTop: "100px" }}>
         <div className="cita-form-card">
           <h2 className="citas-title">Subir Comprobante de Pago</h2>
@@ -150,13 +120,10 @@ const PaymentPage = () => {
       {/* Modal de éxito con advertencia de descarga */}
       {showModal && (
         <div className="payment-modal">
-          <div 
-            className="payment-modal-overlay" 
-            onClick={() => {
-              setShowModal(false);
-              navigate('/Dashboard');
-            }}
-          />
+          <div className="payment-modal-overlay" onClick={() => {
+            setShowModal(false);
+            navigate('/Dashboard');
+          }}></div>
           <div className="payment-modal-content">
             <button 
               className="close-modal" 
@@ -168,11 +135,11 @@ const PaymentPage = () => {
               &times;
             </button>
             <h3 className="modal-title">✅ Comprobante Subido Exitosamente</h3>
-            <p className="modal-text">Gracias por subir su comprobante de pago.</p>
+            <p className="modal-text">Cita agendada con éxito.</p>
             
             <div className="download-notice">
               <p className="notice-text">
-                ⚠ IMPORTANTE: Descargue el consentimiento informado y preséntelo el día de la cita.
+                ⚠ IMPORTANTE: Descargue el consentimiento informando y presentelo el dia de la cita.
               </p>
             </div>
 

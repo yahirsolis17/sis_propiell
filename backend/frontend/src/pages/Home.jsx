@@ -184,7 +184,6 @@ function Home() {
                     <h3>{service.title}</h3>
                     <p>{service.shortDesc}</p>
                     <p className="card-reference">
-                      Referencia: Lorem ipsum dolor sit amet.
                     </p>
                     <div className="card-cta">Saber más →</div>
                   </div>

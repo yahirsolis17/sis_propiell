@@ -156,12 +156,12 @@ const Login = () => {
         </form>
 
         <div className="login-footer mt-3">
-          <span className="text-muted">¿Primera vez aquí? </span>
+          <span className="text-muted">¿No tienes una cuenta? </span>
           <button
             onClick={() => navigate("/register")}
             className="btn btn-link p-0"
           >
-            Crea una cuenta
+            Resgistrate
           </button>
         </div>
       </div>

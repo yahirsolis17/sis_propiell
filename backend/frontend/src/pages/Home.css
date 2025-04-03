@@ -1,9 +1,3 @@
-/* Fuentes y Reset Mejorado */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-/* Asegúrate de tener la importación de Bootstrap Icons en tu index.html
-   o ajustarlo si lo deseas:
-   @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
-*/
 :root {
   --primary-color: #0A6E7D;
   --secondary-color: #1496B7;
@@ -14,6 +8,13 @@
   --section-spacing: 120px;
   --transition-default: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+/* Fuentes y Reset Mejorado */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+/* Asegúrate de tener la importación de Bootstrap Icons en tu index.html
+   o ajustarlo si lo deseas:
+   @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+*/
 
 *,
 *::before,
@@ -179,7 +180,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(rgba(10, 110, 125, 0.7), rgba(10, 110, 125, 0.7));
+  background: linear-gradient(rgba(10, 110, 125, 0.7), rgba(10, 110, 125, 0.7)), 
+              url('../assets/hero-bg.jpg') center/cover fixed;
   margin-top: 76px;
   overflow: hidden;
 }

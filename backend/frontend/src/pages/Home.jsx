@@ -1,19 +1,27 @@
-import { useEffect, useState } from 'react';
+// Home.jsx
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+// Importaciones de Bootstrap (CSS y JS)
 import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
+// Tus estilos y assets
 import "./Home.css";
 import logo from "../assets/logo.png";
 import dermatologia from "../assets/dermatologia.jpg";
 import tamiz from "../assets/tamiz.jpg";
 import podologia from "../assets/podologia.jpg";
 
+// Datos de servicios
 const servicesData = [
   {
     id: 1,
     title: "Dermatología Clínica",
-    shortDesc: "Diagnóstico y tratamiento de enfermedades cutáneas con abordaje multidisciplinario",
+    shortDesc:
+      "Diagnóstico y tratamiento de enfermedades cutáneas con abordaje multidisciplinario",
     longDesc:
-      "Ofrecemos diagnóstico y tratamiento integral para una gran variedad de afecciones de la piel, incluyendo acné, psoriasis, dermatitis, entre otras. Nuestro equipo de especialistas utiliza tecnología de vanguardia para garantizar la atención que mereces.",
+      "Ofrecemos diagnóstico y tratamiento integral para una gran variedad de afecciones de la piel...",
     image: dermatologia,
   },
   {
@@ -21,7 +29,7 @@ const servicesData = [
     title: "Tamiz Neonatal",
     shortDesc: "Tecnología de punta para detección temprana de alteraciones metabólicas",
     longDesc:
-      "Nuestro tamiz neonatal incluye un amplio espectro de pruebas para detectar a tiempo alteraciones congénitas y metabólicas. Esto permite iniciar tratamientos oportunos para asegurar un desarrollo saludable.",
+      "Nuestro tamiz neonatal incluye un amplio espectro de pruebas para detectar a tiempo alteraciones congénitas...",
     image: tamiz,
   },
   {
@@ -29,44 +37,45 @@ const servicesData = [
     title: "Podología Avanzada",
     shortDesc: "Soluciones integrales para salud podológica y ortopedia especializada",
     longDesc:
-      "Contamos con servicios especializados para el cuidado de tus pies, incluyendo la prevención y tratamiento de uñas encarnadas, juanetes y otras condiciones. Nuestro enfoque busca el bienestar integral y la corrección postural.",
+      "Contamos con servicios especializados para el cuidado de tus pies...",
     image: podologia,
   },
 ];
 
-const Home = () => {
+function Home() {
   const navigate = useNavigate();
-
   const [activeService, setActiveService] = useState(null);
   const [closing, setClosing] = useState(false);
 
+  // Animación de entrada en scroll
   useEffect(() => {
     const handleScroll = () => {
-      const elements = document.querySelectorAll('.reveal');
-      elements.forEach(element => {
+      const elements = document.querySelectorAll(".reveal");
+      elements.forEach((element) => {
         const elementTop = element.getBoundingClientRect().top;
         const windowHeight = window.innerHeight;
         if (elementTop < windowHeight * 0.8) {
-          element.classList.add('active');
+          element.classList.add("active");
         }
       });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Navbar scrolled
   useEffect(() => {
-    const navbar = document.querySelector('.navbar-glass');
+    const navbar = document.querySelector(".navbar-glass");
     const onScroll = () => {
       if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
+        navbar.classList.add("scrolled");
       } else {
-        navbar.classList.remove('scrolled');
+        navbar.classList.remove("scrolled");
       }
     };
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   const openServiceModal = (service) => {
@@ -83,7 +92,11 @@ const Home = () => {
 
   return (
     <div className="home-page">
-      <nav className="navbar navbar-expand-lg fixed-top navbar-glass">
+      {/* 
+        Usamos 'navbar-light' para que el ícono hamburguesa se dibuje 
+        en color oscuro (negro). 
+      */}
+      <nav className="navbar navbar-expand-lg fixed-top navbar-light navbar-glass">
         <div className="container">
           <div
             className="navbar-brand hover-scale"
@@ -97,10 +110,17 @@ const Home = () => {
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
           >
+            {/* Ícono hamburguesa por defecto de Bootstrap */}
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <div
+            className="collapse navbar-collapse justify-content-end"
+            id="navbarNav"
+          >
             <ul className="navbar-nav align-items-center">
               <li className="nav-item hover-underline">
                 <a className="nav-link" href="#servicios">
@@ -131,6 +151,7 @@ const Home = () => {
         </div>
       </nav>
 
+      {/* Hero */}
       <section className="hero">
         <div className="hero-content reveal">
           <h1 className="hero-title">Excelencia en Salud Dermatológica</h1>
@@ -144,6 +165,7 @@ const Home = () => {
         <div className="hero-overlay"></div>
       </section>
 
+      {/* Sección de Servicios */}
       <section id="servicios" className="services-section">
         <div className="container">
           <h2 className="section-title reveal">Nuestros Servicios</h2>
@@ -169,15 +191,13 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Sección "Nosotros" */}
       <section id="nosotros" className="about-section">
         <div className="container reveal">
           <h2 className="section-title">Acerca de Nosotros</h2>
           <p className="about-text">
             En <strong>Pro-Piel</strong>, nuestro compromiso es brindar atención
-            médica especializada en el cuidado de la piel, con un enfoque
-            integral que combina la experiencia clínica con la tecnología más
-            avanzada. Con más de 10 años de trayectoria, nos apasiona velar por
-            tu salud dermatológica y la de toda tu familia.
+            médica especializada en el cuidado de la piel...
           </p>
         </div>
       </section>
@@ -209,13 +229,17 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Contacto */}
+      {/* Sección de Contacto */}
       <section id="contacto" className="contact-section">
         <div className="contact-form reveal">
           <h2 className="form-title">Programa tu Consulta</h2>
           <form>
             <div className="input-group">
-              <input type="text" placeholder="Nombre completo" className="form-input" />
+              <input
+                type="text"
+                placeholder="Nombre completo"
+                className="form-input"
+              />
             </div>
             <div className="input-group">
               <input type="tel" placeholder="Teléfono" className="form-input" />
@@ -283,6 +307,7 @@ const Home = () => {
         </div>
       </footer>
 
+      {/* Modal de Servicios */}
       {activeService && (
         <div
           className={`service-modal ${closing ? "closing" : ""}`}
@@ -305,6 +330,6 @@ const Home = () => {
       )}
     </div>
   );
-};
+}
 
 export default Home;

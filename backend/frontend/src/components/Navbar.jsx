@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getCurrentUser, logout } from "../services/authService";
 import { FiLogOut } from "react-icons/fi";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,6 +11,9 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = getCurrentUser();
+
+  // Estado para mostrar/ocultar el menú en pantallas pequeñas
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (location.state?.fromLogin) {
@@ -27,6 +30,11 @@ const Navbar = () => {
     }
   }, [location, navigate]);
 
+  // Cerrar menú si el usuario hace clic en algún link o en el botón de logout
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
   const handleLogout = () => {
     toast.info(
       <div
@@ -41,7 +49,14 @@ const Navbar = () => {
           fontFamily: "Arial, sans-serif",
         }}
       >
-        <p style={{ fontSize: "16px", fontWeight: "600", color: "#333", marginBottom: "12px" }}>
+        <p
+          style={{
+            fontSize: "16px",
+            fontWeight: "600",
+            color: "#333",
+            marginBottom: "12px",
+          }}
+        >
           ¿Seguro que deseas cerrar sesión?
         </p>
         <div
@@ -105,8 +120,7 @@ const Navbar = () => {
       }
     );
   };
-  
-  
+
   const renderNavLinks = () => {
     if (!user) return null;
     const commonStyles = "hover-underline mx-3 px-2 py-1";
@@ -114,22 +128,40 @@ const Navbar = () => {
       case "ADMIN":
         return (
           <>
-            <Link className={commonStyles} to="/dashboard/admin">Dashboard</Link>
-            <Link className={commonStyles} to="/admin/usuarios">Usuarios</Link>
-            <Link className={commonStyles} to="/admin/reportes">Reportes</Link>
+            <Link onClick={closeMenu} className={commonStyles} to="/dashboard/admin">
+              Dashboard
+            </Link>
+            <Link onClick={closeMenu} className={commonStyles} to="/admin/usuarios">
+              Usuarios
+            </Link>
+            <Link onClick={closeMenu} className={commonStyles} to="/admin/reportes">
+              Reportes
+            </Link>
           </>
         );
       case "PACIENTE":
         return (
           <>
-            <Link className={commonStyles} to="/dashboard/paciente">Mis Citas</Link>
-            <Link className={commonStyles} to="/citas">Agendar Cita</Link>
-            <Link className={commonStyles} to="/paciente/pagos">Pagos</Link>
-            <Link className={commonStyles} to="/paciente/historial">Historial</Link>
+            <Link onClick={closeMenu} className={commonStyles} to="/dashboard/paciente">
+              Mis Citas
+            </Link>
+            <Link onClick={closeMenu} className={commonStyles} to="/citas">
+              Agendar Cita
+            </Link>
+            <Link onClick={closeMenu} className={commonStyles} to="/paciente/pagos">
+              Pagos
+            </Link>
+            <Link onClick={closeMenu} className={commonStyles} to="/paciente/historial">
+              Historial
+            </Link>
           </>
         );
       default:
-        return <Link className={commonStyles} to="/dashboard">Inicio</Link>;
+        return (
+          <Link onClick={closeMenu} className={commonStyles} to="/dashboard">
+            Inicio
+          </Link>
+        );
     }
   };
 
@@ -137,14 +169,31 @@ const Navbar = () => {
     <nav className="navbar-glass">
       <ToastContainer limit={1} newestOnTop={false} closeButton={false} />
       <div className="nav-container">
-        <Link to="/" className="brand-container">
+        {/* El logo no redirige a ningún lado */}
+        <div className="brand-container">
           <img src={logo} alt="Logo" className="logo-hover-effect" />
           <span className="clinic-name">Pro-Piel</span>
-        </Link>
-        <div className="nav-links-container">
+        </div>
+
+        {/* Botón hamburguesa (visible en móvil) */}
+        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+          <span className="bar"></span>
+          <span className="bar"></span>
+          <span className="bar"></span>
+        </button>
+
+        {/* Menú de enlaces, se oculta/abre según `menuOpen` */}
+        <div className={`nav-links-container ${menuOpen ? "open" : ""}`}>
           <div className="nav-links">{renderNavLinks()}</div>
+
           {user && (
-            <button className="logout-button" onClick={handleLogout}>
+            <button
+              className="logout-button"
+              onClick={() => {
+                handleLogout();
+                closeMenu();
+              }}
+            >
               <FiLogOut className="logout-icon" />
               Cerrar Sesión
             </button>

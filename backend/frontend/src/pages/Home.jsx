@@ -21,7 +21,7 @@ const servicesData = [
     shortDesc:
       "Diagnóstico y tratamiento de enfermedades cutáneas con abordaje multidisciplinario",
     longDesc:
-      "Ofrecemos diagnóstico y tratamiento integral para una gran variedad de afecciones de la piel. Referencia: Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "Ofrecemos diagnóstico y tratamiento integral para una gran variedad de afecciones de la piel",
     image: dermatologia,
   },
   {
@@ -30,7 +30,7 @@ const servicesData = [
     shortDesc:
       "Tecnología de punta para detección temprana de alteraciones metabólicas",
     longDesc:
-      "Nuestro tamiz neonatal incluye un amplio espectro de pruebas para detectar a tiempo alteraciones congénitas. Referencia: Vestibulum ante ipsum primis in faucibus orci luctus.",
+      "Nuestro tamiz neonatal incluye un amplio espectro de pruebas para detectar a tiempo alteraciones congénitas.",
     image: tamiz,
   },
   {
@@ -39,7 +39,7 @@ const servicesData = [
     shortDesc:
       "Soluciones integrales para salud podológica y ortopedia especializada",
     longDesc:
-      "Contamos con servicios especializados para el cuidado de tus pies, garantizando la mayor precisión diagnóstica. Referencia: Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Contamos con servicios especializados para el cuidado de tus pies, garantizando la mayor precisión diagnóstica.",
     image: podologia,
   },
 ];

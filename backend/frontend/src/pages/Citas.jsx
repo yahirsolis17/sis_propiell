@@ -139,5 +139,4 @@ const Citas = () => {
     </>
   );
 };
-
 export default Citas;

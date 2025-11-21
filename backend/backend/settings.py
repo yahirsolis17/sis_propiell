@@ -90,7 +90,7 @@ DATABASES = {
         'USER': os.getenv('DB_USER', 'root'),            # Usuario
         'PASSWORD': os.getenv('DB_PASSWORD', 'HMjspSJDOigdFQSeCfmeBseKfeZFmcYp'),  # Contraseña
         'HOST': os.getenv('DB_HOST', 'interchange.proxy.rlwy.net'),  # Host público de Railway
-        'PORT': os.getenv('DB_PORT', '19331'),           # Puerto público de Railway
+        'PORT': os.getenv('DB_PORT', '18771'),           # Puerto público de Railway
     }
 }
 

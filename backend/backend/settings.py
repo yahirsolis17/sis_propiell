@@ -43,12 +43,12 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
-    "https://sis-propiell-yahirsolis17s-projects.vercel.app",
+    "https://sis-propiell-nsucnw029-yahirsolis17s-projects.vercel.app",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173", 
-    "https://sis-propiell-yahirsolis17s-projects.vercel.app",
+    "https://sis-propiell-nsucnw029-yahirsolis17s-projects.vercel.app",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -93,6 +93,7 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
     }
 }
+
 
 
 

@@ -11,12 +11,12 @@ import logo from "../assets/logo.png";
 import dermatologia from "../assets/dermatologia.jpg";
 import tamiz from "../assets/tamiz.jpg";
 import podologia from "../assets/podologia.jpg";
-import medicalVideo from "../components/media/as.mp4";
+import medicalVideo from "../assets/as.mp4";
 
 // Videos para modales
-import dermatologiaVideo from "../components/media/dermatologia.mp4";
-import tamizVideo from "../components/media/tamiz.mp4";
-import podologiaVideo from "../components/media/podologia.mp4";
+import dermatologiaVideo from "../assets/dermatologia.mp4";
+import tamizVideo from "../assets/tamiz.mp4";
+import podologiaVideo from "../assets/podologia.mp4";
 
 // Datos de servicios
 const servicesData = [

@@ -10,15 +10,16 @@ from .views import (
     VerifyAuthView, 
     TokenRefreshView, 
     PagoCreateAPI, 
-    HorarioCreateAPI
+    HorarioCreateAPI,
+    TamizResultadosAPI,
 )
 
 urlpatterns = [
     path('auth/refresh/', TokenRefreshView.as_view(), name="token_refresh"),
     path('auth/verify/', VerifyAuthView.as_view(), name='verify-auth'),
     path('auth/login/', LoginView.as_view(), name="login"),
-    path('auth/register/', RegisterView.as_view(), name="register"),  # <-- Agrega esta línea
     path('auth/logout/', LogoutView.as_view(), name="logout"),
+    path('auth/register/', RegisterView.as_view(), name="register"),  # <-- Agrega esta línea
     path('create-user/', AdminUserView.as_view(), name="admin-create-user"),
     path('dashboard/<str:role>/', DashboardView.as_view(), name="dashboard"),
     path('especialidades/', EspecialidadListAPI.as_view(), name='especialidades-list'),
@@ -30,4 +31,5 @@ urlpatterns = [
     path('pagos/', PagoListAPI.as_view(), name='pagos-list'),
     path('pagos/create/', PagoCreateAPI.as_view(), name='pagos-create'),
     path('horarios/', HorarioCreateAPI.as_view(), name='horarios-create'),
+    path('resultados/', TamizResultadosAPI.as_view(), name='tamiz-resultados'),
 ]

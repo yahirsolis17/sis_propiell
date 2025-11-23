@@ -1,244 +1,194 @@
-/* PaymentPage.css */
+/* src/styles/paymentpage.css */
+
+/* Variables de estilo (idénticas a las usadas en citas.css y dashboard.css) */
 :root {
-  --primary: #0A6E7D;
-  --secondary: #1496B7;
-  --accent: #FF7F50;
-  --text-dark: #2C3E50;
-  --glass-bg: rgba(255, 255, 255, 0.95);
-  --nav-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  --error-red: #d32f2f;
-  --warning-yellow: #fff8e1;
-  --border-radius: 12px;
+  --primary: #0a6e7d;
+  --secondary: #1496b7;
+  --accent: #ff7f50;
+  --text-dark: #2c3e50;
+  --text-light: #f8f9fa;
+  --glass-bg: rgba(255, 255, 255, 0.98);
+  --border-radius: 1rem;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --base-font-size: 14px;
 }
 
-/* Estructura principal */
-.citas-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 100px 1rem 2rem;
+/* Contenedor principal para PaymentPage */
+.paymentpage-container {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #f8f9fa 0%, #e9ecef 100%);
+  font-family: "Poppins", sans-serif;
+  padding-top: 150px; /* Ajusta según la altura de tu Navbar */
+  font-size: var(--base-font-size);
+  position: relative;
 }
 
-.cita-form-card {
+/* Tarjeta estilo “glass” para el formulario de pago */
+.payment-form-card {
   background: var(--glass-bg);
   border-radius: var(--border-radius);
-  padding: 2rem;
-  box-shadow: var(--nav-shadow);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  margin-top: 40px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 24px rgba(10, 110, 125, 0.08);
+  margin: 3.5rem auto;
+  max-width: 700px;
+  transition: var(--transition);
 }
 
-.citas-title {
-  color: var(--primary);
-  margin-bottom: 1.5rem;
+.payment-form-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 28px rgba(10, 110, 125, 0.12);
+}
+
+/* Título de la tarjeta */
+.payment-form-card h2 {
+  font-size: 1.4rem;
+  margin-bottom: 1rem;
   text-align: center;
-  font-size: 1.8rem;
-  font-weight: 600;
 }
 
-/* Formulario */
-.cita-form {
+/* Estilos del formulario */
+.payment-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
-.mb-3 {
-  margin-bottom: 1rem;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: var(--text-dark);
+/* Etiquetas y controles */
+.payment-form .form-label {
   font-weight: 500;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
 }
 
-.form-control {
-  width: 100%;
-  padding: 0.8rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border 0.3s ease;
+.payment-form .form-control {
+  padding: 0.6rem 0.9rem;
+  border-radius: 0.5rem;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  background: #fff;
+  transition: var(--transition);
+  font-size: 0.95rem;
 }
 
-.form-control:focus {
+.payment-form .form-control:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(10, 110, 125, 0.2);
+  box-shadow: 0 0 0 3px rgba(10, 110, 125, 0.15);
 }
 
-/* Botones */
+/* Botón para subir comprobante */
 .btn-payment-submit {
   background: linear-gradient(45deg, var(--primary), var(--secondary));
-  color: white;
   border: none;
-  padding: 0.8rem;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 1rem;
+  padding: 0.7rem 1.2rem;
+  border-radius: 1.2rem;
+  color: white;
+  transition: var(--transition);
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  align-self: center;
 }
 
 .btn-payment-submit:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(10, 110, 125, 0.3);
-}
-
-.btn-payment-submit:disabled {
-  background: #ccc;
-  transform: none;
-  box-shadow: none;
-  cursor: not-allowed;
+  box-shadow: 0 4px 12px rgba(10, 110, 125, 0.2);
 }
 
 /* Alertas */
-.alert-danger {
-  color: var(--error-red);
-  background-color: #fde8e8;
+.alert {
   padding: 0.8rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  border-left: 4px solid var(--error-red);
+  border-radius: 0.5rem;
+  margin-bottom: 0.8rem;
   font-size: 0.9rem;
 }
 
-/* Modal */
-.payment-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
+.alert-danger {
+  background: rgba(255, 0, 0, 0.1);
+  color: #e60000;
 }
 
-.payment-modal-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-}
-
-.payment-modal-content {
-  position: relative;
-  background: var(--glass-bg);
-  padding: 2rem;
-  border-radius: var(--border-radius);
-  width: 90%;
-  max-width: 400px;
-  box-shadow: var(--nav-shadow);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  z-index: 2001;
-  animation: modalFadeIn 0.3s ease-out;
-}
-
-.close-modal {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-  color: #666;
-  transition: color 0.2s;
-  padding: 0.5rem;
-}
-
-.close-modal:hover {
-  color: var(--primary);
-}
-
-.modal-title {
-  color: var(--primary);
-  margin-bottom: 1rem;
-  font-size: 1.4rem;
-  text-align: center;
-  font-weight: 600;
-}
-
-.modal-text {
+/* Puedes suavizar info */
+.alert-info.payment-copy-alert {
+  background: rgba(20, 150, 183, 0.08);
   color: var(--text-dark);
-  margin-bottom: 1.5rem;
-  text-align: center;
-  line-height: 1.5;
+  border: 1px dashed rgba(20, 150, 183, 0.4);
 }
 
-.download-notice {
-  background-color: var(--warning-yellow);
-  padding: 1rem;
-  border-radius: 8px;
-  margin: 1.5rem 0;
-  border-left: 4px solid var(--accent);
+/* Utilidad de margen */
+.mb-3 {
+  margin-bottom: 0.8rem !important;
 }
 
-.notice-text {
-  color: var(--error-red);
-  font-weight: bold;
-  margin: 0;
-  font-size: 0.95rem;
-  text-align: center;
-  line-height: 1.4;
+/* 🔹 Bloque de información bancaria */
+.payment-info {
+  background: #f8f9fa;
+  border-radius: 0.75rem;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 0 0 1px rgba(10, 110, 125, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-.modal-download-btn {
-  display: block;
-  width: 100%;
-  padding: 0.8rem;
-  background: linear-gradient(45deg, var(--primary), var(--secondary));
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 1rem;
+.payment-info-text {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
 }
 
-.modal-download-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(10, 110, 125, 0.3);
+.payment-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.4rem;
+  flex-wrap: wrap;
 }
 
-/* Animaciones */
-@keyframes modalFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.payment-label {
+  font-weight: 600;
+  margin-right: 0.25rem;
+  color: var(--text-dark);
+}
+
+.payment-value {
+  font-family: "Fira Code", monospace;
+  letter-spacing: 0.03em;
+  word-break: break-all;
+  color: #000;
+}
+
+.payment-info-warning {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-top: 0.4rem;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .citas-container {
-    padding: 80px 1rem 2rem;
+  .payment-form-card {
+    padding: 1rem;
+    margin: 1rem;
   }
-  
-  .cita-form-card {
-    padding: 1.5rem;
+
+  .payment-form-card h2 {
+    font-size: 1.2rem;
   }
-  
-  .citas-title {
-    font-size: 1.5rem;
+
+  .payment-info-row {
+    align-items: flex-start;
   }
-  
-  .modal-content {
-    padding: 1.5rem;
+}
+
+@media (max-width: 480px) {
+  .payment-form-card {
+    padding: 0.8rem;
+    margin: 0.5rem;
+  }
+
+  .payment-form-card h2 {
+    font-size: 1.1rem;
+  }
+
+  .btn-payment-submit {
+    font-size: 0.85rem;
   }
 }

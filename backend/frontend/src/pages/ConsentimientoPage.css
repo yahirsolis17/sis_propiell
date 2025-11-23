@@ -1,0 +1,293 @@
+/* src/pages/ConsentimientoPage.css */
+
+/* Variables de estilo (mismas que citas / PaymentPage) */
+:root {
+  --primary: #0a6e7d;
+  --secondary: #1496b7;
+  --accent: #ff7f50;
+  --text-dark: #2c3e50;
+  --text-light: #f8f9fa;
+  --glass-bg: rgba(255, 255, 255, 0.98);
+  --border-radius: 1rem;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --base-font-size: 14px;
+}
+
+/* Fondo general */
+.cons-page-container {
+  min-height: 100vh;
+  background: linear-gradient(160deg, #f8f9fa 0%, #e9ecef 100%);
+  font-family: "Poppins", sans-serif;
+  font-size: var(--base-font-size);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Tarjeta estilo “documento” */
+.cons-card {
+  background: var(--glass-bg);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 24px rgba(10, 110, 125, 0.08);
+  margin: 3rem auto;
+  padding: 2.5rem 3rem;
+  max-width: 900px;
+  width: 100%;
+  transition: var(--transition);
+}
+
+.cons-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 28px rgba(10, 110, 125, 0.12);
+}
+
+.cons-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  color: var(--text-dark);
+}
+
+/* HEADER: logos + títulos */
+.cons-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 1.3rem;
+  margin-bottom: 1.3rem;
+}
+
+.cons-header-logos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.cons-logo-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--primary);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cons-logo-main {
+  width: 90px;
+  height: 90px;
+}
+
+.cons-logo-main img,
+.cons-logo-secondary img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cons-header-text {
+  flex: 1;
+  text-align: center;
+}
+
+.cons-clinic-name {
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.1rem;
+}
+
+.cons-clinic-slogan {
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--primary);
+  margin-bottom: 0.7rem;
+}
+
+.cons-main-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.cons-subtitle {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* CUERPO DEL DOCUMENTO */
+.cons-body {
+  line-height: 1.6;
+}
+
+.cons-paragraph {
+  text-align: justify;
+  margin-bottom: 0.9rem;
+  font-size: 0.95rem;
+}
+
+/* Campos subrayados tipo PDF */
+.cons-field-underline {
+  display: inline-block;
+  min-width: 80px;
+  border-bottom: 1px solid #000;
+  padding: 0 4px 2px;
+  font-weight: 500;
+}
+
+.cons-field-empty {
+  min-width: 120px;
+}
+
+/* Bloque de líneas para médico */
+.cons-lines-block {
+  margin-top: 1.2rem;
+  margin-bottom: 1.4rem;
+  font-size: 0.93rem;
+}
+
+.cons-line-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.cons-line-label {
+  white-space: nowrap;
+}
+
+.cons-line {
+  flex: 1;
+  border-bottom: 1px solid #000;
+  height: 1.1rem;
+}
+
+/* Testigos */
+.cons-witnesses {
+  margin-top: 0.5rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.93rem;
+}
+
+.cons-witness-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+
+.cons-input-line {
+  flex: 1;
+  border: none;
+  border-bottom: 1px solid #000;
+  background: transparent;
+  padding: 2px 4px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.cons-input-line:focus {
+  border-bottom-color: var(--primary);
+}
+
+/* Lugar / fecha / hora */
+.cons-footer-meta {
+  margin-bottom: 1.4rem;
+  font-size: 0.93rem;
+}
+
+.cons-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cons-meta-spacer {
+  margin-left: 0.6rem;
+}
+
+/* FIRMA */
+.firma-section {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  padding-top: 1rem;
+}
+
+/* NUEVO: línea “Nombre y firma del paciente: _________” */
+.firma-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.firma-help {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.7rem;
+}
+
+.signature-wrapper {
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+.signature-canvas {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+}
+
+.signature-actions {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 0.8rem;
+  justify-content: flex-end;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cons-card {
+    padding: 1.4rem 1.2rem;
+    margin: 1.2rem;
+  }
+
+  .cons-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cons-header-logos {
+    flex-direction: row;
+  }
+
+  .signature-canvas {
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cons-card {
+    padding: 1rem 0.9rem;
+    margin: 0.8rem;
+  }
+
+  .cons-clinic-name {
+    font-size: 1.4rem;
+  }
+
+  .cons-main-title {
+    font-size: 1.05rem;
+  }
+
+  .cons-paragraph {
+    font-size: 0.9rem;
+  }
+}

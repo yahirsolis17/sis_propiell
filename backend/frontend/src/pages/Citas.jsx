@@ -1,15 +1,18 @@
 // src/pages/Citas.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
 import { getCurrentUser } from "../services/authService";
+
+// Componentes del formulario de citas
 import CalendarPicker from "../components/citas/CalendarPicker";
 import TimeSlotSelector from "../components/citas/TimeSlotSelector";
 import EspecialidadSelector from "../components/citas/EspecialidadSelector";
-import "./Citas.css";
+
+import { createCita } from "../services/citasService";
+
+import "./citas.css";
 
 const Citas = () => {
   const [especialidades, setEspecialidades] = useState([]);
@@ -23,10 +26,12 @@ const Citas = () => {
   const user = getCurrentUser();
   const navigate = useNavigate();
 
+  // 1) Cargar especialidades
   useEffect(() => {
     const fetchEspecialidades = async () => {
       try {
         const res = await api.get("especialidades/");
+        console.log("Especialidades obtenidas:", res.data);
         setEspecialidades(res.data);
       } catch (err) {
         console.error("Error cargando especialidades:", err);
@@ -36,6 +41,7 @@ const Citas = () => {
     fetchEspecialidades();
   }, []);
 
+  // 2) Cargar horarios disponibles al cambiar especialidad o fecha
   useEffect(() => {
     const fetchHorarios = async () => {
       if (!selectedEspecialidad || !selectedDate) return;
@@ -44,55 +50,57 @@ const Citas = () => {
           especialidad: selectedEspecialidad,
           fecha: selectedDate.toISOString().split("T")[0],
         };
+        console.log("Parámetros enviados:", params);
         const res = await api.get("horarios/disponibles/", { params });
+        console.log("Respuesta de horarios:", res.data);
         setHorarios(res.data.horas_disponibles || []);
       } catch (err) {
-        console.error("Error en la solicitud de horarios:", err.response || err);
+        console.error(
+          "Error en la solicitud de horarios:",
+          err.response || err
+        );
         setError("Error cargando horarios disponibles");
       }
     };
     fetchHorarios();
   }, [selectedEspecialidad, selectedDate]);
 
+  // 3) Manejar el envío del formulario de cita
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
+    if (!selectedEspecialidad || !selectedDate || !selectedTime) {
+      setError("Selecciona especialidad, fecha y horario.");
+      return;
+    }
+
     setLoading(true);
     try {
-      const formData = new FormData();
-      formData.append("especialidad", selectedEspecialidad);
-      // Corrección de backticks al armar fecha+hora
-      formData.append(
-        "fecha_hora",
-        `${selectedDate.toISOString().split("T")[0]}T${selectedTime}`
-      );
-      formData.append("tipo", "I");
+      const fechaISO = selectedDate.toISOString().split("T")[0];
+      const payload = {
+        especialidad: selectedEspecialidad,
+        fecha_hora: `${fechaISO}T${selectedTime}`,
+        tipo: "I", // Cita inicial
+      };
 
-      const response = await api.post("citas/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      
-      if (response.status === 201) {
-        toast.success("Cita pendiente, suba su comprobante de pago", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          theme: "light",
-        });
+      console.log("Enviando cita con payload:", payload);
 
-        const newCitaId = response.data.id;
-        // Corrección para navegar con backticks
-        setTimeout(() => {
-          navigate(`/pago/${newCitaId}`);
-        }, 3000);
+      const nuevaCita = await createCita(payload);
+      console.log("Cita creada:", nuevaCita);
+
+      // Redirigir al usuario a PaymentPage para la subida del comprobante
+      if (nuevaCita?.id) {
+        navigate(`/pago/${nuevaCita.id}`);
+      } else {
+        setError("No se pudo obtener el identificador de la cita creada.");
       }
     } catch (err) {
       console.error("Error al crear la cita:", err.response || err);
       setError(
         err.response?.data?.error ||
-          "Error al crear la cita. Verifica campos e intenta de nuevo."
+          err.response?.data?.detail ||
+          "Error al crear la cita. Verifica los campos e intenta de nuevo."
       );
     } finally {
       setLoading(false);
@@ -102,41 +110,40 @@ const Citas = () => {
   return (
     <>
       <Navbar />
-      <ToastContainer />
-      <div className="citas-page-container">
-        <div className="cita-form-wrapper">
-          <div className="cita-form-card">
-            <h2 className="citas-title">Agendar Nueva Cita</h2>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <form onSubmit={handleSubmit} className="cita-form">
-              <EspecialidadSelector
-                especialidades={especialidades}
-                selectedEspecialidad={selectedEspecialidad}
-                onChange={setSelectedEspecialidad}
-              />
-              <CalendarPicker
-                selectedDate={selectedDate}
-                onDateChange={setSelectedDate}
-                disabled={!selectedEspecialidad}
-              />
-              <TimeSlotSelector
-                horarios={horarios}
-                selectedTime={selectedTime}
-                onTimeChange={setSelectedTime}
-                disabled={!selectedDate}
-              />
-              <button
-                type="submit"
-                className="btn-citas-confirm"
-                disabled={loading || !selectedTime}
-              >
-                {loading ? "Agendando..." : "Confirmar Cita"}
-              </button>
-            </form>
-          </div>
+      <div className="citas-page-container" style={{ paddingTop: "100px" }}>
+        <div className="cita-form-card">
+          <h2 className="citas-title">Agendar Nueva Cita</h2>
+          {error && <div className="alert alert-danger">{error}</div>}
+          <form onSubmit={handleSubmit} className="cita-form">
+            <EspecialidadSelector
+              especialidades={especialidades}
+              selectedEspecialidad={selectedEspecialidad}
+              onChange={setSelectedEspecialidad}
+            />
+            <CalendarPicker
+              selectedDate={selectedDate}
+              onDateChange={setSelectedDate}
+              disabled={!selectedEspecialidad}
+            />
+            <TimeSlotSelector
+              horarios={horarios}
+              selectedTime={selectedTime}
+              onTimeChange={setSelectedTime}
+              disabled={!selectedDate}
+            />
+
+            <button
+              type="submit"
+              className="btn-citas-confirm"
+              disabled={loading || !selectedTime}
+            >
+              {loading ? "Agendando..." : "Confirmar Cita"}
+            </button>
+          </form>
         </div>
       </div>
     </>
   );
 };
+
 export default Citas;

@@ -9,16 +9,17 @@ def validate_phone_length(value):
     if len(value) < 10:
         raise ValidationError("El teléfono debe tener al menos 10 dígitos")
 
+
 # Manager personalizado para el modelo User
 class UserManager(BaseUserManager):
     def create_user(self, telefono, password=None, **extra_fields):
         if not telefono:
             raise ValueError("El número de teléfono es obligatorio")
-        
+
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
-        
+
         user = self.model(telefono=telefono, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -30,6 +31,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('role', 'ADMIN')
         return self.create_user(telefono, password, **extra_fields)
 
+
 # Modelo User personalizado
 class User(AbstractBaseUser, PermissionsMixin):
     ROLE_CHOICES = [
@@ -39,18 +41,21 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('TAMIZ', 'Tamiz'),
         ('ADMIN', 'Administrador'),
     ]
-    
+
     email = None
     username = None
 
     nombre = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100)
     edad = models.IntegerField()
-    sexo = models.CharField(max_length=10, choices=[
-        ('Masculino', 'Masculino'),
-        ('Femenino', 'Femenino'),
-        ('Otro', 'Otro')
-    ])
+    sexo = models.CharField(
+        max_length=10,
+        choices=[
+            ('Masculino', 'Masculino'),
+            ('Femenino', 'Femenino'),
+            ('Otro', 'Otro')
+        ]
+    )
     peso = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     telefono = models.CharField(max_length=15, unique=True, validators=[validate_phone_length])
     role = models.CharField(max_length=15, choices=ROLE_CHOICES, default='PACIENTE')
@@ -70,17 +75,23 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return f"{self.nombre} {self.apellidos} - {self.role}"
 
+
 # Modelo Especialidad
 class Especialidad(models.Model):
-    nombre = models.CharField(max_length=50, unique=True, choices=[
-        ('DERMATOLOGIA', 'Dermatología'),
-        ('PODOLOGIA', 'Podología'),
-        ('TAMIZ', 'Tamiz'),
-    ])
+    nombre = models.CharField(
+        max_length=50,
+        unique=True,
+        choices=[
+            ('DERMATOLOGIA', 'Dermatología'),
+            ('PODOLOGIA', 'Podología'),
+            ('TAMIZ', 'Tamiz'),
+        ]
+    )
     descripcion = models.TextField(blank=True)
 
     def __str__(self):
         return self.nombre
+
 
 class Horario(models.Model):
     DIAS_SEMANA = [
@@ -99,7 +110,7 @@ class Horario(models.Model):
     )
     especialidad = models.ForeignKey('Especialidad', on_delete=models.CASCADE)
 
-    dia_semana = models.IntegerField(choices=DIAS_SEMANA)  # 🔥 Nuevo sistema de días
+    dia_semana = models.IntegerField(choices=DIAS_SEMANA)
     hora_inicio = models.TimeField()
     hora_fin = models.TimeField()
 
@@ -108,6 +119,7 @@ class Horario(models.Model):
 
     def __str__(self):
         return f"{self.doctor.nombre} - {dict(self.DIAS_SEMANA)[self.dia_semana]} {self.hora_inicio} - {self.hora_fin}"
+
 
 class Pago(models.Model):
     paciente = models.ForeignKey(
@@ -124,8 +136,8 @@ class Pago(models.Model):
     pagado = models.DecimalField(max_digits=10, decimal_places=2)
     fecha = models.DateField(auto_now_add=True)
     verificado = models.BooleanField(default=False)
-    comprobante = models.ImageField(upload_to='users/comprobantes/')  # Renombrado desde 'archivo'
-    
+    comprobante = models.ImageField(upload_to='users/comprobantes/')
+
     def saldo_pendiente(self):
         return self.total - self.pagado
 
@@ -139,7 +151,7 @@ class Cita(models.Model):
         ('C', 'Confirmada'),
         ('X', 'Cancelada')
     )
-    
+
     paciente = models.ForeignKey(
         'User',
         related_name='citas_paciente',
@@ -154,11 +166,17 @@ class Cita(models.Model):
     )
     especialidad = models.ForeignKey('Especialidad', on_delete=models.CASCADE)
     fecha_hora = models.DateTimeField()
-    tipo = models.CharField(max_length=1, choices=[('I', 'Inicial'), ('S', 'Subsecuente')], default='I')
+    tipo = models.CharField(
+        max_length=1,
+        choices=[('I', 'Inicial'), ('S', 'Subsecuente')],
+        default='I'
+    )
     estado = models.CharField(max_length=1, choices=ESTADOS, default='P')
-    
-    # Eliminado el campo 'comprobante'. Ahora el comprobante se gestiona a través de Pago.
+
     tratamiento = models.ForeignKey('Tratamiento', null=True, blank=True, on_delete=models.SET_NULL)
+
+    # 🔥 Nuevo: indica si el consentimiento informado ya fue llenado
+    consentimiento_completado = models.BooleanField(default=False)
 
     class Meta:
         indexes = [
@@ -167,6 +185,41 @@ class Cita(models.Model):
 
     def __str__(self):
         return f"Cita {self.id} - {self.paciente.nombre} con {self.doctor.nombre}"
+
+
+# 🔥 Nuevo modelo Consentimiento Informado
+class Consentimiento(models.Model):
+    cita = models.OneToOneField(
+        Cita,
+        on_delete=models.CASCADE,
+        related_name='consentimiento'
+    )
+
+    diagnostico_principal = models.TextField(blank=True)
+    procedimiento_propuesto = models.TextField(blank=True)
+    beneficios = models.TextField(blank=True)
+    riesgos = models.TextField(blank=True)
+    alternativas = models.TextField(blank=True)
+
+    testigo1_nombre = models.CharField(max_length=255, blank=True)
+    testigo2_nombre = models.CharField(max_length=255, blank=True)
+
+    lugar = models.CharField(max_length=255, default="Zihuatanejo, Guerrero")
+    fecha = models.DateField()
+    hora = models.TimeField()
+
+    firma_paciente = models.ImageField(
+        upload_to='users/firmas/',
+        null=True,
+        blank=True
+    )
+
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Consentimiento cita {self.cita_id} - {self.cita.paciente.nombre}"
+
 
 # Modelo Tratamiento
 class Tratamiento(models.Model):
@@ -183,9 +236,9 @@ class Tratamiento(models.Model):
     frecuencia_dias = models.PositiveIntegerField(default=15)
     fecha_inicio = models.DateTimeField(auto_now_add=True)
     activo = models.BooleanField(default=True)
-    
+
     def proxima_cita(self):
         return self.fecha_inicio + timedelta(days=self.frecuencia_dias)
-    
+
     def __str__(self):
         return f"Tratamiento {self.id} - {self.paciente.nombre}"

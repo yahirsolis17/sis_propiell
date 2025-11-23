@@ -5,6 +5,12 @@
   --text-dark: #2C3E50;
   --glass-bg: rgba(255, 255, 255, 0.95);
   --nav-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  --nav-padding-y: 0.65rem;
+  --nav-padding-x: 1.5rem;
+  --nav-logo-size: 52px;
+  --nav-title-size: 1.45rem;
+  --nav-gradient: linear-gradient(135deg, rgba(10, 110, 125, 0.18), rgba(20, 150, 183, 0.12));
+  /* Ajusta estos --nav-* si quieres experimentar con altura, logo o degradado */
 }
 
 /* Barra principal “glass” */
@@ -13,7 +19,7 @@
   top: 0;
   width: 100%;
   z-index: 1000;
-  background: var(--glass-bg);
+  background: var(--nav-gradient), var(--glass-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: var(--nav-shadow);
@@ -23,7 +29,7 @@
 .nav-container {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: var(--nav-padding-y) var(--nav-padding-x);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -33,7 +39,7 @@
 .brand-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
   transition: transform 0.3s ease;
   text-decoration: none !important;
 }
@@ -43,7 +49,7 @@
 }
 
 .logo-hover-effect {
-  width: 60px;
+  width: var(--nav-logo-size);
   transition: all 0.3s ease;
   filter: drop-shadow(0 2px 4px rgba(10, 110, 125, 0.2));
 }
@@ -52,7 +58,7 @@
 }
 
 .clinic-name {
-  font-size: 1.8rem;
+  font-size: var(--nav-title-size);
   font-weight: 700;
   background: linear-gradient(45deg, var(--primary), var(--secondary));
   -webkit-background-clip: text;
@@ -65,13 +71,13 @@
 .nav-links-container {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.25rem;
   transition: all 0.3s ease;
 }
 
 .nav-links {
   display: flex;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 
 /* Subrayado naranja al hover */
@@ -79,7 +85,7 @@
   position: relative;
   color: var(--text-dark);
   font-weight: 500;
-  padding: 0.5rem 0;
+  padding: 0.35rem 0;
   transition: all 0.3s ease;
   text-decoration: none !important;
 }
@@ -104,8 +110,8 @@
 .logout-button {
   background: linear-gradient(45deg, var(--primary), var(--secondary));
   border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 2rem;
+  padding: 0.55rem 1.2rem;
+  border-radius: 1.6rem;
   color: white;
   display: flex;
   align-items: center;
@@ -169,7 +175,7 @@
   /* Por defecto, ocultamos los enlaces */
   .nav-links-container {
     position: absolute;
-    top: 70px; /* debajo de la navbar */
+    top: calc(var(--nav-logo-size) + (var(--nav-padding-y) * 2) + 6px); /* debajo de la navbar */
     right: 0;
     width: 200px;
     display: none;

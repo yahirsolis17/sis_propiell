@@ -80,6 +80,7 @@
 }
 
 /* Título del formulario */
+.citas-title,
 .cita-form-card h2 {
   font-size: 1.6rem;
   margin-bottom: 1.8rem;

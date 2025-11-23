@@ -1,83 +1,55 @@
-// src/components/dashboards/PacienteDashboard.jsx
-import React, { useState, useEffect } from "react";
-import { animated } from "@react-spring/web";
-import { useNavigate } from "react-router-dom";
-
-import { getCurrentUser } from "../../services/authService";
-import {
-  getCitasByPaciente,
-  getPagosByPaciente,
-} from "../../services/citasService";
+// src/pages/PacienteDashboard.jsx
+import React, { useState, useEffect } from 'react';
+import { animated } from '@react-spring/web';
+import { useNavigate, useLocation } from 'react-router-dom';
+import api from '../../services/api';
+import { getCurrentUser } from '../../services/authService';
+import 'react-toastify/dist/ReactToastify.css'; // Se mantiene solo si efectivamente usas esta parte
 
 const PacienteDashboard = ({ cardAnimation }) => {
-  const navigate = useNavigate();
-
-  // 🔒 Congelamos el usuario una sola vez, para que la referencia no cambie en cada render
-  const [user] = useState(() => getCurrentUser());
-
+  const location = useLocation();
   const [citas, setCitas] = useState([]);
   const [pagos, setPagos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
+  const user = getCurrentUser();
+  const navigate = useNavigate();
 
+  // Efecto para cargar los datos del dashboard
   useEffect(() => {
-    if (!user?.id) {
-      setLoading(false);
-      return;
-    }
-
-    let isMounted = true;
     const controller = new AbortController();
 
     const fetchData = async () => {
       try {
-        setLoading(true);
-        setError("");
-
-        const [citasData, pagosData] = await Promise.all([
-          getCitasByPaciente(user.id, controller.signal),
-          getPagosByPaciente(user.id, controller.signal),
+        // Corrección de sintaxis en el uso de las rutas:
+        const [resCitas, resPagos] = await Promise.all([
+          api.get(`/citas/?paciente=${user.id}`, { signal: controller.signal }),
+          api.get(`/pagos/?paciente=${user.id}`, { signal: controller.signal })
         ]);
-
-        if (!isMounted) return;
-        setCitas(citasData);
-        setPagos(pagosData);
+        setCitas(resCitas.data);
+        setPagos(resPagos.data);
       } catch (err) {
-        if (!isMounted || controller.signal.aborted) return;
-
-        console.error("Error cargando datos del paciente:", err);
-
-        if (err.response?.status === 401) {
-          localStorage.removeItem("user");
-          navigate("/login", { replace: true });
-          return;
+        if (!controller.signal.aborted) {
+          if (err.response?.status === 401) navigate('/login');
+          setError('Error cargando datos');
         }
-
-        setError(
-          "Error cargando tus citas y pagos. Intenta de nuevo en unos momentos."
-        );
       } finally {
-        if (isMounted) setLoading(false);
+        setLoading(false);
       }
     };
 
-    fetchData();
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-    // 👇 Solo dependemos del ID (valor primitivo), no del objeto user completo
-  }, [user?.id, navigate]);
+    if (user?.id) fetchData();
+    return () => controller.abort();
+  }, [user, navigate]);
 
   const formatoFecha = (fechaStr) => {
     const fecha = new Date(fechaStr);
-    return fecha.toLocaleString("es-MX", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+    return fecha.toLocaleString('es-MX', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -89,7 +61,6 @@ const PacienteDashboard = ({ cardAnimation }) => {
         <div className="error-message text-danger">{error}</div>
       ) : (
         <>
-          {/* MIS CITAS */}
           <section className="mb-4">
             <h3 className="mb-3">Mis Próximas Citas</h3>
             {citas.length ? (
@@ -101,41 +72,15 @@ const PacienteDashboard = ({ cardAnimation }) => {
                       <th scope="col">Estado</th>
                       <th scope="col">Doctor</th>
                       <th scope="col">Fecha y Hora</th>
-                      <th scope="col">Consentimiento</th>
                     </tr>
                   </thead>
                   <tbody>
                     {citas.map((cita) => (
                       <tr key={cita.id}>
-                        <td>{cita.especialidad?.nombre || "Sin especialidad"}</td>
+                        <td>{cita.especialidad?.nombre || 'Sin especialidad'}</td>
                         <td>{cita.estado}</td>
-                        <td>Dr. {cita.doctor?.nombre || "N/A"}</td>
+                        <td>Dr. {cita.doctor?.nombre || 'N/A'}</td>
                         <td>{formatoFecha(cita.fecha_hora)}</td>
-                        <td>
-                          {cita.estado === "Confirmada" ? (
-                            cita.consentimiento_completado ? (
-                              <span className="badge bg-success">
-                                Completado
-                              </span>
-                            ) : (
-                              <button
-                                type="button"
-                                className="btn btn-sm btn-outline-primary"
-                                onClick={() =>
-                                  navigate(
-                                    `/citas/${cita.id}/consentimiento`
-                                  )
-                                }
-                              >
-                                Llenar consentimiento
-                              </button>
-                            )
-                          ) : (
-                            <span className="text-muted small">
-                              No disponible
-                            </span>
-                          )}
-                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -146,7 +91,6 @@ const PacienteDashboard = ({ cardAnimation }) => {
             )}
           </section>
 
-          {/* PAGOS */}
           <section>
             <h3 className="mb-3">Estado de Pagos</h3>
             {pagos.length ? (
@@ -165,12 +109,8 @@ const PacienteDashboard = ({ cardAnimation }) => {
                       <tr key={pago.id}>
                         <td>${pago.total}</td>
                         <td>${pago.pagado}</td>
-                        <td>{pago.verificado ? "Sí" : "No"}</td>
-                        <td>
-                          {pago.fecha
-                            ? new Date(pago.fecha).toLocaleString("es-MX")
-                            : "-"}
-                        </td>
+                        <td>{pago.verificado ? 'Sí' : 'No'}</td>
+                        <td>{new Date(pago.fecha).toLocaleString('es-MX')}</td>
                       </tr>
                     ))}
                   </tbody>

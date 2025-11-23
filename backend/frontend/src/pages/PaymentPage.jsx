@@ -1,236 +1,254 @@
 // src/pages/PaymentPage.jsx
 import React, { useState, useEffect } from "react";
 import { useParams, Navigate, useNavigate } from "react-router-dom";
-import { getCurrentUser, verifyAuth } from "../services/authService";
-import api from "../services/api";
-import Navbar from "../components/Navbar";
-import "./PaymentPage.css"; // ajusta la ruta si tu CSS vive en otra carpeta
 
-// 🔹 Datos bancarios de DEMO (de prueba)
-const BANK_DATA = {
-  banco: "Banco de Prueba",
-  cuenta: "0123456789",
-  clabe: "012345678901234567",
-  beneficiario: "Clínica PROPIELL (Datos de prueba)",
-};
+import { getCurrentUser, verifyAuth } from "../services/authService";
+import Navbar from "../components/Navbar";
+import {
+  getCitaById,
+  uploadPagoComprobante,
+} from "../services/citasService";
+
+import "./PaymentPage.css";
 
 const PaymentPage = () => {
   const { citaId } = useParams();
   const navigate = useNavigate();
 
-  // Congelamos el usuario una sola vez
+  // 🔒 Congelamos el usuario para que no cambie entre renders
   const [user] = useState(() => getCurrentUser());
 
+  const [cita, setCita] = useState(null);
   const [comprobante, setComprobante] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [copyMessage, setCopyMessage] = useState("");
 
-  // Verificar autenticación con JWT
+  const [loading, setLoading] = useState(true); // carga inicial de datos
+  const [submitting, setSubmitting] = useState(false); // subida del archivo
+  const [error, setError] = useState("");
+
+  // Datos bancarios (puedes cambiarlos por los reales cuando toque)
+  const bankData = {
+    banco: "Banco de Prueba",
+    cuenta: "0123456789",
+    clabe: "012345678901234567",
+    beneficiario: "Clínica PRO-PIEL (Datos de prueba)",
+  };
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Cargar cita + validar auth y que la cita sea del paciente
   useEffect(() => {
-    if (!user?.id) return;
+    if (!citaId || !user?.id) {
+      setLoading(false);
+      return;
+    }
 
     const controller = new AbortController();
     let isMounted = true;
 
-    const checkAuth = async () => {
+    const init = async () => {
       try {
         const valid = await verifyAuth(controller.signal);
-        if (!isMounted) return;
-
         if (!valid) {
           localStorage.removeItem("user");
           navigate("/login", { replace: true });
+          return;
         }
+
+        const data = await getCitaById(citaId, controller.signal);
+        if (!isMounted) return;
+
+        if (data?.paciente?.id !== user.id) {
+          setError(
+            "No tienes permiso para subir el comprobante de pago de esta cita."
+          );
+          return;
+        }
+
+        setCita(data);
       } catch (err) {
-        if (!isMounted || controller.signal.aborted) return;
-        localStorage.removeItem("user");
-        navigate("/login", { replace: true });
+        if (!controller.signal.aborted) {
+          console.error("Error cargando cita:", err);
+          setError("Error al cargar la información de la cita.");
+        }
+      } finally {
+        if (!controller.signal.aborted && isMounted) {
+          setLoading(false);
+        }
       }
     };
 
-    checkAuth();
+    init();
 
     return () => {
       isMounted = false;
       controller.abort();
     };
-  }, [user?.id, navigate]);
+  }, [citaId, user?.id, navigate]);
 
-  if (!user) return <Navigate to="/login" replace />;
+  // Copiar texto al portapapeles
+  const handleCopy = async (text, label) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      // Si no quieres alertas, puedes quitar esto
+      window.alert(`${label} copiado al portapapeles`);
+    } catch (err) {
+      console.error("Error al copiar:", err);
+      window.alert("No se pudo copiar al portapapeles.");
+    }
+  };
 
+  // Selección de archivo
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+    setError("");
+
     if (file && file.type.startsWith("image/")) {
       setComprobante(file);
     } else {
-      alert("Solo se permiten imágenes (PNG, JPG o JPEG)");
+      setComprobante(null);
+      setError("Solo se permiten imágenes (PNG, JPG o JPEG).");
     }
   };
 
-  const handleCopy = (label, value) => {
-    if (!value) return;
-
-    if (!navigator.clipboard) {
-      alert(`${label}: ${value}`);
-      return;
-    }
-
-    navigator.clipboard
-      .writeText(value)
-      .then(() => {
-        setCopyMessage(`${label} copiado al portapapeles`);
-        setTimeout(() => setCopyMessage(""), 2500);
-      })
-      .catch(() => {
-        setCopyMessage("No se pudo copiar. Copia los datos manualmente.");
-        setTimeout(() => setCopyMessage(""), 2500);
-      });
-  };
-
+  // Enviar comprobante con la lógica nueva
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!comprobante) {
-      setError("Debe subir un comprobante");
+      setError("Debe subir un comprobante de pago (imagen).");
       return;
     }
-    setLoading(true);
-    setError("");
+
+    if (!cita) {
+      setError("La cita aún no se ha cargado correctamente.");
+      return;
+    }
 
     try {
+      setError("");
+      setSubmitting(true);
+
       const formData = new FormData();
       formData.append("cita", citaId);
       formData.append("comprobante", comprobante);
 
-      const response = await api.post("pagos/create/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await uploadPagoComprobante(formData);
 
-      if (response.status === 201) {
-        navigate("/dashboard/paciente");
-      }
+      navigate("/dashboard/paciente");
     } catch (err) {
       console.error("Error al subir el comprobante:", err.response || err);
-      setError(
+      const msg =
         err.response?.data?.error ||
-          "Error al subir el comprobante. Inténtalo más tarde."
-      );
+        err.response?.data?.detail ||
+        "Error al subir el comprobante.";
+      setError(msg);
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
   return (
     <>
       <Navbar />
-      <div className="paymentpage-container">
-        <div className="payment-form-card">
-          <h2>Pago y Comprobante</h2>
+      <div className="citas-container" style={{ paddingTop: "100px" }}>
+        <div className="cita-form-card">
+          {loading ? (
+            <div className="loading-spinner">Cargando datos de la cita...</div>
+          ) : error && !cita ? (
+            <div className="alert alert-danger">{error}</div>
+          ) : (
+            <>
+              <h2 className="citas-title">Subir Comprobante de Pago</h2>
 
-          {/* Mensaje de error general */}
-          {error && <div className="alert alert-danger">{error}</div>}
+              {/* Bloque de datos bancarios */}
+              <section className="payment-info-section">
+                <p className="payment-info-intro">
+                  Realiza tu pago por transferencia bancaria usando los
+                  siguientes datos <strong>de prueba</strong>:
+                </p>
 
-          {/* Mensaje cuando se copia algo */}
-          {copyMessage && (
-            <div className="alert alert-info payment-copy-alert">
-              {copyMessage}
-            </div>
-          )}
+                <p className="payment-info-row">
+                  <strong>Banco:</strong> {bankData.banco}
+                </p>
 
-          <form onSubmit={handleSubmit} className="payment-form">
-            {/* 🔹 Información bancaria de prueba */}
-            <section className="payment-info mb-3">
-              <p className="payment-info-text">
-                Realiza tu pago por transferencia bancaria usando los siguientes
-                datos <strong>de prueba</strong>:
-              </p>
-
-              <div className="payment-info-row">
-                <div>
-                  <span className="payment-label">Banco:</span>
-                  <span className="payment-value">{BANK_DATA.banco}</span>
-                </div>
-              </div>
-
-              <div className="payment-info-row">
-                <div>
-                  <span className="payment-label">Cuenta:</span>
-                  <span className="payment-value">{BANK_DATA.cuenta}</span>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-primary"
-                  onClick={() => handleCopy("Cuenta", BANK_DATA.cuenta)}
-                  disabled={loading}
-                >
-                  Copiar cuenta
-                </button>
-              </div>
-
-              <div className="payment-info-row">
-                <div>
-                  <span className="payment-label">CLABE:</span>
-                  <span className="payment-value">{BANK_DATA.clabe}</span>
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-outline-primary"
-                  onClick={() => handleCopy("CLABE", BANK_DATA.clabe)}
-                  disabled={loading}
-                >
-                  Copiar CLABE
-                </button>
-              </div>
-
-              <div className="payment-info-row">
-                <div>
-                  <span className="payment-label">Beneficiario:</span>
-                  <span className="payment-value">
-                    {BANK_DATA.beneficiario}
+                <div className="payment-info-row payment-info-row-inline">
+                  <span>
+                    <strong>Cuenta:</strong> {bankData.cuenta}
                   </span>
+                  <button
+                    type="button"
+                    className="payment-copy-btn"
+                    onClick={() => handleCopy(bankData.cuenta, "Cuenta")}
+                  >
+                    Copiar cuenta
+                  </button>
+                </div>
+
+                <div className="payment-info-row payment-info-row-inline">
+                  <span>
+                    <strong>CLABE:</strong> {bankData.clabe}
+                  </span>
+                  <button
+                    type="button"
+                    className="payment-copy-btn"
+                    onClick={() => handleCopy(bankData.clabe, "CLABE")}
+                  >
+                    Copiar CLABE
+                  </button>
+                </div>
+
+                <div className="payment-info-row payment-info-row-inline">
+                  <span>
+                    <strong>Beneficiario:</strong> {bankData.beneficiario}
+                  </span>
+                  <button
+                    type="button"
+                    className="payment-copy-btn"
+                    onClick={() =>
+                      handleCopy(bankData.beneficiario, "Nombre del beneficiario")
+                    }
+                  >
+                    Copiar nombre
+                  </button>
+                </div>
+
+                <p className="payment-info-warning">
+                  Estos datos son únicamente de demostración y no corresponden
+                  a una cuenta real.
+                </p>
+              </section>
+
+              {/* Errores de validación / subida */}
+              {error && cita && (
+                <div className="alert alert-danger">{error}</div>
+              )}
+
+              {/* Formulario para subir comprobante */}
+              <form onSubmit={handleSubmit} className="cita-form">
+                <div className="mb-3">
+                  <label className="form-label">
+                    Subir comprobante de pago (Imagen):
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="form-control"
+                    disabled={submitting}
+                  />
                 </div>
                 <button
-                  type="button"
-                  className="btn btn-sm btn-outline-secondary"
-                  onClick={() =>
-                    handleCopy("Beneficiario", BANK_DATA.beneficiario)
-                  }
-                  disabled={loading}
+                  type="submit"
+                  className="btn-payment-submit"
+                  disabled={submitting || !comprobante}
                 >
-                  Copiar nombre
+                  {submitting ? "Subiendo..." : "Subir Comprobante"}
                 </button>
-              </div>
-
-              <p className="payment-info-warning">
-                ⚠ Estos datos son únicamente de demostración para la práctica
-                escolar y <strong>no corresponden</strong> a una cuenta real.
-              </p>
-            </section>
-
-            {/* 🔹 Subida de comprobante */}
-            <div className="mb-3">
-              <label className="form-label">
-                Subir comprobante de pago (Imagen):
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="form-control"
-                disabled={loading}
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="btn-payment-submit"
-              disabled={loading || !comprobante}
-            >
-              {loading ? "Subiendo..." : "Subir Comprobante"}
-            </button>
-          </form>
+              </form>
+            </>
+          )}
         </div>
       </div>
     </>

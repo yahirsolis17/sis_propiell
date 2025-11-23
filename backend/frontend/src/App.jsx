@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/login";
@@ -7,7 +6,6 @@ import Dashboard from "./pages/Dashboard";
 import Citas from './pages/Citas';
 import PaymentPage from './pages/PaymentPage';
 import ConsentimientoPage from "./pages/ConsentimientoPage";
-
 function App() {
   return (
     <Router>

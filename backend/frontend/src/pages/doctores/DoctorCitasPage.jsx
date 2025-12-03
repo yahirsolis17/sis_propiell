@@ -35,11 +35,6 @@ import {
 
 import TimeSlotSelector from "../../components/citas/TimeSlotSelector";
 import ConsultModal from "../../components/citas/ConsultModal";
-import CalendarPicker from "../../components/citas/CalendarPicker";
-import { finalizarTratamientoPorId } from "../../services/tratamientoService";
-import { requiereConsentimiento } from "../../utils/clinicRules";
-
-import TableLayout from "../../components/TableLayout";
 
 import "./DoctorCitasPage.css";
 
@@ -73,14 +68,12 @@ const DoctorCitasPage = () => {
   const [selectedCitaFecha, setSelectedCitaFecha] = useState(null);
   const [showFechaModal, setShowFechaModal] = useState(false);
   const [modalMode, setModalMode] = useState(null); // "subsecuente" | "reprogramar"
-  const [modalSelectedDate, setModalSelectedDate] = useState(null); // objeto Date
+  const [modalSelectedDate, setModalSelectedDate] = useState(""); // texto YYYY-MM-DD
   const [modalSelectedTime, setModalSelectedTime] = useState("");
   const [modalHorarios, setModalHorarios] = useState([]);
   const [modalLoadingHorarios, setModalLoadingHorarios] = useState(false);
   const [modalError, setModalError] = useState("");
   const [modalSubmitting, setModalSubmitting] = useState(false);
-  const [finalizandoTratamientoId, setFinalizandoTratamientoId] =
-    useState(null);
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -119,11 +112,7 @@ const DoctorCitasPage = () => {
       if (typeof date === "string") {
         return date.trim() || null;
       }
-      // Si es un objeto Date
-      if (date instanceof Date) {
-        return date.toISOString().split("T")[0];
-      }
-      return null;
+      return date.toISOString().split("T")[0];
     } catch {
       return null;
     }
@@ -332,9 +321,9 @@ const DoctorCitasPage = () => {
   };
 
   const openFechaModal = (mode, cita) => {
-    setModalMode(mode);
+    setModalMode(mode); // "subsecuente" | "reprogramar"
     setSelectedCitaFecha(cita);
-    setModalSelectedDate(null);
+    setModalSelectedDate("");
     setModalSelectedTime("");
     setModalHorarios([]);
     setModalError("");
@@ -346,55 +335,10 @@ const DoctorCitasPage = () => {
     setShowFechaModal(false);
     setSelectedCitaFecha(null);
     setModalMode(null);
-    setModalSelectedDate(null);
+    setModalSelectedDate("");
     setModalSelectedTime("");
     setModalHorarios([]);
     setModalError("");
-  };
-
-  const handleFinalizarTratamiento = async (cita) => {
-    const tratamientoId = cita?.tratamiento?.id;
-    if (!tratamientoId) {
-      toast.error("No se encontró tratamiento asociado a esta cita.");
-      return;
-    }
-
-    const confirmar = window.confirm(
-      "Al finalizar el tratamiento ya no podrás reprogramar ni crear más subsecuentes asociadas. ¿Deseas continuar?"
-    );
-    if (!confirmar) return;
-
-    try {
-      setFinalizandoTratamientoId(tratamientoId);
-      const data = await finalizarTratamientoPorId({ tratamientoId });
-      toast.success("Tratamiento finalizado correctamente.");
-
-      // Marcar como inactivo en todas las citas ligadas a este tratamiento
-      setCitas((prev) =>
-        prev.map((c) => {
-          if (c.tratamiento?.id !== tratamientoId) return c;
-          return {
-            ...c,
-            tratamiento: {
-              ...(c.tratamiento || {}),
-              ...(data || {}),
-              activo: false,
-            },
-          };
-        })
-      );
-
-      setOpenMenuId(null);
-    } catch (err) {
-      console.error("Error al finalizar tratamiento:", err);
-      const msg =
-        err.response?.data?.detail ||
-        err.response?.data?.error ||
-        "No se pudo finalizar el tratamiento. Intenta nuevamente.";
-      toast.error(msg);
-    } finally {
-      setFinalizandoTratamientoId(null);
-    }
   };
 
   const handleSubmitFechaModal = async (e) => {
@@ -416,6 +360,7 @@ const DoctorCitasPage = () => {
       setModalError("");
 
       if (modalMode === "subsecuente") {
+        // 🔹 1) Pedimos al backend que programe la cita subsecuente
         const nuevaCita = await programarSubsecuenteDesdeCita(
           selectedCitaFecha.id,
           {
@@ -424,6 +369,7 @@ const DoctorCitasPage = () => {
           }
         );
 
+        // 🔹 2) Agregamos la nueva cita a la lista, SIN tocar la original
         setCitas((prev) => {
           if (!nuevaCita || !nuevaCita.id) return prev;
           const exists = prev.some((c) => c.id === nuevaCita.id);
@@ -432,6 +378,7 @@ const DoctorCitasPage = () => {
 
         toast.success("Cita subsecuente programada correctamente.");
       } else if (modalMode === "reprogramar") {
+        // 🔹 Reprogramar SÍ actualiza la cita original
         const citaActualizada = await reprogramarCita(selectedCitaFecha.id, {
           fechaISO,
           hora: modalSelectedTime,
@@ -444,7 +391,10 @@ const DoctorCitasPage = () => {
         toast.success("Cita reprogramada correctamente.");
       }
 
+      // Cerramos modal
       closeFechaModal();
+
+      // Refetch suave para mantener lista alineada con backend
       setReloadToken(Date.now());
     } catch (err) {
       console.error("Error al procesar la cita:", err);
@@ -470,286 +420,203 @@ const DoctorCitasPage = () => {
     { value: "X", label: "Canceladas", icon: FiXCircle },
   ];
 
-  // 🔎 Config de filtros para TableLayout
-  const filtersConfig = [
-    {
-      id: "estado",
-      type: "chips",
-      label: "Estado",
-      value: filtroEstado,
-      options: estados.map((estado) => {
-        const Icon = estado.icon;
-        return {
-          value: estado.value,
-          label: (
-            <>
-              <Icon size={14} />
-              <span className="ms-1">{estado.label}</span>
-            </>
-          ),
-        };
-      }),
-    },
-  ];
-
-  const handleFilterChange = (filterId, value) => {
-    if (filterId === "estado") {
-      setFiltroEstado(value);
+  // 🧱 Render de tabla (sin flicker, loader solo en primer load)
+  const renderTable = () => {
+    if (loading && !hasLoadedOnceRef.current) {
+      return (
+        <div className="citas-loading">
+          <FiClock className="me-2" size={20} />
+          Cargando citas...
+        </div>
+      );
     }
-  };
 
-  // 🧱 Columnas para TableLayout
-  const columns = [
-    {
-      id: "paciente",
-      label: "Paciente",
-      render: (cita) => (
-        <div className="d-flex align-items-center gap-2">
-          <FiUser size={16} style={{ color: "var(--dc-text-medium)" }} />
-          <div>
-            <div>
-              {cita.paciente
-                ? `${cita.paciente.nombre} ${cita.paciente.apellidos}`
-                : "N/A"}
-            </div>
-            {cita.tratamiento && (
-              <div className="small text-muted">
-                Tratamiento:{" "}
-                <strong>
-                  {cita.tratamiento.nombre || "En curso sin nombre"}
-                </strong>{" "}
-                {cita.tratamiento.activo === false && (
-                  <span className="badge bg-secondary ms-1">
-                    Finalizado
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
+    if (error) {
+      return (
+        <div className="citas-error">
+          <strong>Error:</strong> {error}
         </div>
-      ),
-    },
-    {
-      id: "especialidad",
-      label: "Especialidad",
-      render: (cita) => cita.especialidad?.nombre || "General",
-    },
-    {
-      id: "fecha_hora",
-      label: "Fecha y hora",
-      render: (cita) => (
-        <div className="d-flex align-items-center gap-2">
-          <FiCalendar
-            size={14}
-            style={{ color: "var(--dc-text-medium)" }}
-          />
-          <span>{formatearFechaHora(cita.fecha_hora)}</span>
+      );
+    }
+
+    if (!loading && citas.length === 0) {
+      return (
+        <div className="citas-empty">
+          <FiHeart size={48} style={{ opacity: 0.6 }} />
+          <h4>No hay citas programadas</h4>
+          <p>No se encontraron citas con los filtros seleccionados.</p>
         </div>
-      ),
-    },
-    {
-      id: "estado",
-      label: "Estado",
-      render: (cita) => {
-        const estadoNormalizado = mapEstadoCita(cita.estado);
-        return (
-          <span
-            className={`estado-badge ${
-              estadoNormalizado === "Confirmada"
-                ? "estado-confirmada"
-                : estadoNormalizado === "Pendiente"
-                ? "estado-pendiente"
-                : "estado-cancelada"
-            }`}
-          >
-            {estadoNormalizado}
-          </span>
-        );
-      },
-    },
-    {
-      id: "pago",
-      label: "Pago",
-      render: (cita) => {
-        const pago = (cita.pagos && cita.pagos[0]) || null;
-        if (pago) {
-          return (
-            <span
-              className={`badge ${
-                pago.verificado ? "bg-success" : "bg-info"
-              }`}
-            >
-              {pago.verificado ? "Verificado" : "En revisión"}
-            </span>
-          );
-        }
-        return <span className="badge bg-warning">Pendiente</span>;
-      },
-    },
-    {
-      id: "consentimiento",
-      label: "Consentimiento",
-      render: (cita) => {
-        const requiereConsent = requiereConsentimiento(cita);
-        const estadoNormalizado = mapEstadoCita(cita.estado);
+      );
+    }
 
-        if (!requiereConsent) {
-          return (
-            <span className="badge bg-light text-muted">No aplica</span>
-          );
-        }
+    return (
+      <div className="citas-table-wrapper">
+        <table className="citas-table">
+          <thead>
+            <tr>
+              <th>Paciente</th>
+              <th>Especialidad</th>
+              <th>Fecha y hora</th>
+              <th>Estado</th>
+              <th>Pago</th>
+              <th>Consentimiento</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {citas.map((cita) => {
+              const estadoNormalizado = mapEstadoCita(cita.estado);
+              const hasConsulta = !!citasConConsulta[cita.id];
+              const puedeConsultar =
+                estadoNormalizado === "Confirmada" && !!cita.paciente;
+              const labelConsulta = hasConsulta
+                ? "Ver consulta"
+                : "Iniciar consulta";
 
-        if (estadoNormalizado === "Confirmada") {
-          return cita.consentimiento_completado ? (
-            <span className="badge bg-success">Completado</span>
-          ) : (
-            <span className="badge bg-secondary">Pendiente</span>
-          );
-        }
+              const puedeProgramarSubsecuente =
+                estadoNormalizado === "Confirmada";
+              const puedeReprogramar = estadoNormalizado !== "Cancelada";
 
-        return <span className="text-muted small">-</span>;
-      },
-    },
-    {
-      id: "acciones",
-      label: "Acciones",
-      align: "center",
-      render: (cita) => {
-        const estadoNormalizado = mapEstadoCita(cita.estado);
-        const estadoCodigo = cita.estado_codigo || cita.estado;
-        const esCancelada = estadoCodigo === "X";
-        const requiereConsent = requiereConsentimiento(cita);
-        const hasConsulta = !!citasConConsulta[cita.id];
-        const puedeConsultar =
-          estadoNormalizado === "Confirmada" && !!cita.paciente;
-        const labelConsulta = hasConsulta
-          ? "Ver consulta"
-          : "Iniciar consulta";
+              return (
+                <tr key={cita.id}>
+                  <td>
+                    <div className="d-flex align-items-center gap-2">
+                      <FiUser
+                        size={16}
+                        style={{ color: "var(--dc-text-medium)" }}
+                      />
+                      <span>
+                        {cita.paciente
+                          ? `${cita.paciente.nombre} ${cita.paciente.apellidos}`
+                          : "N/A"}
+                      </span>
+                    </div>
+                  </td>
+                  <td>{cita.especialidad?.nombre || "General"}</td>
+                  <td>
+                    <div className="d-flex align-items-center gap-2">
+                      <FiCalendar
+                        size={14}
+                        style={{ color: "var(--dc-text-medium)" }}
+                      />
+                      <span>{formatearFechaHora(cita.fecha_hora)}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <span
+                      className={`estado-badge ${
+                        estadoNormalizado === "Confirmada"
+                          ? "estado-confirmada"
+                          : estadoNormalizado === "Pendiente"
+                          ? "estado-pendiente"
+                          : "estado-cancelada"
+                      }`}
+                    >
+                      {estadoNormalizado}
+                    </span>
+                  </td>
+                  <td>
+                    {(() => {
+                      const pago = (cita.pagos && cita.pagos[0]) || null;
+                      if (pago) {
+                        return (
+                          <span
+                            className={`badge ${
+                              pago.verificado ? "bg-success" : "bg-info"
+                            }`}
+                          >
+                            {pago.verificado ? "Verificado" : "En revisión"}
+                          </span>
+                        );
+                      }
+                      return (
+                        <span className="badge bg-warning">Pendiente</span>
+                      );
+                    })()}
+                  </td>
+                  <td>
+                    {(() => {
+                      if (estadoNormalizado === "Confirmada") {
+                        return cita.consentimiento_completado ? (
+                          <span className="badge bg-success">Completado</span>
+                        ) : (
+                          <span className="badge bg-secondary">Pendiente</span>
+                        );
+                      }
+                      return <span className="text-muted small">-</span>;
+                    })()}
+                  </td>
+                  <td>
+                    <div className="acciones-container">
+                      <button
+                        type="button"
+                        className="acciones-toggle-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenMenuId(
+                            openMenuId === cita.id ? null : cita.id
+                          );
+                        }}
+                      >
+                        <FiMoreVertical size={16} />
+                        Opciones
+                      </button>
 
-        const tieneSubsecuenteActiva = citas.some(
-          (c) =>
-            c.id !== cita.id &&
-            c.tratamiento?.id &&
-            cita.tratamiento?.id &&
-            c.tratamiento.id === cita.tratamiento.id &&
-            c.tipo === "S" &&
-            c.estado_codigo !== "X" &&
-            c.estado !== "Cancelada"
-        );
+                      {openMenuId === cita.id && (
+                        <div
+                          className="acciones-menu"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            type="button"
+                            className="acciones-menu-item"
+                            onClick={() => handleIniciarConsulta(cita)}
+                            disabled={!puedeConsultar}
+                          >
+                            <FiActivity size={18} />
+                            <span>{labelConsulta}</span>
+                          </button>
 
-        const puedeProgramarSubsecuente =
-          estadoNormalizado === "Confirmada" &&
-          !esCancelada &&
-          !tieneSubsecuenteActiva &&
-          cita.tratamiento?.activo !== false;
-        const puedeReprogramar =
-          !esCancelada &&
-          cita.tratamiento?.activo !== false &&
-          cita.atendida !== true;
-        const puedeFinalizarTratamiento =
-          cita.tipo === "S" &&
-          cita.tratamiento?.id &&
-          cita.tratamiento?.activo !== false;
+                          <button
+                            type="button"
+                            className="acciones-menu-item"
+                            onClick={() => openConsultModal(cita)}
+                          >
+                            <FiFileText size={18} />
+                            <span>Ver detalles</span>
+                          </button>
 
-        return (
-          <div className="acciones-container">
-            <button
-              type="button"
-              className="acciones-toggle-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpenMenuId(openMenuId === cita.id ? null : cita.id);
-              }}
-            >
-              <FiMoreVertical size={16} />
-              Opciones
-            </button>
+                          <button
+                            type="button"
+                            className="acciones-menu-item"
+                            onClick={() => openFechaModal("subsecuente", cita)}
+                            disabled={!puedeProgramarSubsecuente}
+                          >
+                            <FiPlusCircle size={18} />
+                            <span>Programar subsecuente</span>
+                          </button>
 
-            {openMenuId === cita.id && (
-              <div
-                className="acciones-menu"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button
-                  type="button"
-                  className="acciones-menu-item"
-                  onClick={() => handleIniciarConsulta(cita)}
-                  disabled={!puedeConsultar}
-                >
-                  <FiActivity size={18} />
-                  <span>{labelConsulta}</span>
-                </button>
-
-                <button
-                  type="button"
-                  className="acciones-menu-item"
-                  onClick={() => openConsultModal(cita)}
-                >
-                  <FiFileText size={18} />
-                  <span>Ver detalles</span>
-                </button>
-
-                <button
-                  type="button"
-                  className="acciones-menu-item"
-                  onClick={() => openFechaModal("subsecuente", cita)}
-                  disabled={!puedeProgramarSubsecuente}
-                >
-                  <FiPlusCircle size={18} />
-                  <span>Programar subsecuente</span>
-                </button>
-
-                <button
-                  type="button"
-                  className="acciones-menu-item"
-                  onClick={() => openFechaModal("reprogramar", cita)}
-                  disabled={!puedeReprogramar}
-                >
-                  <FiRepeat size={18} />
-                  <span>Reprogramar cita</span>
-                </button>
-
-                <button
-                  type="button"
-                  className="acciones-menu-item"
-                  onClick={() => handleFinalizarTratamiento(cita)}
-                  disabled={
-                    !puedeFinalizarTratamiento ||
-                    finalizandoTratamientoId === cita.tratamiento?.id
-                  }
-                >
-                  <FiXCircle size={18} />
-                  <span>
-                    {finalizandoTratamientoId === cita.tratamiento?.id
-                      ? "Finalizando..."
-                      : "Finalizar tratamiento"}
-                  </span>
-                </button>
-              </div>
-            )}
-          </div>
-        );
-      },
-    },
-  ];
-
-  // Mensaje vacío custom para TableLayout
-  const emptyMessageContent = (
-    <div className="citas-empty">
-      <FiHeart size={48} style={{ opacity: 0.6 }} />
-      <h4>No hay citas programadas</h4>
-      <p>No se encontraron citas con los filtros seleccionados.</p>
-    </div>
-  );
-
-  const toolbarSummary = (
-    <div className="citas-summary-card">
-      <div className="citas-count">{totalCitas}</div>
-      <div className="citas-label">
-        {totalCitas === 1 ? "Cita activa" : "Citas totales"}
+                          <button
+                            type="button"
+                            className="acciones-menu-item"
+                            onClick={() => openFechaModal("reprogramar", cita)}
+                            disabled={!puedeReprogramar}
+                          >
+                            <FiRepeat size={18} />
+                            <span>Reprogramar cita</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <>
@@ -789,41 +656,55 @@ const DoctorCitasPage = () => {
                 </div>
 
                 <div className="doctor-citas-header-right">
-                  {toolbarSummary}
+                  <div className="citas-summary-card">
+                    <div className="citas-count">{totalCitas}</div>
+                    <div className="citas-label">
+                      {totalCitas === 1 ? "Cita activa" : "Citas totales"}
+                    </div>
+                  </div>
                 </div>
               </div>
             </header>
 
-            {/* ====== CONTENEDOR PRINCIPAL DE LA TABLA (TableLayout) ====== */}
+            {/* ====== CONTENEDOR PRINCIPAL DE LA TABLA ====== */}
             <section className="doctor-citas-main-card">
-              {error ? (
-                <div className="citas-error">
-                  <strong>Error:</strong> {error}
+              <div className="citas-table-header">
+                <h2 className="citas-table-title">Citas programadas</h2>
+
+                <div className="citas-filters-container">
+                  <div className="filter-group">
+                    <span className="filter-label">Filtrar por estado:</span>
+                    <div className="estado-filters">
+                      {estados.map((estado) => {
+                        const Icon = estado.icon;
+                        return (
+                          <button
+                            key={estado.value}
+                            className={`estado-filter-btn ${
+                              filtroEstado === estado.value ? "active" : ""
+                            }`}
+                            onClick={() => setFiltroEstado(estado.value)}
+                          >
+                            <span>
+                              <Icon size={14} />
+                              {estado.label}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                <div
-                  className={
-                    "citas-table-content" +
-                    (isRefetching ? " citas-table-content--refetch" : "")
-                  }
-                >
-                  <TableLayout
-                    title="Citas programadas"
-                    columns={columns}
-                    data={citas}
-                    loading={loading && !hasLoadedOnceRef.current}
-                    emptyMessage={emptyMessageContent}
-                    filters={filtersConfig}
-                    onFilterChange={handleFilterChange}
-                    enablePagination={false}
-                    dense={false}
-                    striped
-                    hover
-                    toolbarRight={toolbarSummary}
-                    rowKey="id"
-                  />
-                </div>
-              )}
+              </div>
+
+              <div
+                className={
+                  "citas-table-content" +
+                  (isRefetching ? " citas-table-content--refetch" : "")
+                }
+              >
+                {renderTable()}
+              </div>
             </section>
           </div>
         </div>
@@ -885,11 +766,20 @@ const DoctorCitasPage = () => {
             )}
 
             <form onSubmit={handleSubmitFechaModal}>
-              <CalendarPicker
-                selectedDate={modalSelectedDate}
-                onDateChange={setModalSelectedDate}
-                disabled={modalSubmitting}
-              />
+              <div className="mb-3">
+                <label className="form-label">Seleccione una fecha (YYYY-MM-DD)</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Ej. 2025-12-02"
+                  value={modalSelectedDate || ""}
+                  onChange={(e) => {
+                    setModalSelectedDate(e.target.value);
+                    setModalSelectedTime("");
+                  }}
+                  disabled={modalSubmitting}
+                />
+              </div>
 
               <div className="mb-3">
                 <TimeSlotSelector

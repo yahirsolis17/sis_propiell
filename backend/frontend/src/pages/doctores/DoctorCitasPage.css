@@ -288,10 +288,8 @@
   border-radius: var(--dc-radius-xl);
   box-shadow: var(--dc-shadow-medium);
   border: var(--dc-border-light);
-  overflow: visible;       /* el menú puede salir de la tarjeta */
+  overflow: hidden;
   transition: var(--dc-transition-smooth);
-  position: relative;
-  z-index: 2;              /* por encima del header */
 }
 
 .doctor-citas-main-card:hover {
@@ -438,7 +436,7 @@
 /* ==================== TABLA ==================== */
 .citas-table-wrapper {
   border-radius: var(--dc-radius-lg);
-  overflow: visible;            /* el menú puede salir de la tabla */
+  overflow: hidden;
   border: var(--dc-border-light);
   background: var(--dc-white);
   box-shadow: var(--dc-shadow-soft);
@@ -578,10 +576,7 @@
 /* ==================== ACCIONES ==================== */
 .acciones-container {
   position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 20;
+  display: inline-block;
 }
 
 .acciones-toggle-btn {
@@ -629,11 +624,11 @@
   left: 100%;
 }
 
-/* Menú desplegable: SIEMPRE hacia abajo del botón */
+/* Menú desplegable - Actualizado con tu acento */
 .acciones-menu {
   position: absolute;
-  top: calc(100% + 8px);   /* 🔑 debajo del botón */
-  bottom: auto;
+  top: auto;
+  bottom: calc(100% + 8px);
   right: 0;
   min-width: 240px;
   background: var(--dc-white);
@@ -651,15 +646,15 @@
 .acciones-menu::before {
   content: "";
   position: absolute;
-  top: -6px;               /* 🔑 flecha arriba del menú */
+  bottom: -6px;
   right: 16px;
   width: 12px;
   height: 12px;
   background: var(--dc-white);
   border: var(--dc-border-light);
-  border-right: none;
-  border-bottom: none;
-  transform: rotate(45deg);
+  border-top: none;
+  border-left: none;
+  transform: rotate(225deg);
 }
 
 .acciones-menu-item {
@@ -759,7 +754,7 @@
     var(--dc-primary-lighter), 
     var(--dc-white));
   border-radius: var(--dc-radius-md);
-  border: 1 dashed rgba(10, 110, 125, 0.2);
+  border: 1px dashed rgba(10, 110, 125, 0.2);
   position: relative;
   overflow: hidden;
 }

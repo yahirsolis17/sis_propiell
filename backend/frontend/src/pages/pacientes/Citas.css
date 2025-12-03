@@ -13,7 +13,6 @@
   --border-primary: 2px solid rgba(10, 110, 125, 0.15);
   --border-accent: 1px solid rgba(255, 127, 80, 0.2);
 }
-
 /* Reset y estilos base */
 * {
   box-sizing: border-box;

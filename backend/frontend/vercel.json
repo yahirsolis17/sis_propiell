@@ -40,6 +40,12 @@
       }
     },
     {
+      "src": "/assets/(.*\\.(mp4|webm|ogg))",
+      "headers": {
+        "Content-Type": "video/mp4"
+      }
+    },
+    {
       "src": "/consentimiento\\.pdf",
       "dest": "/consentimiento.pdf",
       "headers": {

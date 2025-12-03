@@ -1,14 +1,14 @@
 // src/pages/doctores/DoctorReportePage.jsx
 import React, { useEffect, useMemo, useState } from "react";
-import { Navigate, useNavigate, useParams, useLocation } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 
 import Navbar from "../../components/Navbar";
 import TableLayout from "../../components/TableLayout";
 import RecetaModal from "../../components/citas/RecetaModal";
 import { getCurrentUser, verifyAuth } from "../../services/authService";
-import { 
-  getReportes, 
-  getReportesByPaciente 
+import {
+  getReportes,
+  getReportesByPaciente,
 } from "../../services/reportesService";
 import { getCitasByPaciente } from "../../services/pacientesService";
 import { getRecetasByPaciente } from "../../services/recetasService";
@@ -63,7 +63,6 @@ const mapTipoCita = (tipo) => {
 const DoctorReportePage = () => {
   const navigate = useNavigate();
   const { pacienteId } = useParams();
-  const location = useLocation();
   const [user] = useState(() => getCurrentUser());
 
   // Estados para lista de reportes
@@ -80,8 +79,8 @@ const DoctorReportePage = () => {
   const [pacienteReportes, setPacienteReportes] = useState([]);
   const [recetas, setRecetas] = useState([]);
   const [pagos, setPagos] = useState([]);
-  
-  const [loadingPaciente, setLoadingPaciente] = useState(false);
+
+  const [loadingPaciente, setLoadingPaciente] = useState(false); // reservado si después vuelves a pedir paciente directo
   const [loadingCitas, setLoadingCitas] = useState(false);
   const [loadingPacienteReportes, setLoadingPacienteReportes] = useState(false);
   const [loadingRecetas, setLoadingRecetas] = useState(false);
@@ -112,7 +111,7 @@ const DoctorReportePage = () => {
     const fetchData = async () => {
       try {
         setError("");
-        
+
         const valid = await verifyAuth();
         if (!valid) {
           localStorage.removeItem("user");
@@ -131,16 +130,21 @@ const DoctorReportePage = () => {
 
           // NO cargamos datos del paciente directamente (evitamos el 403)
 
-          // Cargar reportes del paciente primero
+          // Reportes del paciente
           try {
-            const reportesData = await getReportesByPaciente(pacienteId, controller.signal);
+            const reportesData = await getReportesByPaciente(
+              pacienteId,
+              controller.signal
+            );
             if (isMounted) {
-              setPacienteReportes(Array.isArray(reportesData) ? reportesData : []);
-              
-              // Extraer datos básicos del paciente del primer reporte
+              setPacienteReportes(
+                Array.isArray(reportesData) ? reportesData : []
+              );
+
+              // Tomar datos básicos del paciente del primer reporte
               if (reportesData.length > 0 && reportesData[0].paciente) {
                 const pacienteData = reportesData[0].paciente;
-                if (typeof pacienteData === 'object') {
+                if (typeof pacienteData === "object") {
                   setPaciente(pacienteData);
                 }
               }
@@ -153,15 +157,23 @@ const DoctorReportePage = () => {
             if (isMounted) setLoadingPacienteReportes(false);
           }
 
-          // Cargar citas
+          // Citas del paciente
           try {
-            const citasData = await getCitasByPaciente(pacienteId, controller.signal);
+            const citasData = await getCitasByPaciente(
+              pacienteId,
+              controller.signal
+            );
             if (isMounted) setCitas(Array.isArray(citasData) ? citasData : []);
-            
-            // Si no tenemos datos del paciente de los reportes, intentar de las citas
-            if (isMounted && !paciente && citasData.length > 0 && citasData[0].paciente) {
+
+            // Si no tenemos paciente por reportes, intentamos desde citas
+            if (
+              isMounted &&
+              !paciente &&
+              citasData.length > 0 &&
+              citasData[0].paciente
+            ) {
               const pacienteData = citasData[0].paciente;
-              if (typeof pacienteData === 'object') {
+              if (typeof pacienteData === "object") {
                 setPaciente(pacienteData);
               }
             }
@@ -173,10 +185,14 @@ const DoctorReportePage = () => {
             if (isMounted) setLoadingCitas(false);
           }
 
-          // Cargar recetas
+          // Recetas
           try {
-            const recetasData = await getRecetasByPaciente(pacienteId, controller.signal);
-            if (isMounted) setRecetas(Array.isArray(recetasData) ? recetasData : []);
+            const recetasData = await getRecetasByPaciente(
+              pacienteId,
+              controller.signal
+            );
+            if (isMounted)
+              setRecetas(Array.isArray(recetasData) ? recetasData : []);
           } catch (err) {
             if (!controller.signal.aborted && isMounted) {
               console.error("Error al cargar recetas:", err);
@@ -185,9 +201,12 @@ const DoctorReportePage = () => {
             if (isMounted) setLoadingRecetas(false);
           }
 
-          // Cargar pagos
+          // Pagos
           try {
-            const pagosData = await getPagosByPaciente(pacienteId, controller.signal);
+            const pagosData = await getPagosByPaciente(
+              pacienteId,
+              controller.signal
+            );
             if (isMounted) setPagos(Array.isArray(pagosData) ? pagosData : []);
           } catch (err) {
             if (!controller.signal.aborted && isMounted) {
@@ -196,7 +215,6 @@ const DoctorReportePage = () => {
           } finally {
             if (isMounted) setLoadingPagos(false);
           }
-
         } else {
           // MODO LISTA: Cargar todos los reportes
           setLoading(true);
@@ -215,7 +233,6 @@ const DoctorReportePage = () => {
           setReportes(Array.isArray(data) ? data : []);
           setLoading(false);
         }
-
       } catch (err) {
         if (!controller.signal.aborted && isMounted) {
           console.error("Error al cargar datos:", err);
@@ -224,7 +241,7 @@ const DoctorReportePage = () => {
             err.response?.data?.error ||
             "Error al cargar los datos.";
           setError(detail);
-          
+
           // Resetear loadings en caso de error
           if (!pacienteId) {
             setLoading(false);
@@ -233,6 +250,7 @@ const DoctorReportePage = () => {
             setLoadingPacienteReportes(false);
             setLoadingRecetas(false);
             setLoadingPagos(false);
+            setLoadingPaciente(false);
           }
         }
       }
@@ -244,7 +262,7 @@ const DoctorReportePage = () => {
       isMounted = false;
       controller.abort();
     };
-  }, [isDoctorOrAdmin, pacienteId, estadoFilter, navigate, user.id, user.role]);
+  }, [isDoctorOrAdmin, pacienteId, estadoFilter, navigate, user.id, user.role, paciente]);
 
   // Efecto para "Actualizando resultados..." al escribir en búsqueda (solo en modo lista)
   useEffect(() => {
@@ -301,15 +319,14 @@ const DoctorReportePage = () => {
   // Handlers
   const handleRowClick = (reporte) => {
     const pacienteField = reporte?.paciente;
-    const pacienteId =
+    const pid =
       typeof pacienteField === "object"
         ? pacienteField.id || pacienteField.pk
         : reporte.paciente_id || reporte.paciente;
 
-    if (!pacienteId) return;
+    if (!pid) return;
 
-    // Navegar a la vista de detalle del mismo paciente
-    navigate(`/doctor/reportes/paciente/${pacienteId}`);
+    navigate(`/doctor/reportes/paciente/${pid}`);
   };
 
   const handleVolverALista = () => {
@@ -363,12 +380,11 @@ const DoctorReportePage = () => {
       : user.role;
 
   // 🧱 Columnas para TableLayout (modo lista)
-  const columns = [
+  const columnsLista = [
     {
       id: "fecha",
       label: "Fecha",
-      render: (reporte) =>
-        formatearFechaHora(getFechaReporteBase(reporte)),
+      render: (reporte) => formatearFechaHora(getFechaReporteBase(reporte)),
     },
     {
       id: "paciente",
@@ -413,12 +429,203 @@ const DoctorReportePage = () => {
     },
   ];
 
+  // 🧱 Columnas modo detalle: historial de citas
+  const columnsCitas = [
+    {
+      id: "fecha_hora",
+      label: "Fecha y hora",
+      render: (cita) => formatearFechaHora(cita.fecha_hora),
+    },
+    {
+      id: "tipo",
+      label: "Tipo",
+      render: (cita) => mapTipoCita(cita.tipo),
+    },
+    {
+      id: "estado",
+      label: "Estado",
+      render: (cita) => cita.estado || "-",
+    },
+    {
+      id: "pago",
+      label: "Pago",
+      render: (cita) => {
+        const ultimoPago = (cita.pagos || [])[0];
+        if (!ultimoPago) {
+          return <span className="text-muted">Sin pago registrado</span>;
+        }
+        return (
+          <>
+            {ultimoPago.estado_pago_display} · {ultimoPago.metodo_pago_display}
+          </>
+        );
+      },
+    },
+    {
+      id: "consentimiento",
+      label: "Consentimiento",
+      render: (cita) => {
+        if (!requiereConsentimiento(cita)) {
+          return (
+            <span className="badge bg-light text-muted">No aplica</span>
+          );
+        }
+        return cita.consentimiento_completado ? (
+          <span className="badge bg-success">Completo</span>
+        ) : (
+          <span className="badge bg-secondary">Pendiente</span>
+        );
+      },
+    },
+  ];
+
+  // 🧱 Columnas modo detalle: reportes del paciente
+  const columnsReportesPaciente = [
+    {
+      id: "fecha",
+      label: "Fecha",
+      render: (reporte) =>
+        formatearFechaHora(getFechaReporteBase(reporte)),
+    },
+    {
+      id: "estado",
+      label: "Estado",
+      render: (reporte) => (
+        <span
+          className={`badge ${
+            (reporte.estado || "").toUpperCase() === "FINAL"
+              ? "bg-success"
+              : "bg-secondary"
+          }`}
+        >
+          {mapEstadoReporte(reporte.estado)}
+        </span>
+      ),
+    },
+    {
+      id: "resumen",
+      label: "Resumen",
+      render: (reporte) => (
+        <span className="small">
+          {reporte.resumen || reporte.diagnostico || "-"}
+        </span>
+      ),
+    },
+  ];
+
+  // 🧱 Columnas modo detalle: recetas del paciente
+  const columnsRecetasPaciente = [
+    {
+      id: "fecha",
+      label: "Fecha",
+      render: (receta) =>
+        formatearFechaHora(
+          receta.fecha || receta.created_at || receta.updated_at
+        ),
+    },
+    {
+      id: "cita",
+      label: "Cita",
+      render: (receta) => {
+        const citaTexto = receta.cita?.fecha_hora
+          ? formatearFechaHora(receta.cita.fecha_hora)
+          : receta.cita_fecha
+          ? formatearFechaHora(receta.cita_fecha)
+          : receta.cita
+          ? `ID ${receta.cita}`
+          : "-";
+        return <span className="small">{citaTexto}</span>;
+      },
+    },
+    {
+      id: "detalle",
+      label: "Detalle",
+      render: (receta) => {
+        const detalle =
+          receta.indicaciones_generales ||
+          receta.notas ||
+          (Array.isArray(receta.medicamentos) &&
+            receta.medicamentos[0]?.nombre) ||
+          "-";
+        return <span className="small">{detalle}</span>;
+      },
+    },
+    {
+      id: "acciones",
+      label: "Acciones",
+      render: (receta) => (
+        <div className="text-end">
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-primary"
+            onClick={() => handleAbrirRecetaDesdeTabla(receta)}
+          >
+            Ver / editar
+          </button>
+        </div>
+      ),
+    },
+  ];
+
+  // 🧱 Columnas modo detalle: pagos del paciente
+  const columnsPagosPaciente = [
+    {
+      id: "fecha",
+      label: "Fecha",
+      render: (pago) =>
+        formatearFechaHora(
+          pago.fecha || pago.created_at || pago.updated_at
+        ),
+    },
+    {
+      id: "metodo",
+      label: "Método",
+      render: (pago) =>
+        pago.metodo_pago_display || pago.metodo_pago || "-",
+    },
+    {
+      id: "estado",
+      label: "Estado",
+      render: (pago) => {
+        const estado =
+          pago.estado_pago_display ||
+          (pago.verificado ? "Verificado" : "Pendiente");
+        return <span>{estado}</span>;
+      },
+    },
+    {
+      id: "total",
+      label: "Total",
+      render: (pago) => pago.total ?? pago.monto ?? "-",
+    },
+    {
+      id: "pagado",
+      label: "Pagado",
+      render: (pago) =>
+        pago.pagado != null
+          ? pago.pagado
+          : pago.verificado
+          ? pago.total ?? "-"
+          : "-",
+    },
+  ];
+
   // ================================
   // RENDERIZADO MODO DETALLE
   // ================================
   if (pacienteId) {
-    const loadingDetalle = loadingCitas || loadingPacienteReportes || loadingRecetas || loadingPagos;
-    const tieneDatos = pacienteReportes.length > 0 || citas.length > 0 || recetas.length > 0 || pagos.length > 0;
+    const loadingDetalle =
+      loadingCitas ||
+      loadingPacienteReportes ||
+      loadingRecetas ||
+      loadingPagos ||
+      loadingPaciente;
+
+    const tieneDatos =
+      pacienteReportes.length > 0 ||
+      citas.length > 0 ||
+      recetas.length > 0 ||
+      pagos.length > 0;
 
     return (
       <>
@@ -471,19 +678,24 @@ const DoctorReportePage = () => {
                     <div className="doctor-reporte-header-content">
                       <div className="doctor-reporte-header-left">
                         <h1 className="doctor-reporte-title">
-                          {paciente ? `${paciente.nombre} ${paciente.apellidos}` : `Paciente #${pacienteId}`}
+                          {paciente
+                            ? `${paciente.nombre} ${paciente.apellidos}`
+                            : `Paciente #${pacienteId}`}
                         </h1>
                         <p className="doctor-reporte-subtitle">
-                          Vista consolidada del historial clínico, recetas y pagos del paciente.
+                          Vista consolidada del historial clínico, recetas y
+                          pagos del paciente.
                         </p>
                         {paciente && (
                           <div className="doctor-reporte-meta">
                             <span>
-                              Edad: <strong>{paciente.edad ?? "-"}</strong> años · Sexo:{" "}
-                              <strong>{paciente.sexo || "-"}</strong>
+                              Edad:{" "}
+                              <strong>{paciente.edad ?? "-"}</strong> años ·
+                              Sexo: <strong>{paciente.sexo || "-"}</strong>
                             </span>
                             <span>
-                              Teléfono: <strong>{paciente.telefono || "-"}</strong>
+                              Teléfono:{" "}
+                              <strong>{paciente.telefono || "-"}</strong>
                             </span>
                           </div>
                         )}
@@ -509,7 +721,8 @@ const DoctorReportePage = () => {
 
                         <div className="doctor-reporte-summary-chip d-none d-md-block">
                           <strong>Total citas:</strong> {citas.length} ·{" "}
-                          <strong>Subsecuentes:</strong> {citasSubsecuentes.length}
+                          <strong>Subsecuentes:</strong>{" "}
+                          {citasSubsecuentes.length}
                           <br />
                           <strong>Última cita:</strong>{" "}
                           {ultimaCita
@@ -544,7 +757,8 @@ const DoctorReportePage = () => {
                               <strong>Recetas médicas:</strong> {recetas.length}
                             </li>
                             <li>
-                              <strong>Registros de pago:</strong> {pagos.length}
+                              <strong>Registros de pago:</strong>{" "}
+                              {pagos.length}
                             </li>
                           </ul>
                         </div>
@@ -558,68 +772,17 @@ const DoctorReportePage = () => {
                             Historial de citas
                           </h2>
 
-                          {citas.length === 0 ? (
-                            <p className="paciente-empty-text mb-0">
-                              Este paciente aún no tiene citas registradas contigo.
-                            </p>
-                          ) : (
-                            <div className="table-responsive doctor-reporte-table-wrapper">
-                              <table className="table table-sm table-hover align-middle mb-0 doctor-reporte-table">
-                                <thead>
-                                  <tr>
-                                    <th>Fecha y hora</th>
-                                    <th>Tipo</th>
-                                    <th>Estado</th>
-                                    <th>Pago</th>
-                                    <th>Consentimiento</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {citasOrdenadas.map((cita) => {
-                                    const ultimoPago = (cita.pagos || [])[0];
-                                    return (
-                                      <tr key={cita.id}>
-                                        <td>
-                                          {formatearFechaHora(cita.fecha_hora)}
-                                        </td>
-                                        <td>{mapTipoCita(cita.tipo)}</td>
-                                        <td>{cita.estado}</td>
-                                        <td>
-                                          {ultimoPago ? (
-                                            <>
-                                              {ultimoPago.estado_pago_display} ·{" "}
-                                              {ultimoPago.metodo_pago_display}
-                                            </>
-                                          ) : (
-                                            <span className="text-muted">
-                                              Sin pago registrado
-                                            </span>
-                                          )}
-                                        </td>
-                                        <td>
-                                          {requiereConsentimiento(cita) ? (
-                                            cita.consentimiento_completado ? (
-                                              <span className="badge bg-success">
-                                                Completo
-                                              </span>
-                                            ) : (
-                                              <span className="badge bg-secondary">
-                                                Pendiente
-                                              </span>
-                                            )
-                                          ) : (
-                                            <span className="badge bg-light text-muted">
-                                              No aplica
-                                            </span>
-                                          )}
-                                        </td>
-                                      </tr>
-                                    );
-                                  })}
-                                </tbody>
-                              </table>
-                            </div>
-                          )}
+                          <TableLayout
+                            columns={columnsCitas}
+                            data={citasOrdenadas}
+                            loading={loadingCitas}
+                            emptyMessage="Este paciente aún no tiene citas registradas contigo."
+                            enableSearch={false}
+                            enablePagination={false}
+                            striped
+                            hover
+                            rowKey="id"
+                          />
                         </div>
                       </div>
                     </div>
@@ -634,51 +797,17 @@ const DoctorReportePage = () => {
                             Consultas clínicas (reportes)
                           </h2>
 
-                          {pacienteReportes.length === 0 ? (
-                            <p className="paciente-empty-text mb-0">
-                              Aún no hay consultas clínicas registradas para este paciente.
-                            </p>
-                          ) : (
-                            <div className="table-responsive doctor-reporte-table-wrapper">
-                              <table className="table table-sm table-hover align-middle mb-0 doctor-reporte-table">
-                                <thead>
-                                  <tr>
-                                    <th>Fecha</th>
-                                    <th>Estado</th>
-                                    <th>Resumen</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {pacienteReportes.map((reporte) => {
-                                    const fechaReporte = formatearFechaHora(
-                                      getFechaReporteBase(reporte)
-                                    );
-                                    return (
-                                      <tr key={reporte.id}>
-                                        <td>{fechaReporte}</td>
-                                        <td>
-                                          <span
-                                            className={`badge ${
-                                              (reporte.estado || "").toUpperCase() === "FINAL"
-                                                ? "bg-success"
-                                                : "bg-secondary"
-                                            }`}
-                                          >
-                                            {mapEstadoReporte(reporte.estado)}
-                                          </span>
-                                        </td>
-                                        <td className="small">
-                                          {reporte.resumen ||
-                                            reporte.diagnostico ||
-                                            "-"}
-                                        </td>
-                                      </tr>
-                                    );
-                                  })}
-                                </tbody>
-                              </table>
-                            </div>
-                          )}
+                          <TableLayout
+                            columns={columnsReportesPaciente}
+                            data={pacienteReportes}
+                            loading={loadingPacienteReportes}
+                            emptyMessage="Aún no hay consultas clínicas registradas para este paciente."
+                            enableSearch={false}
+                            enablePagination={false}
+                            striped
+                            hover
+                            rowKey="id"
+                          />
                         </div>
                       </div>
                     </div>
@@ -690,70 +819,17 @@ const DoctorReportePage = () => {
                             Recetas médicas
                           </h2>
 
-                          {recetas.length === 0 ? (
-                            <p className="paciente-empty-text mb-0">
-                              Aún no hay recetas registradas para este paciente.
-                            </p>
-                          ) : (
-                            <div className="table-responsive doctor-reporte-table-wrapper">
-                              <table className="table table-sm table-hover align-middle mb-0 doctor-reporte-table">
-                                <thead>
-                                  <tr>
-                                    <th>Fecha</th>
-                                    <th>Cita</th>
-                                    <th>Detalle</th>
-                                    <th className="text-end">Acciones</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {recetas.map((receta) => {
-                                    const fechaReceta = formatearFechaHora(
-                                      receta.fecha ||
-                                        receta.created_at ||
-                                        receta.updated_at
-                                    );
-
-                                    const citaTexto =
-                                      receta.cita?.fecha_hora
-                                        ? formatearFechaHora(
-                                            receta.cita.fecha_hora
-                                          )
-                                        : receta.cita_fecha
-                                        ? formatearFechaHora(receta.cita_fecha)
-                                        : receta.cita
-                                        ? `ID ${receta.cita}`
-                                        : "-";
-
-                                    const detalle =
-                                      receta.indicaciones_generales ||
-                                      receta.notas ||
-                                      (Array.isArray(receta.medicamentos) &&
-                                        receta.medicamentos[0]?.nombre) ||
-                                      "-";
-
-                                    return (
-                                      <tr key={receta.id}>
-                                        <td>{fechaReceta}</td>
-                                        <td className="small">{citaTexto}</td>
-                                        <td className="small">{detalle}</td>
-                                        <td className="text-end">
-                                          <button
-                                            type="button"
-                                            className="btn btn-sm btn-outline-primary"
-                                            onClick={() =>
-                                              handleAbrirRecetaDesdeTabla(receta)
-                                            }
-                                          >
-                                            Ver / editar
-                                          </button>
-                                        </td>
-                                      </tr>
-                                    );
-                                  })}
-                                </tbody>
-                              </table>
-                            </div>
-                          )}
+                          <TableLayout
+                            columns={columnsRecetasPaciente}
+                            data={recetas}
+                            loading={loadingRecetas}
+                            emptyMessage="Aún no hay recetas registradas para este paciente."
+                            enableSearch={false}
+                            enablePagination={false}
+                            striped
+                            hover
+                            rowKey="id"
+                          />
                         </div>
                       </div>
                     </div>
@@ -768,59 +844,17 @@ const DoctorReportePage = () => {
                             Historial de pagos
                           </h2>
 
-                          {pagos.length === 0 ? (
-                            <p className="paciente-empty-text mb-0">
-                              No se han registrado pagos para este paciente.
-                            </p>
-                          ) : (
-                            <div className="table-responsive doctor-reporte-table-wrapper">
-                              <table className="table table-sm table-hover align-middle mb-0 doctor-reporte-table">
-                                <thead>
-                                  <tr>
-                                    <th>Fecha</th>
-                                    <th>Método</th>
-                                    <th>Estado</th>
-                                    <th>Total</th>
-                                    <th>Pagado</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {pagos.map((pago) => {
-                                    const fechaPago = formatearFechaHora(
-                                      pago.fecha ||
-                                        pago.created_at ||
-                                        pago.updated_at
-                                    );
-                                    const metodo =
-                                      pago.metodo_pago_display ||
-                                      pago.metodo_pago ||
-                                      "-";
-                                    const estado =
-                                      pago.estado_pago_display ||
-                                      (pago.verificado
-                                        ? "Verificado"
-                                        : "Pendiente");
-
-                                    return (
-                                      <tr key={pago.id}>
-                                        <td>{fechaPago}</td>
-                                        <td>{metodo}</td>
-                                        <td>{estado}</td>
-                                        <td>{pago.total ?? pago.monto ?? "-"}</td>
-                                        <td>
-                                          {pago.pagado != null
-                                            ? pago.pagado
-                                            : pago.verificado
-                                            ? pago.total ?? "-"
-                                            : "-"}
-                                        </td>
-                                      </tr>
-                                    );
-                                  })}
-                                </tbody>
-                              </table>
-                            </div>
-                          )}
+                          <TableLayout
+                            columns={columnsPagosPaciente}
+                            data={pagos}
+                            loading={loadingPagos}
+                            emptyMessage="No se han registrado pagos para este paciente."
+                            enableSearch={false}
+                            enablePagination={false}
+                            striped
+                            hover
+                            rowKey="id"
+                          />
                         </div>
                       </div>
                     </div>
@@ -881,8 +915,10 @@ const DoctorReportePage = () => {
 
             <div className="doctor-reporte-header-right">
               <span className="doctor-reporte-badge-count">
-                Registros: <strong>{totalReportes}</strong> reporte
-                {totalReportes === 1 ? "" : "s"}
+                <span className="doctor-reporte-count">{totalReportes}</span>
+                <span className="doctor-reporte-label">
+                  Reporte{totalReportes === 1 ? "" : "s"}
+                </span>
               </span>
               <button
                 type="button"
@@ -942,18 +978,18 @@ const DoctorReportePage = () => {
             </div>
           </section>
 
-          {/* TABLA */}
+          {/* TABLA LISTA */}
           <section className="doctor-reporte-table-card">
             <TableLayout
               title="Reportes clínicos"
-              columns={columns}
+              columns={columnsLista}
               data={reportesOrdenadosFiltrados}
               loading={loading}
               emptyMessage="No se encontraron reportes clínicos con los filtros actuales."
               enableSearch={false}
               enablePagination={false}
-              striped={true}
-              hover={true}
+              striped
+              hover
               rowKey="id"
               onRowClick={handleRowClick}
             />

@@ -144,23 +144,9 @@ const Navbar = () => {
             <Link
               onClick={closeMenu}
               className={commonStyles}
-              to="/dashboard/admin"
-            >
-              Dashboard
-            </Link>
-            <Link
-              onClick={closeMenu}
-              className={commonStyles}
               to="/admin/usuarios"
             >
               Usuarios
-            </Link>
-            <Link
-              onClick={closeMenu}
-              className={commonStyles}
-              to="/admin/reportes"
-            >
-              Reportes
             </Link>
           </>
         );

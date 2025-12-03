@@ -28,6 +28,7 @@ import DoctorPacienteDetallePage from "./pages/doctores/DoctorPacienteDetallePag
 import DoctorConsultaPage from "./pages/doctores/DoctorConsultaPage";
 import DoctorReportePage from "./pages/doctores/DoctorReportesPage"; // 🔄 Cambiado a singular
 import DoctorRecetasPage from "./pages/doctores/DoctorRecetasPage";
+import AdminUsersPage from "./pages/admin/AdminUsersPage";
 
 // 🔐 Ruta protegida
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -229,6 +230,18 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={DOCTOR_ROLES}>
                 <DoctorRecetasPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ===========================
+              FLUJO ADMIN
+             =========================== */}
+          <Route
+            path="/admin/usuarios"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN"]}>
+                <AdminUsersPage />
               </ProtectedRoute>
             }
           />

@@ -1,5 +1,6 @@
 # backend/users/urls.py
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views import (
@@ -39,9 +40,17 @@ from .views import (
     TratamientoFinalizarAPI,
     ProcedimientoConsultaListCreateAPI,
     ProcedimientoConsultaDetailAPI,
+    UserAdminViewSet,
 )
 
+# Router DRF para endpoints de admin de usuarios
+router = DefaultRouter()
+router.register(r"admin-users", UserAdminViewSet, basename="admin-user")
+
 urlpatterns = [
+    # CRUD de usuarios admin (router)
+    path("", include(router.urls)),
+
     # Auth
     path("auth/verify/", VerifyAuthView.as_view(), name="verify-auth"),
     path("auth/login/", LoginView.as_view(), name="login"),

@@ -1,3 +1,4 @@
+/* Home.css */
 :root {
   --primary-color: #0088A9;
   --secondary-color: #1690B0;
@@ -45,6 +46,23 @@ body {
 
 .home-page {
   min-height: 100vh;
+}
+
+/* ================= 🔥 OPTIMIZACIÓN MODAL: fondo vs partículas ================= */
+
+/* En modal: no congelamos animaciones, solo las volvemos invisibles para que mueran solas */
+.modal-open .particle-dot,
+.modal-open .floating-element {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Reducir intensidad visual de capas de partículas con modal abierto */
+.modal-open .hero-particles,
+.modal-open .footer-particles,
+.modal-open .card-particles {
+  opacity: 0.1 !important;
+  transition: opacity 0.3s ease;
 }
 
 /* ================= Animaciones base ================= */
@@ -128,7 +146,7 @@ body {
   border-radius: 50%;
   background: var(--particle-color);
   opacity: 0;
-  animation: 
+  animation:
     particleFloat var(--particle-duration, 4s) ease-in-out forwards,
     particleFade var(--particle-duration, 4s) ease-in-out forwards;
   will-change: transform, opacity;
@@ -201,6 +219,14 @@ body {
   box-shadow: 0 8px 32px rgba(0, 136, 169, 0.1);
 }
 
+/* Versión ligera de glass SOLO para el modal (menos carga en GPU) */
+.service-modal .glass-card {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+}
+
 .glass-button {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
@@ -237,7 +263,7 @@ body {
   box-shadow: 0 8px 25px rgba(0, 136, 169, 0.2);
 }
 
-/* ================= Títulos CENTRADOS CORRECTAMENTE ================= */
+/* ================= Títulos ================= */
 
 .section-title {
   font-size: 3rem;
@@ -273,18 +299,6 @@ body {
 
 .about-section .about-description {
   text-align: left;
-}
-
-/* Asegurar que todos los títulos de sección estén centrados excepto el de Nosotros */
-#servicios .section-title,
-#servicios .section-subtitle,
-#ubicacion .section-title,
-#ubicacion .section-subtitle,
-.differentiators .section-title,
-.differentiators .section-subtitle {
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* ================= Navbar ================= */
@@ -460,7 +474,8 @@ body {
   margin-bottom: 1.5rem;
   line-height: 1.1;
   letter-spacing: -0.5px;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5),
+  text-shadow:
+    2px 2px 8px rgba(0, 0, 0, 0.5),
     0 0 30px rgba(0, 136, 169, 0.3);
 }
 
@@ -469,7 +484,8 @@ body {
   margin-bottom: 2.5rem;
   font-weight: 300;
   opacity: 0.9;
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3),
+  text-shadow:
+    1px 1px 4px rgba(0, 0, 0, 0.3),
     0 0 20px rgba(0, 136, 169, 0.2);
 }
 
@@ -610,7 +626,8 @@ body {
   border-radius: 20px;
   overflow: hidden;
   transition: var(--transition-smooth);
-  box-shadow: 0 10px 30px rgba(0, 136, 169, 0.1),
+  box-shadow:
+    0 10px 30px rgba(0, 136, 169, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.3);
   position: relative;
@@ -619,7 +636,8 @@ body {
 
 .service-card:hover .card-inner {
   transform: translateY(-10px) rotateX(5deg);
-  box-shadow: 0 20px 50px rgba(0, 136, 169, 0.2),
+  box-shadow:
+    0 20px 50px rgba(0, 136, 169, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
@@ -694,10 +712,6 @@ body {
 .card-info p {
   color: #555;
   margin-bottom: 1rem;
-}
-
-.service-meta {
-  display: none; /* OCULTAR duración y especialistas */
 }
 
 .card-cta {
@@ -976,22 +990,31 @@ body {
   filter: brightness(0) saturate(100%) invert(1) grayscale(100%) contrast(120%);
   mix-blend-mode: screen;
   opacity: 0.95;
-  transition: transform 0.5s ease, filter 0.45s ease, opacity 0.45s ease;
+  transition:
+    transform 0.5s ease,
+    filter 0.45s ease,
+    opacity 0.45s ease;
   will-change: transform, filter, opacity;
 }
 
 @keyframes silhouettePulse {
   0% {
     transform: translateY(0) scale(1);
-    filter: brightness(0) saturate(100%) invert(1) grayscale(100%) contrast(120%) drop-shadow(0 0 0 rgba(255,255,255,0));
+    filter:
+      brightness(0) saturate(100%) invert(1) grayscale(100%) contrast(120%)
+      drop-shadow(0 0 0 rgba(255, 255, 255, 0));
   }
   50% {
     transform: translateY(-6px) scale(1.02);
-    filter: brightness(0) saturate(100%) invert(1) grayscale(100%) contrast(130%) drop-shadow(0 8px 18px rgba(255,255,255,0.12));
+    filter:
+      brightness(0) saturate(100%) invert(1) grayscale(100%) contrast(130%)
+      drop-shadow(0 8px 18px rgba(255, 255, 255, 0.12));
   }
   100% {
     transform: translateY(0) scale(1);
-    filter: brightness(0) saturate(100%) invert(1) grayscale(100%) contrast(120%) drop-shadow(0 0 0 rgba(255,255,255,0));
+    filter:
+      brightness(0) saturate(100%) invert(1) grayscale(100%) contrast(120%)
+      drop-shadow(0 0 0 rgba(255, 255, 255, 0));
   }
 }
 
@@ -1002,7 +1025,9 @@ body {
 .footer-logo.silhouette:hover {
   transform: translateY(-8px) scale(1.06);
   opacity: 1;
-  filter: brightness(0) saturate(100%) invert(1) grayscale(100%) contrast(150%) drop-shadow(0 12px 28px rgba(255,255,255,0.18));
+  filter:
+    brightness(0) saturate(100%) invert(1) grayscale(100%) contrast(150%)
+    drop-shadow(0 12px 28px rgba(255, 255, 255, 0.18));
 }
 
 .footer-text {
@@ -1145,7 +1170,7 @@ body {
   color: var(--accent-color);
 }
 
-/* ================= Modal de Servicios - VIDEO OPTIMIZADO MEJORADO ================= */
+/* ================= Modal Servicios – OPTIMIZADO ================= */
 
 .service-modal {
   position: fixed;
@@ -1157,12 +1182,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 2000;
-  background: radial-gradient(
-    circle at top,
-    rgba(0, 0, 0, 0.35),
-    rgba(0, 0, 0, 0.85)
-  );
-  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.92); /* Fondo sólido (sin blur) */
   animation: modalEnter 0.3s ease-out;
   padding: 2rem;
 }
@@ -1203,7 +1223,6 @@ body {
   border-radius: 16px;
 }
 
-/* Scrollbar personalizado para el modal */
 .modal-content::-webkit-scrollbar {
   width: 8px;
 }
@@ -1221,8 +1240,6 @@ body {
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: var(--secondary-color);
 }
-
-/* Botón cerrar */
 
 .modal-close {
   position: absolute;
@@ -1249,17 +1266,18 @@ body {
   box-shadow: 0 6px 20px rgba(255, 127, 80, 0.6);
 }
 
-/* Video OPTIMIZADO MEJORADO para reproducción fluida */
+/* Video del modal – optimizado GPU */
 
 .modal-video-wrapper {
   position: relative;
   width: 100%;
   height: 0;
-  padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+  padding-bottom: 56.25%;
   overflow: hidden;
   border-radius: 16px 16px 0 0;
   flex-shrink: 0;
   background: #000;
+  isolation: isolate;
 }
 
 .modal-video {
@@ -1270,28 +1288,54 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
-  /* CRÍTICO: Optimización mejorada para reproducción fluida */
   will-change: transform;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  /* Prevenir problemas de renderizado */
   -webkit-perspective: 1000;
-  -webkit-backface-visibility: hidden;
-  /* Forzar aceleración por hardware */
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  contain: layout style paint;
 }
 
-/* Estados de carga mejorados */
-.modal-video[data-loaded="false"] {
-  opacity: 0;
+/* Loader del video */
+
+.modal-video-loader {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 10;
+  animation: fadeIn 0.2s ease;
 }
 
-.modal-video[data-loaded="true"] {
-  opacity: 1;
-  transition: opacity 0.3s ease-in;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .modal-video-gradient {
@@ -1309,8 +1353,6 @@ body {
   pointer-events: none;
   z-index: 1;
 }
-
-/* Contenido del modal */
 
 .modal-body {
   padding: 2.5rem;
@@ -1519,7 +1561,7 @@ body {
     padding: 2rem 1.5rem;
   }
   .modal-video-wrapper {
-    padding-bottom: 75%; /* Ajuste para pantallas móviles */
+    padding-bottom: 75%;
   }
 }
 
@@ -1527,69 +1569,68 @@ body {
   :root {
     --section-spacing: 80px;
   }
-  
+
   .hero {
     margin-top: 70px;
   }
-  
+
   .hero-title {
     font-size: 1.8rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1.1rem;
   }
-  
+
   .section-title {
     font-size: 1.8rem;
   }
-  
+
   .section-subtitle {
     font-size: 1rem;
   }
-  
+
   .modal-content {
     margin: 1rem;
     max-height: 85vh;
   }
-  
+
   .modal-body {
     padding: 1.5rem;
   }
-  
+
   .modal-title {
     font-size: 1.8rem;
   }
-  
+
   .floating-element {
     display: none;
   }
-  
+
   .services-grid {
     gap: 1.5rem;
   }
-  
+
   .card-info {
     padding: 1.5rem;
   }
-  
+
   .btn-cta {
     padding: 1rem 2rem;
     font-size: 1rem;
   }
-  
+
   .footer-grid {
     gap: 2rem;
   }
-  
+
   .nav-link {
     margin: 0.5rem 0;
   }
 }
 
-/* ================= Mejoras de rendimiento para videos ================= */
+/* ================= Optimizaciones finales de rendimiento ================= */
 
-/* Forzar aceleración por hardware en elementos críticos */
 .background-video,
 .modal-video,
 .particle-dot,
@@ -1599,18 +1640,15 @@ body {
   -webkit-transform: translateZ(0);
 }
 
-/* Optimización específica para videos */
 .background-video,
 .modal-video {
-  /* Prevenir flickering en algunos navegadores */
   -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
-  /* Mejorar rendimiento de renderizado */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Estados de precarga mejorados */
+/* Skeleton simple reutilizable */
 .video-loading {
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
@@ -1635,14 +1673,14 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
+
   .particle-dot,
   .floating-element {
     display: none;
   }
 }
 
-/* ================= Utilidades ================= */
+/* Utilidades */
 
 .text-center {
   text-align: center !important;
@@ -1656,7 +1694,8 @@ body {
   text-align: right !important;
 }
 
-/* Asegurar que los títulos principales estén centrados correctamente */
+/* Títulos centrados por sección */
+
 #servicios .section-title,
 #servicios .section-subtitle,
 #ubicacion .section-title,
@@ -1669,22 +1708,18 @@ body {
   display: block;
 }
 
-/* ================= Fix para Safari y iOS mejorado ================= */
+/* Fix para Safari / iOS */
 
 @supports (-webkit-touch-callout: none) {
   .modal-video,
   .background-video {
-    /* Fix mejorado para Safari */
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
-    /* Prevenir problemas de reproducción en iOS */
     -webkit-tap-highlight-color: transparent;
-    /* Mejorar calidad de renderizado */
     -webkit-filter: blur(0);
     filter: blur(0);
   }
-  
-  /* Prevenir zoom en focus en iOS */
+
   .modal-video:focus,
   .background-video:focus {
     font-size: 16px;

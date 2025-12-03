@@ -1,7 +1,8 @@
-:root {
+.navbar-glass {
+  /* Variables locales del componente */
   --primary: #0A6E7D;
   --secondary: #1496B7;
-  --accent: #FF7F50; /* Naranja */
+  --accent: #FF7F50;
   --text-dark: #2C3E50;
   --glass-bg: rgba(255, 255, 255, 0.95);
   --nav-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -10,11 +11,7 @@
   --nav-logo-size: 52px;
   --nav-title-size: 1.45rem;
   --nav-gradient: linear-gradient(135deg, rgba(10, 110, 125, 0.18), rgba(20, 150, 183, 0.12));
-  /* Ajusta estos --nav-* si quieres experimentar con altura, logo o degradado */
-}
 
-/* Barra principal “glass” */
-.navbar-glass {
   position: fixed;
   top: 0;
   width: 100%;
@@ -26,7 +23,7 @@
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.nav-container {
+.navbar-glass .nav-container {
   max-width: 1440px;
   margin: 0 auto;
   padding: var(--nav-padding-y) var(--nav-padding-x);
@@ -36,7 +33,7 @@
 }
 
 /* Logo y nombre */
-.brand-container {
+.navbar-glass .brand-container {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -44,20 +41,21 @@
   text-decoration: none !important;
 }
 
-.brand-container:hover {
+.navbar-glass .brand-container:hover {
   transform: scale(1.02);
 }
 
-.logo-hover-effect {
+.navbar-glass .logo-hover-effect {
   width: var(--nav-logo-size);
   transition: all 0.3s ease;
   filter: drop-shadow(0 2px 4px rgba(10, 110, 125, 0.2));
 }
-.logo-hover-effect:hover {
+
+.navbar-glass .logo-hover-effect:hover {
   transform: rotate(-5deg) scale(1.1);
 }
 
-.clinic-name {
+.navbar-glass .clinic-name {
   font-size: var(--nav-title-size);
   font-weight: 700;
   background: linear-gradient(45deg, var(--primary), var(--secondary));
@@ -68,20 +66,20 @@
 }
 
 /* Contenedor de enlaces del navbar */
-.nav-links-container {
+.navbar-glass .nav-links-container {
   display: flex;
   align-items: center;
   gap: 1.25rem;
   transition: all 0.3s ease;
 }
 
-.nav-links {
+.navbar-glass .nav-links {
   display: flex;
   gap: 0.8rem;
 }
 
 /* Subrayado naranja al hover */
-.hover-underline {
+.navbar-glass .hover-underline {
   position: relative;
   color: var(--text-dark);
   font-weight: 500;
@@ -89,10 +87,12 @@
   transition: all 0.3s ease;
   text-decoration: none !important;
 }
-.hover-underline:hover {
+
+.navbar-glass .hover-underline:hover {
   color: var(--text-dark);
 }
-.hover-underline::after {
+
+.navbar-glass .hover-underline::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -102,12 +102,13 @@
   background: var(--accent);
   transition: width 0.3s ease;
 }
-.hover-underline:hover::after {
+
+.navbar-glass .hover-underline:hover::after {
   width: 100%;
 }
 
 /* Botón de logout */
-.logout-button {
+.navbar-glass .logout-button {
   background: linear-gradient(45deg, var(--primary), var(--secondary));
   border: none;
   padding: 0.55rem 1.2rem;
@@ -120,7 +121,8 @@
   position: relative;
   overflow: hidden;
 }
-.logout-button::before {
+
+.navbar-glass .logout-button::before {
   content: '';
   position: absolute;
   top: 0;
@@ -135,20 +137,23 @@
   );
   transition: left 0.6s ease;
 }
-.logout-button:hover::before {
+
+.navbar-glass .logout-button:hover::before {
   left: 100%;
 }
-.logout-button:hover {
+
+.navbar-glass .logout-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(10, 110, 125, 0.3);
 }
-.logout-icon {
+
+.navbar-glass .logout-icon {
   font-size: 1.2rem;
 }
 
 /* Botón hamburguesa */
-.menu-toggle {
-  display: none; /* Oculto en escritorios */
+.navbar-glass .menu-toggle {
+  display: none;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -157,7 +162,8 @@
   align-items: center;
   gap: 5px;
 }
-.bar {
+
+.navbar-glass .bar {
   display: block;
   width: 25px;
   height: 2px;
@@ -167,15 +173,13 @@
 
 /* Vista móvil */
 @media (max-width: 768px) {
-  /* El botón hamburguesa se muestra */
-  .menu-toggle {
+  .navbar-glass .menu-toggle {
     display: flex;
   }
 
-  /* Por defecto, ocultamos los enlaces */
-  .nav-links-container {
+  .navbar-glass .nav-links-container {
     position: absolute;
-    top: calc(var(--nav-logo-size) + (var(--nav-padding-y) * 2) + 6px); /* debajo de la navbar */
+    top: calc(var(--nav-logo-size) + (var(--nav-padding-y) * 2) + 6px);
     right: 0;
     width: 200px;
     display: none;
@@ -187,18 +191,17 @@
     gap: 1rem;
   }
 
-  /* Cuando el menú está abierto, se muestra */
-  .nav-links-container.open {
+  .navbar-glass .nav-links-container.open {
     display: flex;
   }
 
-  .nav-links {
+  .navbar-glass .nav-links {
     flex-direction: column;
     width: 100%;
     gap: 0.5rem;
   }
 
-  .hover-underline {
+  .navbar-glass .hover-underline {
     width: 100%;
     margin: 0 !important;
   }

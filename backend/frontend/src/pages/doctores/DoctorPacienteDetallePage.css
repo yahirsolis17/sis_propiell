@@ -1,0 +1,751 @@
+/* frontend/src/pages/doctores/DoctorPacienteDetallePage.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ============================================================
+   DETALLE DE PACIENTE - DOCTOR
+   Paleta consistente con el resto de la aplicación
+   ============================================================ */
+
+.doctor-paciente-container {
+  /* Variables locales - Usando tu paleta principal */
+  --dc-primary: #0A6E7D;           /* Azul principal */
+  --dc-primary-dark: #085766;      /* Azul más oscuro para hover */
+  --dc-primary-light: #E8F5F6;     /* Azul muy claro para fondos */
+  --dc-primary-lighter: #F4FAFB;   /* Azul casi blanco */
+  --dc-secondary: #1496B7;         /* Azul secundario */
+  --dc-secondary-light: #88D1E8;   /* Azul claro para efectos */
+  --dc-accent: #FF7F50;            /* Naranja coral - acento */
+  --dc-accent-light: #FFD1C2;      /* Naranja claro para fondos */
+  
+  /* Colores de texto - Manteniendo contraste */
+  --dc-text-dark: #1A2C3A;         /* Texto oscuro */
+  --dc-text-medium: #4A5C6A;       /* Texto medio */
+  --dc-text-light: #7A8B99;        /* Texto claro */
+  --dc-text-muted: #9CA3AF;        /* Texto atenuado */
+  
+  /* Fondos - Enfoque médico claro */
+  --dc-white: #FFFFFF;
+  --dc-bg-page: #F5F9FA;           /* Fondo de página azul suave */
+  --dc-bg-light: #FAFDFE;          /* Fondo claro */
+  --dc-bg-card: #FFFFFF;
+  --dc-glass-bg: rgba(255, 255, 255, 0.98); /* Fondo glass */
+  
+  /* Sombras - Con tono azulado */
+  --dc-shadow-soft: 0 2px 16px rgba(10, 110, 125, 0.06);
+  --dc-shadow-medium: 0 4px 24px rgba(10, 110, 125, 0.08);
+  --dc-shadow-hover: 0 6px 32px rgba(10, 110, 125, 0.12);
+  --dc-shadow-strong: 0 8px 40px rgba(10, 110, 125, 0.15);
+  
+  /* Bordes - Con tu color principal */
+  --dc-border-light: 1px solid rgba(10, 110, 125, 0.08);
+  --dc-border-medium: 1px solid rgba(10, 110, 125, 0.12);
+  --dc-border-accent: 1px solid rgba(255, 127, 80, 0.2);
+  
+  /* Radios - Consistentes */
+  --dc-radius-sm: 8px;
+  --dc-radius-md: 12px;
+  --dc-radius-lg: 16px;
+  --dc-radius-xl: 20px;
+  --dc-radius-full: 999px;
+  
+  /* Transiciones - Suaves */
+  --dc-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --dc-transition-smooth: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  --dc-transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--dc-bg-page) 0%, var(--dc-primary-light) 100%);
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--dc-text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   LAYOUT PRINCIPAL
+   ============================================================ */
+
+.doctor-paciente-page {
+  padding: 130px 0 3rem 0;
+  min-height: calc(100vh - 130px);
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-paciente-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.03) 0%, 
+    rgba(20, 150, 183, 0.01) 100%);
+  z-index: -1;
+}
+
+.doctor-paciente-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+}
+
+/* ============================================================
+   HEADER - FICHA DEL PACIENTE
+   ============================================================ */
+
+.doctor-paciente-header {
+  background: linear-gradient(135deg, var(--dc-white) 0%, var(--dc-primary-lighter) 100%);
+  border-radius: var(--dc-radius-xl);
+  padding: 2.5rem 2.75rem 2rem 2.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--dc-shadow-medium);
+  border: var(--dc-border-light);
+  position: relative;
+  overflow: hidden;
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-paciente-header:hover {
+  box-shadow: var(--dc-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.doctor-paciente-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 220px;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.05) 100%
+  );
+  border-radius: 0 var(--dc-radius-xl) var(--dc-radius-xl) 0;
+  z-index: 0;
+}
+
+.doctor-paciente-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-paciente-header-left {
+  flex: 1;
+}
+
+.doctor-paciente-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--dc-primary);
+  margin: 0 0 0.35rem 0;
+  letter-spacing: -0.02em;
+  background: linear-gradient(45deg, var(--dc-primary), var(--dc-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.doctor-paciente-subtitle {
+  font-size: 1.05rem;
+  color: var(--dc-text-medium);
+  margin: 0 0 1.15rem 0;
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+.doctor-paciente-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--dc-text-medium);
+}
+
+.doctor-paciente-meta span strong {
+  color: var(--dc-text-dark);
+  font-weight: 600;
+}
+
+/* Lado derecho: acciones + mini resumen */
+.doctor-paciente-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.doctor-paciente-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.doctor-paciente-actions .btn {
+  border-radius: var(--dc-radius-full);
+  font-size: 0.9rem;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Efecto de brillo en botones */
+.doctor-paciente-actions .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-paciente-actions .btn:hover::before {
+  left: 100%;
+}
+
+.doctor-paciente-actions .btn-primary {
+  background: linear-gradient(135deg, var(--dc-primary), var(--dc-secondary));
+  color: var(--dc-white);
+  box-shadow: 0 4px 16px rgba(10, 110, 125, 0.25);
+}
+
+.doctor-paciente-actions .btn-primary:hover {
+  background: linear-gradient(135deg, var(--dc-secondary), var(--dc-primary));
+  box-shadow: 0 6px 20px rgba(10, 110, 125, 0.35);
+  transform: translateY(-2px);
+}
+
+.doctor-paciente-actions .btn-outline-secondary {
+  background: var(--dc-white);
+  color: var(--dc-text-medium);
+  border: var(--dc-border-medium);
+  border-color: rgba(10, 110, 125, 0.25);
+}
+
+.doctor-paciente-actions .btn-outline-secondary:hover {
+  background: var(--dc-primary-light);
+  color: var(--dc-primary);
+  border-color: var(--dc-primary);
+  box-shadow: var(--dc-shadow-soft);
+  transform: translateY(-2px);
+}
+
+/* Tarjeta mini resumen en header */
+.doctor-paciente-summary-chip {
+  background: linear-gradient(135deg, var(--dc-white), var(--dc-primary-lighter));
+  border-radius: var(--dc-radius-lg);
+  border: var(--dc-border-light);
+  padding: 0.9rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--dc-text-medium);
+  max-width: 280px;
+  box-shadow: var(--dc-shadow-soft);
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-paciente-summary-chip:hover {
+  border-color: var(--dc-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--dc-shadow-medium);
+}
+
+.doctor-paciente-summary-chip::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--dc-primary), var(--dc-secondary));
+  border-radius: 0 0 var(--dc-radius-lg) var(--dc-radius-lg);
+}
+
+/* ============================================================
+   ESTADOS GLOBALES (loading / error)
+   ============================================================ */
+
+.doctor-paciente-loading {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--dc-text-medium);
+  font-size: 1rem;
+  background: linear-gradient(135deg, var(--dc-primary-lighter), var(--dc-white));
+  border-radius: var(--dc-radius-lg);
+  border: var(--dc-border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.doctor-paciente-loading::after {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(10, 110, 125, 0.1);
+  border-top-color: var(--dc-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.doctor-paciente-error-card {
+  background: linear-gradient(135deg, 
+    rgba(220, 53, 69, 0.04), 
+    rgba(220, 53, 69, 0.01));
+  border-radius: var(--dc-radius-lg);
+  border: var(--dc-border-medium);
+  border-color: rgba(220, 53, 69, 0.15);
+  padding: 1.5rem;
+  color: #dc3545;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ============================================================
+   CARDS / SECCIONES
+   ============================================================ */
+
+.doctor-paciente-row {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.doctor-paciente-section-card {
+  background: var(--dc-white);
+  border-radius: var(--dc-radius-xl);
+  border: var(--dc-border-light);
+  box-shadow: var(--dc-shadow-medium);
+  transition: var(--dc-transition-smooth);
+  overflow: hidden;
+  position: relative;
+}
+
+.doctor-paciente-section-card:hover {
+  box-shadow: var(--dc-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.doctor-paciente-section-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.03) 100%);
+  border-radius: 0 var(--dc-radius-xl) var(--dc-radius-xl) 0;
+  z-index: 0;
+}
+
+.doctor-paciente-section-card .card-body {
+  padding: 1.75rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.paciente-resumen-card {
+  background: linear-gradient(135deg, var(--dc-primary-lighter), var(--dc-white));
+}
+
+.paciente-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--dc-text-dark);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(10, 110, 125, 0.1);
+}
+
+.paciente-section-title::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--dc-primary), var(--dc-secondary));
+  border-radius: 1px;
+}
+
+/* Lista del resumen clínico */
+.paciente-resumen-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.95rem;
+  color: var(--dc-text-medium);
+}
+
+.paciente-resumen-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(10, 110, 125, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.paciente-resumen-list li:last-child {
+  border-bottom: none;
+}
+
+.paciente-resumen-list li:hover {
+  background: rgba(10, 110, 125, 0.02);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  margin: 0 -0.5rem;
+  border-radius: var(--dc-radius-sm);
+  transition: var(--dc-transition-fast);
+}
+
+.paciente-resumen-label {
+  font-weight: 500;
+  color: var(--dc-text-dark);
+}
+
+.paciente-resumen-value {
+  font-weight: 600;
+  color: var(--dc-primary);
+}
+
+/* ============================================================
+   TABLAS (citas, reportes, recetas, pagos)
+   ============================================================ */
+
+.doctor-paciente-table-wrapper {
+  border-radius: var(--dc-radius-lg);
+  border: var(--dc-border-light);
+  background: var(--dc-white);
+  overflow: hidden;
+  box-shadow: var(--dc-shadow-soft);
+}
+
+.doctor-paciente-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 0.9rem;
+}
+
+.doctor-paciente-table thead {
+  background: linear-gradient(135deg, var(--dc-primary-light), var(--dc-primary-lighter));
+}
+
+.doctor-paciente-table thead th {
+  padding: 1.1rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--dc-text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: var(--dc-border-medium);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background: inherit;
+}
+
+.doctor-paciente-table tbody tr {
+  transition: var(--dc-transition-fast);
+  border-bottom: 1px solid rgba(10, 110, 125, 0.04);
+}
+
+.doctor-paciente-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.doctor-paciente-table tbody tr:hover {
+  background: linear-gradient(90deg, 
+    rgba(10, 110, 125, 0.02) 0%, 
+    rgba(20, 150, 183, 0.01) 100%);
+}
+
+.doctor-paciente-table tbody td {
+  padding: 1.1rem 1rem;
+  vertical-align: middle;
+  color: var(--dc-text-dark);
+  border-bottom: 1px solid rgba(10, 110, 125, 0.04);
+}
+
+.doctor-paciente-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Empty states dentro de secciones */
+.paciente-empty-text {
+  color: var(--dc-text-medium);
+  font-size: 0.95rem;
+  font-style: italic;
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, var(--dc-primary-lighter), var(--dc-white));
+  border-radius: var(--dc-radius-md);
+  border: 1px dashed rgba(10, 110, 125, 0.2);
+}
+
+/* ============================================================
+   BADGES LOCALES (solo dentro de esta vista)
+   ============================================================ */
+
+.doctor-paciente-container .badge {
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: var(--dc-radius-full);
+  font-size: 0.85rem;
+  transition: var(--dc-transition-fast);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid;
+}
+
+.doctor-paciente-container .badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: var(--dc-transition-fast);
+}
+
+.doctor-paciente-container .badge:hover::before {
+  opacity: 1;
+}
+
+.doctor-paciente-container .bg-success {
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.12), 
+    rgba(20, 150, 183, 0.08)) !important;
+  color: var(--dc-primary) !important;
+  border-color: rgba(10, 110, 125, 0.2);
+}
+
+.doctor-paciente-container .bg-success:hover {
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.15), 
+    rgba(20, 150, 183, 0.1)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(10, 110, 125, 0.1);
+}
+
+.doctor-paciente-container .bg-secondary {
+  background: linear-gradient(135deg, 
+    rgba(108, 117, 125, 0.12), 
+    rgba(159, 166, 173, 0.08)) !important;
+  color: #6c757d !important;
+  border-color: rgba(108, 117, 125, 0.2);
+}
+
+.doctor-paciente-container .bg-secondary:hover {
+  background: linear-gradient(135deg, 
+    rgba(108, 117, 125, 0.15), 
+    rgba(159, 166, 173, 0.1)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.1);
+}
+
+.doctor-paciente-container .bg-warning {
+  background: linear-gradient(135deg, 
+    rgba(255, 193, 7, 0.12), 
+    rgba(255, 220, 115, 0.08)) !important;
+  color: #b38f00 !important;
+  border-color: rgba(255, 193, 7, 0.2);
+}
+
+.doctor-paciente-container .bg-warning:hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 193, 7, 0.15), 
+    rgba(255, 220, 115, 0.1)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.1);
+}
+
+.doctor-paciente-container .bg-info {
+  background: linear-gradient(135deg, 
+    rgba(32, 168, 216, 0.12), 
+    rgba(32, 168, 216, 0.08)) !important;
+  color: #1a8cb8 !important;
+  border-color: rgba(32, 168, 216, 0.2);
+}
+
+.doctor-paciente-container .bg-info:hover {
+  background: linear-gradient(135deg, 
+    rgba(32, 168, 216, 0.15), 
+    rgba(32, 168, 216, 0.1)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(32, 168, 216, 0.1);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  .doctor-paciente-content {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .doctor-paciente-page {
+    padding: 110px 0 2rem 0;
+  }
+
+  .doctor-paciente-header {
+    padding: 2rem 2.25rem;
+  }
+
+  .doctor-paciente-section-card .card-body {
+    padding: 1.5rem 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .doctor-paciente-header-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .doctor-paciente-header-right {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .doctor-paciente-content {
+    padding: 0 1.25rem;
+  }
+
+  .doctor-paciente-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .doctor-paciente-table {
+    min-width: 800px;
+  }
+
+  .doctor-paciente-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .doctor-paciente-actions .btn {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .doctor-paciente-content {
+    padding: 0 1rem;
+  }
+
+  .doctor-paciente-header {
+    padding: 1.75rem 1.5rem;
+    border-radius: var(--dc-radius-lg);
+  }
+
+  .doctor-paciente-title {
+    font-size: 1.6rem;
+  }
+
+  .doctor-paciente-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .paciente-section-title {
+    font-size: 1.15rem;
+  }
+
+  .doctor-paciente-section-card .card-body {
+    padding: 1.25rem;
+  }
+
+  .doctor-paciente-actions {
+    flex-direction: column;
+  }
+
+  .doctor-paciente-actions .btn {
+    width: 100%;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doctor-paciente-header,
+.doctor-paciente-section-card {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de partículas sutiles para el fondo */
+.doctor-paciente-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 127, 80, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(20, 150, 183, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(10, 110, 125, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -2;
+}

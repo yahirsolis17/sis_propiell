@@ -1,49 +1,120 @@
-// ConsultModal.jsx
-import React, { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
-import { FiUser, FiDollarSign, FiAlertCircle, FiCamera, FiChevronRight } from 'react-icons/fi';
-import api from '../../services/api';
+// src/components/citas/ConsultModal.jsx
+import React, { useState } from "react";
+import { Modal, Button } from "react-bootstrap";
+import {
+  FiUser,
+  FiDollarSign,
+  FiAlertCircle,
+  FiCamera,
+  FiChevronRight,
+  FiEye,
+} from "react-icons/fi";
+import { confirmarCita } from "../../services/citasService";
+import { requiereConsentimiento } from "../../utils/clinicRules";
 import "./ConsultModal.css";
 
-const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
-  const [accion, setAccion] = useState('');
+const ConsultModal = ({
+  show,
+  onHide,
+  cita,
+  onActionSuccess,
+  onVerConsentimiento, // opcional: para abrir un visor después
+}) => {
+  const [accion, setAccion] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
+
+  if (!show || !cita) return null;
+
+  const tienePago = Array.isArray(cita.pagos) && cita.pagos.length > 0;
+  const pago = tienePago ? cita.pagos[0] : null;
 
   const handleAction = async () => {
     if (!accion) {
-      setError('Por favor selecciona una acción');
+      setError("Por favor selecciona una acción.");
       return;
     }
-    
+
+    // ✅ Permitir confirmar SIN pago, pero avisar al doctor
+    if (accion === "confirmar" && !tienePago) {
+      const continuar = window.confirm(
+        "Esta cita no tiene un comprobante de pago registrado.\n" +
+          "¿Quieres confirmar la cita con pago pendiente (pago en consultorio o por registrar)?"
+      );
+      if (!continuar) return;
+    }
+
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
-      await api.post(`/citas/${cita.id}/confirmar/`, { accion });
-      onActionSuccess(cita.id);
-      onHide();
+      await confirmarCita(cita.id, accion);
+
+      if (typeof onActionSuccess === "function") {
+        onActionSuccess(cita.id);
+      }
+
+      if (typeof onHide === "function") {
+        onHide();
+      }
     } catch (err) {
-      setError(err.response?.data?.error || 'Error al procesar la acción');
+      console.error("Error al procesar la acción de la cita:", err);
+      const msg =
+        err.response?.data?.error ||
+        err.response?.data?.detail ||
+        "Error al procesar la acción. Intenta de nuevo.";
+      setError(msg);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleVerConsentimiento = () => {
+    if (typeof onVerConsentimiento === "function") {
+      onVerConsentimiento(cita);
+    }
+  };
+
   const formatDate = (dateString) => {
-    if (!dateString) return '';
+    if (!dateString) return "";
     const options = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     };
-    return new Date(dateString).toLocaleDateString('es-ES', options);
+    return new Date(dateString).toLocaleDateString("es-MX", options);
+  };
+
+  // 🔹 Mensaje visual del estado del pago
+  const renderPagoEstadoLabel = () => {
+    if (!tienePago) {
+      return (
+        <span className="badge bg-warning text-dark">
+          Pago pendiente (pago en consultorio o transferencia por registrar)
+        </span>
+      );
+    }
+
+    if (pago.verificado) {
+      return <span className="badge bg-success">Pago verificado</span>;
+    }
+
+    return (
+      <span className="badge bg-info text-dark">
+        Comprobante recibido (por verificar)
+      </span>
+    );
   };
 
   return (
-    <Modal show={show} onHide={onHide} centered dialogClassName="consult-modal-dialog">
+    <Modal
+      show={show}
+      onHide={onHide}
+      centered
+      dialogClassName="consult-modal-dialog"
+    >
       <Modal.Header closeButton className="consult-modal-header">
         <Modal.Title>
           <div className="section-title-icon">
@@ -63,7 +134,7 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
               </div>
               Información del Paciente
             </h5>
-            
+
             <div className="patient-details-grid">
               <div className="detail-item">
                 <span className="detail-label">
@@ -71,7 +142,8 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
                   Nombre completo
                 </span>
                 <span className="detail-value">
-                  {cita.paciente?.nombre || 'N/A'} {cita.paciente?.apellidos}
+                  {cita.paciente?.nombre || "N/A"}{" "}
+                  {cita.paciente?.apellidos || ""}
                 </span>
               </div>
 
@@ -81,7 +153,7 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
                   Edad
                 </span>
                 <span className="detail-value">
-                  {cita.paciente?.edad || 'N/A'} años
+                  {cita.paciente?.edad || "N/A"} años
                 </span>
               </div>
 
@@ -91,7 +163,7 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
                   Sexo
                 </span>
                 <span className="detail-value">
-                  {cita.paciente?.sexo || 'N/A'}
+                  {cita.paciente?.sexo || "N/A"}
                 </span>
               </div>
 
@@ -101,7 +173,7 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
                   Teléfono
                 </span>
                 <span className="detail-value">
-                  {cita.paciente?.telefono || 'N/A'}
+                  {cita.paciente?.telefono || "N/A"}
                 </span>
               </div>
 
@@ -111,7 +183,76 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
                   Peso
                 </span>
                 <span className="detail-value">
-                  {cita.paciente?.peso ? `${cita.paciente.peso} kg` : 'N/A'}
+                  {cita.paciente?.peso ? `${cita.paciente.peso} kg` : "N/A"}
+                </span>
+              </div>
+
+              {/* Info básica de la cita */}
+              <div className="detail-item">
+                <span className="detail-label">
+                  <FiChevronRight />
+                  Especialidad
+                </span>
+                <span className="detail-value">
+                  {cita.especialidad?.nombre || "Sin especialidad"}
+                </span>
+              </div>
+
+              <div className="detail-item">
+                <span className="detail-label">
+                  <FiChevronRight />
+                  Fecha y hora
+                </span>
+                <span className="detail-value">
+                  {formatDate(cita.fecha_hora) || "N/A"}
+                </span>
+              </div>
+
+              <div className="detail-item">
+                <span className="detail-label">
+                  <FiChevronRight />
+                  Tipo de cita
+                </span>
+                <span className="detail-value">
+                  {cita.tipo === "I"
+                    ? "Inicial"
+                    : cita.tipo === "S"
+                    ? "Subsecuente"
+                    : cita.tipo || "N/A"}
+                </span>
+              </div>
+
+              <div className="detail-item">
+                <span className="detail-label">
+                  <FiChevronRight />
+                  Consentimiento
+                </span>
+                <span className="detail-value">
+                  {requiereConsentimiento(cita) ? (
+                    cita.consentimiento_completado ? (
+                      <>
+                        <span className="badge bg-success me-2">
+                          Completado
+                        </span>
+                        {typeof onVerConsentimiento === "function" && (
+                          <button
+                            type="button"
+                            className="btn btn-link btn-sm p-0 align-baseline"
+                            onClick={handleVerConsentimiento}
+                          >
+                            <FiEye className="me-1" />
+                            Ver
+                          </button>
+                        )}
+                      </>
+                    ) : (
+                      <span className="badge bg-secondary">Pendiente</span>
+                    )
+                  ) : (
+                    <span className="text-muted small">
+                      No aplica para esta especialidad
+                    </span>
+                  )}
                 </span>
               </div>
             </div>
@@ -125,42 +266,62 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
               </div>
               Detalles de Pago
             </h5>
-            
-            {cita.pagos?.length > 0 ? (
+
+            {/* 🔹 Estado del pago en texto/badge */}
+            <div className="mb-3">{renderPagoEstadoLabel()}</div>
+
+            {tienePago ? (
               <>
                 <div className="comprobante-container">
                   <img
-                    src={cita.pagos[0].comprobante}
+                    src={pago.comprobante}
                     alt="Comprobante de pago"
                     className="comprobante-img"
                   />
                 </div>
-                
+
+                {pago.comprobante && (
+                  <div className="text-center mt-2">
+                    <a
+                      href={pago.comprobante}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline-primary btn-sm"
+                    >
+                      Ver comprobante completo
+                    </a>
+                  </div>
+                )}
+
                 <div className="payment-details-grid">
                   <div className="payment-item">
                     <span className="payment-label">Total:</span>
-                    <span className="payment-value">${cita.pagos[0].total}</span>
+                    <span className="payment-value">${pago.total}</span>
                   </div>
-                  
+
                   <div className="payment-item">
                     <span className="payment-label">Pagado:</span>
-                    <span className="payment-value">${cita.pagos[0].pagado}</span>
+                    <span className="payment-value">${pago.pagado}</span>
                   </div>
-                  
+
                   <div className="payment-item">
                     <span className="payment-label">Estado:</span>
-                    <span 
-                      className="payment-value" 
-                      style={{ color: cita.pagos[0].verificado ? '#28a745' : '#dc3545' }}
+                    <span
+                      className="payment-value"
+                      style={{
+                        color: pago.verificado ? "#28a745" : "#dc3545",
+                      }}
                     >
-                      {cita.pagos[0].verificado ? 'Verificado' : 'Pendiente'}
+                      {pago.verificado ? "Verificado" : "Pendiente"}
                     </span>
                   </div>
-                  
-                  {cita.pagos[0].fecha && (
+
+                  {pago.fecha && (
                     <div className="payment-item">
                       <span className="payment-label">Fecha pago:</span>
-                      <span className="payment-value">{formatDate(cita.pagos[0].fecha)}</span>
+                      <span className="payment-value">
+                        {formatDate(pago.fecha)}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -168,7 +329,10 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
             ) : (
               <div className="text-center py-4">
                 <FiCamera size={48} color="#ccc" />
-                <p className="text-muted mt-2">No se encontró comprobante</p>
+                <p className="text-muted mt-2">
+                  No se encontró comprobante. El paciente puede pagar en
+                  consultorio o subirlo más tarde.
+                </p>
               </div>
             )}
           </div>
@@ -182,7 +346,7 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
             </div>
             <h5 className="section-title">Acciones Disponibles</h5>
           </div>
-          
+
           <select
             className="form-select action-select"
             value={accion}
@@ -193,7 +357,7 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
             <option value="confirmar">✅ Confirmar Cita</option>
             <option value="cancelar">❌ Cancelar Cita</option>
           </select>
-          
+
           {error && (
             <div className="error-message mt-3">
               <FiAlertCircle /> {error}
@@ -211,7 +375,7 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
         >
           Cancelar
         </Button>
-        
+
         <Button
           variant="primary"
           className="btn-modal"
@@ -224,7 +388,7 @@ const ConsultModal = ({ show, onHide, cita, onActionSuccess }) => {
               Procesando...
             </>
           ) : (
-            'Confirmar Acción'
+            "Confirmar Acción"
           )}
         </Button>
       </Modal.Footer>

@@ -1,14 +1,18 @@
+// src/pages/Dashboard.jsx
 import { useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { useSpring, animated } from '@react-spring/web';
+
 import { getCurrentUser, verifyAuth } from "../services/authService";
 import Navbar from "../components/Navbar";
+
 import BlurText from "../components/dashboards/BlurText";
 import AdminDashboard from "../components/dashboards/AdminDashboard";
 import PacienteDashboard from "../components/dashboards/PacienteDashboard";
 import DermatologoDashboard from "../components/dashboards/DermatologoDashboard";
 import PodologoDashboard from "../components/dashboards/PodologoDashboard";
 import TamizDashboard from "../components/dashboards/TamizDashboard";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Dashboard.css";
 
@@ -53,18 +57,25 @@ const Dashboard = () => {
     switch (role?.toUpperCase()) {
       case "ADMIN":
         return <AdminDashboard cardAnimation={cardAnimation} />;
+
       case "PACIENTE":
         return <PacienteDashboard cardAnimation={cardAnimation} />;
+
       case "DERMATOLOGO":
         return <DermatologoDashboard cardAnimation={cardAnimation} />;
+
       case "PODOLOGO":
         return <PodologoDashboard cardAnimation={cardAnimation} />;
+
       case "TAMIZ":
         return <TamizDashboard cardAnimation={cardAnimation} />;
+
       default:
         return (
           <animated.div style={cardAnimation} className="dashboard-card">
-            <h2 className="text-center text-muted">No tienes un dashboard asignado</h2>
+            <h2 className="text-center text-muted">
+              No tienes un dashboard asignado
+            </h2>
           </animated.div>
         );
     }
@@ -75,7 +86,13 @@ const Dashboard = () => {
       <Navbar user={user} />
 
       <animated.div
-        style={{ ...headerAnimation, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}
+        style={{
+          ...headerAnimation,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
         className="header-section my-4"
       >
         <BlurText
@@ -83,7 +100,8 @@ const Dashboard = () => {
           delay={80}
           className="welcome-title"
         />
-        {/* Aquí agregamos el rol del usuario debajo del nombre */}
+
+        {/* Rol debajo del nombre */}
         <animated.p
           style={{
             ...headerAnimation,

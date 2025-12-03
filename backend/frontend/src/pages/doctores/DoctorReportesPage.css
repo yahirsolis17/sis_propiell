@@ -1,0 +1,993 @@
+/* src/pages/doctores/DoctorReportePage.css */
+/* ============================================================
+   PALETA MÉDICA - REPORTES CLÍNICOS UNIFICADOS (CONSISTENTE)
+   ============================================================ */
+
+.doctor-reporte-page,
+.doctor-reporte-container {
+  /* Variables locales - Usando tu paleta principal consistente */
+  --dc-primary: #0A6E7D;           /* Azul principal */
+  --dc-primary-dark: #085766;      /* Azul más oscuro para hover */
+  --dc-primary-light: #E8F5F6;     /* Azul muy claro para fondos */
+  --dc-primary-lighter: #F4FAFB;   /* Azul casi blanco */
+  --dc-secondary: #1496B7;         /* Azul secundario */
+  --dc-secondary-light: #88D1E8;   /* Azul claro para efectos */
+  --dc-accent: #FF7F50;            /* Naranja coral - acento */
+  --dc-accent-light: #FFD1C2;      /* Naranja claro para fondos */
+  
+  /* Colores de texto - Manteniendo contraste */
+  --dc-text-dark: #1A2C3A;         /* Texto oscuro */
+  --dc-text-medium: #4A5C6A;       /* Texto medio */
+  --dc-text-light: #7A8B99;        /* Texto claro */
+  --dc-text-muted: #9CA3AF;        /* Texto atenuado */
+  
+  /* Fondos - Enfoque médico claro */
+  --dc-white: #FFFFFF;
+  --dc-bg-page: #F5F9FA;           /* Fondo de página azul suave */
+  --dc-bg-light: #FAFDFE;          /* Fondo claro */
+  --dc-bg-card: #FFFFFF;
+  --dc-glass-bg: rgba(255, 255, 255, 0.98); /* Fondo glass */
+  
+  /* Sombras - Con tono azulado */
+  --dc-shadow-soft: 0 2px 16px rgba(10, 110, 125, 0.06);
+  --dc-shadow-medium: 0 4px 24px rgba(10, 110, 125, 0.08);
+  --dc-shadow-hover: 0 6px 32px rgba(10, 110, 125, 0.12);
+  --dc-shadow-strong: 0 8px 40px rgba(10, 110, 125, 0.15);
+  
+  /* Bordes - Con tu color principal */
+  --dc-border-light: 1px solid rgba(10, 110, 125, 0.08);
+  --dc-border-medium: 1px solid rgba(10, 110, 125, 0.12);
+  --dc-border-accent: 1px solid rgba(255, 127, 80, 0.2);
+  
+  /* Radios - Consistentes */
+  --dc-radius-sm: 8px;
+  --dc-radius-md: 12px;
+  --dc-radius-lg: 16px;
+  --dc-radius-xl: 20px;
+  --dc-radius-full: 999px;
+  
+  /* Transiciones - Suaves */
+  --dc-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --dc-transition-smooth: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  --dc-transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  background: linear-gradient(135deg, #0a5365 0%, #0d7590 50%, #18a5c0 100%);
+  font-family: 'Poppins', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--dc-text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+
+  min-height: 100vh;
+  padding: 130px 0 3rem 0;        /* espacio para navbar fijo y respiro */
+}
+
+/* Efecto de partículas sutiles para el fondo */
+.doctor-reporte-page::before,
+.doctor-reporte-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 127, 80, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(20, 150, 183, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(10, 110, 125, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Contenedor para modo lista */
+.doctor-reporte-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 2.5rem;
+  position: relative;
+}
+
+/* Contenedor para modo detalle */
+.doctor-reporte-container .doctor-reporte-page {
+  padding-top: 0;
+  background: transparent;
+}
+
+.doctor-reporte-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 2.5rem;
+  position: relative;
+}
+
+/* ============================================================
+   HEADER SUPERIOR - MODO LISTA
+   ============================================================ */
+
+.doctor-reporte-header {
+  background: linear-gradient(135deg, var(--dc-white) 0%, var(--dc-primary-lighter) 100%);
+  border-radius: var(--dc-radius-xl);
+  padding: 2.5rem 2.75rem 2rem 2.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--dc-shadow-medium);
+  border: var(--dc-border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-reporte-header:hover {
+  box-shadow: var(--dc-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* fondo decorativo lateral derecho */
+.doctor-reporte-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 220px;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.05) 100%
+  );
+  border-radius: 0 var(--dc-radius-xl) var(--dc-radius-xl) 0;
+  z-index: 0;
+}
+
+.doctor-reporte-header-left,
+.doctor-reporte-header-right {
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-reporte-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--dc-primary);
+  margin: 0 0 0.4rem 0;
+  letter-spacing: -0.02em;
+  background: linear-gradient(45deg, var(--dc-primary), var(--dc-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.doctor-reporte-subtitle {
+  font-size: 1.05rem;
+  color: var(--dc-text-medium);
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* pill de rol - mismo estilo que en Pagos/Recetas */
+.doctor-role-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--dc-radius-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: linear-gradient(45deg, var(--dc-primary), var(--dc-secondary));
+  color: var(--dc-white);
+  border: none;
+  box-shadow: 0 4px 12px rgba(10, 110, 125, 0.25);
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-role-pill::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-role-pill:hover {
+  background: linear-gradient(45deg, var(--dc-secondary), var(--dc-primary));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 110, 125, 0.35);
+}
+
+.doctor-role-pill:hover::before {
+  left: 100%;
+}
+
+.doctor-reporte-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.doctor-reporte-badge-count {
+  padding: 0.9rem 1.75rem;
+  border-radius: var(--dc-radius-lg);
+  background: linear-gradient(135deg, var(--dc-white), var(--dc-primary-lighter));
+  border: var(--dc-border-medium);
+  font-size: 0.9rem;
+  color: var(--dc-text-medium);
+  box-shadow: var(--dc-shadow-soft);
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+  min-width: 140px;
+  text-align: center;
+}
+
+.doctor-reporte-badge-count:hover {
+  border-color: var(--dc-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--dc-shadow-medium);
+}
+
+.doctor-reporte-badge-count::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--dc-primary), var(--dc-secondary));
+  border-radius: 0 0 var(--dc-radius-lg) var(--dc-radius-lg);
+}
+
+.doctor-reporte-count {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--dc-primary);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  background: linear-gradient(45deg, var(--dc-primary), var(--dc-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.doctor-reporte-label {
+  font-size: 0.8rem;
+  color: var(--dc-text-medium);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.doctor-reporte-back-btn {
+  border-radius: var(--dc-radius-full);
+  font-size: 0.85rem;
+  padding: 0.6rem 1.25rem;
+  font-weight: 600;
+  border: var(--dc-border-medium);
+  border-color: rgba(10, 110, 125, 0.25);
+  color: var(--dc-text-medium);
+  background: var(--dc-white);
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.doctor-reporte-back-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 127, 80, 0.1),
+    transparent
+  );
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-reporte-back-btn:hover {
+  background: var(--dc-primary-light);
+  color: var(--dc-primary);
+  border-color: var(--dc-primary);
+  box-shadow: var(--dc-shadow-soft);
+  transform: translateY(-2px);
+}
+
+.doctor-reporte-back-btn:hover::before {
+  left: 100%;
+}
+
+/* ============================================================
+   HEADER DETALLE PACIENTE - MODO DETALLE
+   ============================================================ */
+
+.doctor-reporte-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  width: 100%;
+}
+
+.doctor-reporte-header-left {
+  flex: 1;
+}
+
+.doctor-reporte-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.doctor-reporte-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.doctor-reporte-actions .btn {
+  border-radius: var(--dc-radius-full);
+  font-size: 0.85rem;
+  padding: 0.6rem 1.25rem;
+  font-weight: 600;
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.doctor-reporte-actions .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-reporte-actions .btn:hover::before {
+  left: 100%;
+}
+
+.doctor-reporte-actions .btn-primary {
+  background: linear-gradient(135deg, var(--dc-primary), var(--dc-secondary));
+  color: var(--dc-white);
+  box-shadow: 0 4px 16px rgba(10, 110, 125, 0.25);
+}
+
+.doctor-reporte-actions .btn-primary:hover {
+  background: linear-gradient(135deg, var(--dc-secondary), var(--dc-primary));
+  box-shadow: 0 6px 20px rgba(10, 110, 125, 0.35);
+  transform: translateY(-2px);
+}
+
+.doctor-reporte-actions .btn-outline-primary {
+  background: var(--dc-white);
+  color: var(--dc-primary);
+  border: var(--dc-border-medium);
+  border-color: var(--dc-primary);
+}
+
+.doctor-reporte-actions .btn-outline-primary:hover {
+  background: var(--dc-primary-light);
+  box-shadow: var(--dc-shadow-soft);
+  transform: translateY(-2px);
+}
+
+.doctor-reporte-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--dc-text-medium);
+}
+
+.doctor-reporte-meta span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.doctor-reporte-meta strong {
+  color: var(--dc-text-dark);
+  font-weight: 600;
+}
+
+.doctor-reporte-summary-chip {
+  background: linear-gradient(135deg, var(--dc-primary-lighter), var(--dc-white));
+  border: var(--dc-border-light);
+  border-radius: var(--dc-radius-md);
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  color: var(--dc-text-dark);
+  text-align: center;
+  line-height: 1.4;
+  box-shadow: var(--dc-shadow-soft);
+  transition: var(--dc-transition-fast);
+}
+
+.doctor-reporte-summary-chip:hover {
+  border-color: var(--dc-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--dc-shadow-medium);
+}
+
+/* ============================================================
+   CARD DE FILTROS - MODO LISTA
+   ============================================================ */
+
+.doctor-reporte-filters-card {
+  background: var(--dc-white);
+  border-radius: var(--dc-radius-xl);
+  box-shadow: var(--dc-shadow-medium);
+  border: var(--dc-border-light);
+  padding: 1.75rem 2rem 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-reporte-filters-card:hover {
+  box-shadow: var(--dc-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.doctor-reporte-filters-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.03) 100%);
+  border-radius: 0 var(--dc-radius-xl) var(--dc-radius-xl) 0;
+  z-index: 0;
+}
+
+.doctor-reporte-filters-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dc-primary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-reporte-select,
+.doctor-reporte-search-input {
+  border-radius: var(--dc-radius-full);
+  font-size: 0.9rem;
+  padding: 0.75rem 1.25rem;
+  border: var(--dc-border-medium);
+  color: var(--dc-text-dark);
+  background: var(--dc-white);
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-reporte-select:focus,
+.doctor-reporte-search-input:focus {
+  border-color: var(--dc-primary);
+  box-shadow: 0 0 0 3px rgba(10, 110, 125, 0.15);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.doctor-reporte-filters-status {
+  font-size: 0.8rem;
+  color: var(--dc-text-medium);
+  font-style: italic;
+  margin-top: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   SECCIONES Y CARDS - MODO DETALLE
+   ============================================================ */
+
+.doctor-reporte-row {
+  margin-bottom: 1rem;
+}
+
+.doctor-reporte-section-card {
+  background: var(--dc-white);
+  border-radius: var(--dc-radius-xl);
+  box-shadow: var(--dc-shadow-medium);
+  border: var(--dc-border-light);
+  transition: var(--dc-transition-smooth);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-reporte-section-card:hover {
+  box-shadow: var(--dc-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.doctor-reporte-section-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.03) 100%);
+  border-radius: 0 var(--dc-radius-xl) var(--dc-radius-xl) 0;
+  z-index: 0;
+}
+
+.doctor-reporte-section-card .card-body {
+  padding: 1.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.paciente-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--dc-text-dark);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid rgba(10, 110, 125, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.paciente-section-title::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--dc-primary), var(--dc-secondary));
+  border-radius: 1px;
+}
+
+/* Card de resumen rápido */
+.paciente-resumen-card {
+  background: linear-gradient(135deg, var(--dc-primary-lighter), var(--dc-white));
+  border: var(--dc-border-light);
+}
+
+.paciente-resumen-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.paciente-resumen-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(10, 110, 125, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.paciente-resumen-list li:last-child {
+  border-bottom: none;
+}
+
+.paciente-resumen-list li:hover {
+  background: rgba(10, 110, 125, 0.02);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  margin: 0 -0.5rem;
+  border-radius: var(--dc-radius-sm);
+  transition: var(--dc-transition-fast);
+}
+
+.paciente-resumen-list strong {
+  color: var(--dc-primary);
+  font-weight: 600;
+}
+
+/* ============================================================
+   TABLAS - AMBOS MODOS
+   ============================================================ */
+
+.doctor-reporte-table-card {
+  background: var(--dc-white);
+  border-radius: var(--dc-radius-xl);
+  box-shadow: var(--dc-shadow-medium);
+  border: var(--dc-border-light);
+  padding: 2rem 2.5rem;
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-reporte-table-card:hover {
+  box-shadow: var(--dc-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.doctor-reporte-table-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.03) 100%);
+  border-radius: 0 var(--dc-radius-xl) var(--dc-radius-xl) 0;
+  z-index: 0;
+}
+
+.doctor-reporte-table-wrapper {
+  border-radius: var(--dc-radius-lg);
+  overflow: hidden;
+  border: var(--dc-border-light);
+  background: var(--dc-white);
+  box-shadow: var(--dc-shadow-soft);
+}
+
+.doctor-reporte-table {
+  margin: 0;
+  font-size: 0.9rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* TableLayout internamente usa .table, así que afinamos un poco */
+.doctor-reporte-table-card .table thead th,
+.doctor-reporte-table thead th {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--dc-text-dark);
+  background: linear-gradient(135deg, var(--dc-primary-light), var(--dc-primary-lighter));
+  border-bottom: var(--dc-border-medium);
+  padding: 1.1rem 1rem;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+.doctor-reporte-table-card .table tbody td,
+.doctor-reporte-table tbody td {
+  font-size: 0.9rem;
+  color: var(--dc-text-dark);
+  padding: 1.1rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(10, 110, 125, 0.04);
+}
+
+.doctor-reporte-table-card .table tbody tr:nth-child(even),
+.doctor-reporte-table tbody tr:nth-child(even) {
+  background-color: var(--dc-bg-light);
+}
+
+.doctor-reporte-table-card .table tbody tr:hover,
+.doctor-reporte-table tbody tr:hover {
+  background: linear-gradient(90deg, 
+    rgba(10, 110, 125, 0.02) 0%, 
+    rgba(20, 150, 183, 0.01) 100%);
+  transition: var(--dc-transition-fast);
+  cursor: pointer;
+}
+
+/* Badges en tablas */
+.doctor-reporte-table .badge {
+  font-size: 0.75rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--dc-radius-full);
+  font-weight: 600;
+  border: 1px solid;
+  transition: var(--dc-transition-fast);
+}
+
+.doctor-reporte-table .bg-success {
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.12), 
+    rgba(20, 150, 183, 0.08)) !important;
+  color: var(--dc-primary) !important;
+  border-color: rgba(10, 110, 125, 0.2);
+}
+
+.doctor-reporte-table .bg-success:hover {
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.15), 
+    rgba(20, 150, 183, 0.1)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(10, 110, 125, 0.1);
+}
+
+/* ============================================================
+   ESTADOS / ERRORES / LOADING
+   ============================================================ */
+
+.doctor-reporte-error,
+.doctor-reporte-error-card {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-radius: var(--dc-radius-md);
+  border: var(--dc-border-medium);
+  border-color: rgba(220, 53, 69, 0.15);
+  background: linear-gradient(135deg, 
+    rgba(220, 53, 69, 0.04), 
+    rgba(220, 53, 69, 0.01));
+  color: #dc3545;
+  font-weight: 500;
+  padding: 1.25rem;
+  text-align: center;
+  font-size: 0.95rem;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-reporte-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  font-size: 1.1rem;
+  color: var(--dc-text-medium);
+  background: linear-gradient(135deg, var(--dc-primary-lighter), var(--dc-white));
+  border-radius: var(--dc-radius-lg);
+  box-shadow: var(--dc-shadow-soft);
+  border: var(--dc-border-light);
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.doctor-reporte-loading::after {
+  content: "";
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(10, 110, 125, 0.1);
+  border-top: 3px solid var(--dc-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.paciente-empty-text {
+  color: var(--dc-text-medium);
+  font-style: italic;
+  text-align: center;
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, var(--dc-primary-lighter), var(--dc-white));
+  border-radius: var(--dc-radius-md);
+  border: 1px dashed rgba(10, 110, 125, 0.2);
+  margin: 0;
+}
+
+/* ============================================================
+   ANIMACIONES Y MEJORAS UX
+   ============================================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doctor-reporte-header,
+.doctor-reporte-filters-card,
+.doctor-reporte-table-card,
+.doctor-reporte-section-card {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  .doctor-reporte-content,
+  .doctor-reporte-wrapper {
+    padding: 0 1.5rem 2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .doctor-reporte-page,
+  .doctor-reporte-container {
+    padding: 110px 0 2rem 0;
+  }
+
+  .doctor-reporte-wrapper,
+  .doctor-reporte-content {
+    padding: 0 1.5rem 2rem;
+  }
+
+  .doctor-reporte-header {
+    padding: 2rem 2.25rem 1.75rem 2.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .doctor-reporte-header-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .doctor-reporte-header-right {
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .doctor-reporte-actions {
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .doctor-reporte-badge-count {
+    min-width: auto;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .doctor-reporte-filters-card {
+    padding: 1.5rem 1.75rem 1.25rem;
+  }
+
+  .doctor-reporte-table-card {
+    padding: 1.75rem 2rem;
+  }
+
+  .doctor-reporte-section-card .card-body {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .doctor-reporte-page,
+  .doctor-reporte-container {
+    padding-top: 90px;
+    padding-bottom: 2rem;
+  }
+
+  .doctor-reporte-title {
+    font-size: 1.8rem;
+  }
+
+  .doctor-reporte-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .doctor-reporte-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .doctor-reporte-actions .btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .paciente-resumen-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .doctor-reporte-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .doctor-reporte-table {
+    min-width: 800px;
+  }
+
+  .doctor-reporte-wrapper,
+  .doctor-reporte-content {
+    padding: 0 1.25rem 2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .doctor-reporte-wrapper,
+  .doctor-reporte-content {
+    padding: 0 1rem 1.75rem;
+  }
+
+  .doctor-reporte-header {
+    padding: 1.75rem 1.5rem 1.5rem 1.5rem;
+    border-radius: var(--dc-radius-lg);
+  }
+
+  .doctor-reporte-title {
+    font-size: 1.6rem;
+  }
+
+  .doctor-reporte-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .doctor-reporte-header-right {
+    gap: 0.75rem;
+  }
+
+  .doctor-reporte-badge-count {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .doctor-reporte-back-btn {
+    width: 100%;
+  }
+
+  .doctor-reporte-section-card .card-body {
+    padding: 1.25rem;
+  }
+
+  .paciente-section-title {
+    font-size: 1.15rem;
+  }
+
+  .doctor-reporte-actions .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .doctor-role-pill {
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+  }
+}

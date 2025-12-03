@@ -1,9 +1,10 @@
+// src/components/Navbar.jsx
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getCurrentUser, logout } from "../services/authService";
 import { FiLogOut } from "react-icons/fi";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
+
 import logo from "../assets/logo.png";
 import "./Navbar.css";
 
@@ -12,7 +13,6 @@ const Navbar = () => {
   const location = useLocation();
   const user = getCurrentUser();
 
-  // Estado para mostrar/ocultar el menú en pantallas pequeñas
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -30,7 +30,6 @@ const Navbar = () => {
     }
   }, [location, navigate]);
 
-  // Cerrar menú si el usuario hace clic en algún link o en el botón de logout
   const closeMenu = () => {
     setMenuOpen(false);
   };
@@ -67,10 +66,11 @@ const Navbar = () => {
           }}
         >
           <button
+            type="button"
             onClick={() => {
               logout();
               toast.dismiss();
-              navigate("/");
+              navigate("/login", { replace: true });
             }}
             style={{
               padding: "8px 14px",
@@ -91,6 +91,7 @@ const Navbar = () => {
             Confirmar
           </button>
           <button
+            type="button"
             onClick={() => toast.dismiss()}
             style={{
               padding: "8px 14px",
@@ -123,42 +124,194 @@ const Navbar = () => {
 
   const renderNavLinks = () => {
     if (!user) return null;
+
     const commonStyles = "hover-underline mx-3 px-2 py-1";
-    switch (user?.role?.toUpperCase()) {
+    const role = user?.role?.toUpperCase();
+    const roleLower = user?.role?.toLowerCase();
+    const dashboardPath = roleLower ? `/dashboard/${roleLower}` : "/dashboard";
+
+    switch (role) {
       case "ADMIN":
         return (
           <>
-            <Link onClick={closeMenu} className={commonStyles} to="/dashboard/admin">
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to={dashboardPath}
+            >
+              Inicio
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/dashboard/admin"
+            >
               Dashboard
             </Link>
-            <Link onClick={closeMenu} className={commonStyles} to="/admin/usuarios">
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/admin/usuarios"
+            >
               Usuarios
             </Link>
-            <Link onClick={closeMenu} className={commonStyles} to="/admin/reportes">
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/admin/reportes"
+            >
               Reportes
             </Link>
           </>
         );
+
       case "PACIENTE":
         return (
           <>
-            <Link onClick={closeMenu} className={commonStyles} to="/dashboard/paciente">
-              Mis Citas
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to={dashboardPath}
+            >
+              Inicio
             </Link>
-            <Link onClick={closeMenu} className={commonStyles} to="/citas">
-              Agendar Cita
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/citas"
+            >
+              Registrar cita
             </Link>
-            <Link onClick={closeMenu} className={commonStyles} to="/paciente/pagos">
-              Pagos
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/paciente/pagos"
+            >
+              Pagos y comprobantes
             </Link>
-            <Link onClick={closeMenu} className={commonStyles} to="/paciente/historial">
-              Historial
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/paciente/recetas"
+            >
+              Mis recetas
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/paciente/reportes"
+            >
+              Reportes clínicos
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/paciente/tratamiento"
+            >
+              Mi tratamiento
             </Link>
           </>
         );
+
+      // Dermatólogo: flujo completo incluyendo consentimientos
+      case "DERMATOLOGO":
+        return (
+          <>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to={dashboardPath}
+            >
+              Inicio
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/doctor/citas"
+            >
+              Citas
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/doctor/pacientes"
+            >
+              Pacientes
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/doctor/pagos"
+            >
+              Pagos
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/doctor/consentimientos"
+            >
+              Consentimientos
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/doctor/recetas"
+            >
+              Recetas
+            </Link>
+          </>
+        );
+
+      // Podólogo y Tamiz: mismo flujo de citas/pagos/recetas, sin consentimiento
+      case "PODOLOGO":
+      case "TAMIZ":
+        return (
+          <>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to={dashboardPath}
+            >
+              Inicio
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/doctor/citas"
+            >
+              Citas
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/doctor/pacientes"
+            >
+              Pacientes
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/doctor/pagos"
+            >
+              Pagos
+            </Link>
+            <Link
+              onClick={closeMenu}
+              className={commonStyles}
+              to="/doctor/recetas"
+            >
+              Recetas
+            </Link>
+          </>
+        );
+
       default:
         return (
-          <Link onClick={closeMenu} className={commonStyles} to="/dashboard">
+          <Link
+            onClick={closeMenu}
+            className={commonStyles}
+            to="/dashboard"
+          >
             Inicio
           </Link>
         );
@@ -166,42 +319,54 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar-glass">
-      <ToastContainer limit={1} newestOnTop={false} closeButton={false} />
-      <div className="nav-container">
-        {/* El logo no redirige a ningún lado */}
-        <div className="brand-container">
-          <img src={logo} alt="Logo" className="logo-hover-effect" />
-          <span className="clinic-name">Pro-Piel</span>
+    <>
+      <ToastContainer
+        position="top-right"
+        autoClose={4000}
+        pauseOnHover={false}
+      />
+
+      <nav className="navbar-glass">
+        <div className="nav-container">
+          {/* Logo (no redirige, se queda como marca) */}
+          <div className="brand-container">
+            <img src={logo} alt="Logo" className="logo-hover-effect" />
+            <span className="clinic-name">Pro-Piel</span>
+          </div>
+
+          {/* Botón hamburguesa (móvil) */}
+          <button
+            className="menu-toggle"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <span className="bar"></span>
+            <span className="bar"></span>
+            <span className="bar"></span>
+          </button>
+
+          {/* Menú */}
+          <div className={`nav-links-container ${menuOpen ? "open" : ""}`}>
+            <div className="nav-links">{renderNavLinks()}</div>
+
+            {user && (
+              <button
+                type="button"
+                className="logout-button"
+                onClick={() => {
+                  handleLogout();
+                  closeMenu();
+                }}
+              >
+                <FiLogOut className="logout-icon" />
+                Cerrar Sesión
+              </button>
+            )}
+          </div>
         </div>
-
-        {/* Botón hamburguesa (visible en móvil) */}
-        <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-          <span className="bar"></span>
-          <span className="bar"></span>
-          <span className="bar"></span>
-        </button>
-
-        {/* Menú de enlaces, se oculta/abre según `menuOpen` */}
-        <div className={`nav-links-container ${menuOpen ? "open" : ""}`}>
-          <div className="nav-links">{renderNavLinks()}</div>
-
-          {user && (
-            <button
-              className="logout-button"
-              onClick={() => {
-                handleLogout();
-                closeMenu();
-              }}
-            >
-              <FiLogOut className="logout-icon" />
-              Cerrar Sesión
-            </button>
-          )}
-        </div>
-      </div>
-    </nav>
+      </nav>
+    </>
   );
 };
 
 export default Navbar;
+

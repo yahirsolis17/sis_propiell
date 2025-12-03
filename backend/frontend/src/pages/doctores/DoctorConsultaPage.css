@@ -1,0 +1,748 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ============================================================
+   PÁGINA DE CONSULTA - DOCTOR
+   Paleta consistente con el resto de la aplicación
+   ============================================================ */
+
+.doctor-consulta-root {
+  /* Variables locales - Usando tu paleta principal */
+  --dc-primary: #0A6E7D;           /* Azul principal */
+  --dc-primary-dark: #085766;      /* Azul más oscuro para hover */
+  --dc-primary-light: #E8F5F6;     /* Azul muy claro para fondos */
+  --dc-primary-lighter: #F4FAFB;   /* Azul casi blanco */
+  --dc-secondary: #1496B7;         /* Azul secundario */
+  --dc-secondary-light: #88D1E8;   /* Azul claro para efectos */
+  --dc-accent: #FF7F50;            /* Naranja coral - acento */
+  --dc-accent-light: #FFD1C2;      /* Naranja claro para fondos */
+  
+  /* Colores de texto - Manteniendo contraste */
+  --dc-text-dark: #1A2C3A;         /* Texto oscuro */
+  --dc-text-medium: #4A5C6A;       /* Texto medio */
+  --dc-text-muted: #7A8B99;        /* Texto atenuado */
+  --dc-text-light: #7A8B99;        /* Texto claro sobre fondos oscuros */
+  
+  /* Fondos - Enfoque médico claro */
+  --dc-bg-page: #F5F9FA;           /* Fondo de página azul suave */
+  --dc-bg-light: #FAFDFE;          /* Fondo claro */
+  --dc-white: #FFFFFF;
+  --dc-glass-bg: rgba(255, 255, 255, 0.98); /* Fondo glass */
+  
+  /* Sombras - Con tono azulado */
+  --dc-shadow-soft: 0 2px 16px rgba(10, 110, 125, 0.06);
+  --dc-shadow-medium: 0 4px 24px rgba(10, 110, 125, 0.08);
+  --dc-shadow-hover: 0 6px 32px rgba(10, 110, 125, 0.12);
+  --dc-shadow-strong: 0 8px 40px rgba(10, 110, 125, 0.15);
+  
+  /* Bordes - Con tu color principal */
+  --dc-border-light: 1px solid rgba(10, 110, 125, 0.08);
+  --dc-border-medium: 1px solid rgba(10, 110, 125, 0.12);
+  --dc-border-accent: 1px solid rgba(255, 127, 80, 0.2);
+  --dc-border-dashed: 1px dashed rgba(10, 110, 125, 0.25);
+  
+  /* Radios - Consistentes */
+  --dc-radius-sm: 8px;
+  --dc-radius-md: 12px;
+  --dc-radius-lg: 16px;
+  --dc-radius-xl: 20px;
+  --dc-radius-full: 999px;
+  
+  /* Transiciones - Suaves */
+  --dc-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --dc-transition-smooth: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  --dc-transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--dc-bg-page) 0%, var(--dc-primary-light) 100%);
+  font-family: 'Poppins', sans-serif;
+  color: var(--dc-text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Página bajo el navbar fijo */
+.doctor-consulta-page {
+  padding: 120px 0 3rem 0;
+  min-height: calc(100vh - 120px);
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-consulta-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.03) 0%, 
+    rgba(20, 150, 183, 0.01) 100%);
+  z-index: -1;
+}
+
+.doctor-consulta-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+}
+
+/* ============================================================
+   HEADER - CONTEXTO DE CONSULTA
+   ============================================================ */
+
+.doctor-consulta-header {
+  background: linear-gradient(135deg, var(--dc-white) 0%, var(--dc-primary-lighter) 100%);
+  border-radius: var(--dc-radius-xl);
+  box-shadow: var(--dc-shadow-medium);
+  border: var(--dc-border-light);
+  padding: 2.5rem 2.75rem 2rem 2.75rem;
+  margin-bottom: 1.75rem;
+  position: relative;
+  overflow: hidden;
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-consulta-header:hover {
+  box-shadow: var(--dc-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.doctor-consulta-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 230px;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.05) 100%
+  );
+  border-radius: 0 var(--dc-radius-xl) var(--dc-radius-xl) 0;
+  z-index: 0;
+}
+
+.doctor-consulta-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-consulta-header-left {
+  flex: 1;
+}
+
+.doctor-consulta-title {
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--dc-primary);
+  margin: 0 0 0.4rem 0;
+  letter-spacing: -0.02em;
+  background: linear-gradient(45deg, var(--dc-primary), var(--dc-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.doctor-consulta-subtitle {
+  font-size: 1.05rem;
+  color: var(--dc-text-medium);
+  margin: 0 0 1.1rem 0;
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+.doctor-consulta-paciente-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.95rem;
+  color: var(--dc-text-medium);
+}
+
+.doctor-consulta-paciente-info strong {
+  color: var(--dc-text-dark);
+  font-weight: 600;
+}
+
+/* Chip de cita */
+.doctor-consulta-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.doctor-consulta-chip {
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--dc-radius-full);
+  background: linear-gradient(135deg, var(--dc-white), var(--dc-primary-lighter));
+  border: var(--dc-border-medium);
+  font-size: 0.85rem;
+  color: var(--dc-text-medium);
+  max-width: 280px;
+  box-shadow: var(--dc-shadow-soft);
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-consulta-chip:hover {
+  border-color: var(--dc-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--dc-shadow-medium);
+}
+
+.doctor-consulta-chip-label {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  display: block;
+  margin-bottom: 0.1rem;
+  font-size: 0.75rem;
+  color: var(--dc-primary);
+}
+
+.doctor-consulta-chip-value {
+  font-weight: 500;
+  color: var(--dc-text-dark);
+}
+
+/* Botones de acciones en header */
+.doctor-consulta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.doctor-consulta-actions .btn {
+  border-radius: var(--dc-radius-full);
+  font-size: 0.85rem;
+  padding: 0.6rem 1.25rem;
+  font-weight: 600;
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Efecto de brillo en botones */
+.doctor-consulta-actions .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-consulta-actions .btn:hover::before {
+  left: 100%;
+}
+
+.doctor-consulta-actions .btn-outline-secondary {
+  background: var(--dc-white);
+  color: var(--dc-text-medium);
+  border: var(--dc-border-medium);
+  border-color: rgba(10, 110, 125, 0.25);
+}
+
+.doctor-consulta-actions .btn-outline-secondary:hover {
+  background: var(--dc-primary-light);
+  color: var(--dc-primary);
+  border-color: var(--dc-primary);
+  box-shadow: var(--dc-shadow-soft);
+  transform: translateY(-2px);
+}
+
+.doctor-consulta-actions .btn-primary {
+  background: linear-gradient(135deg, var(--dc-primary), var(--dc-secondary));
+  color: var(--dc-white);
+  box-shadow: 0 4px 16px rgba(10, 110, 125, 0.25);
+}
+
+.doctor-consulta-actions .btn-primary:hover {
+  background: linear-gradient(135deg, var(--dc-secondary), var(--dc-primary));
+  box-shadow: 0 6px 20px rgba(10, 110, 125, 0.35);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   BODY: MENSAJES + CARD DEL FORMULARIO
+   ============================================================ */
+
+.doctor-consulta-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.doctor-consulta-messages .alert {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  border-radius: var(--dc-radius-md);
+  padding: 0.75rem 1rem;
+  border: var(--dc-border-light);
+  font-weight: 500;
+  transition: var(--dc-transition-fast);
+}
+
+.doctor-consulta-messages .alert-success {
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.04), 
+    rgba(20, 150, 183, 0.01));
+  border-color: rgba(10, 110, 125, 0.15);
+  color: var(--dc-primary);
+}
+
+.doctor-consulta-messages .alert-danger {
+  background: linear-gradient(135deg, 
+    rgba(220, 53, 69, 0.04), 
+    rgba(220, 53, 69, 0.01));
+  border-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+}
+
+.doctor-consulta-messages .alert-warning {
+  background: linear-gradient(135deg, 
+    rgba(255, 193, 7, 0.04), 
+    rgba(255, 220, 115, 0.01));
+  border-color: rgba(255, 193, 7, 0.15);
+  color: #b38f00;
+}
+
+/* Card principal de la consulta */
+.doctor-consulta-card {
+  background: var(--dc-white);
+  border-radius: var(--dc-radius-xl);
+  box-shadow: var(--dc-shadow-medium);
+  border: var(--dc-border-light);
+  padding: 2rem 2.5rem;
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-consulta-card:hover {
+  box-shadow: var(--dc-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.doctor-consulta-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.03) 100%);
+  border-radius: 0 var(--dc-radius-xl) var(--dc-radius-xl) 0;
+  z-index: 0;
+}
+
+.doctor-consulta-card .form-label {
+  font-size: 0.95rem;
+  color: var(--dc-text-dark);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-consulta-card .form-control,
+.doctor-consulta-card textarea.form-control {
+  border-radius: var(--dc-radius-md);
+  border: var(--dc-border-medium);
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  color: var(--dc-text-dark);
+  background: var(--dc-white);
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-consulta-card textarea.form-control {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.doctor-consulta-card .form-control:focus,
+.doctor-consulta-card textarea.form-control:focus {
+  border-color: var(--dc-primary);
+  box-shadow: 0 0 0 3px rgba(10, 110, 125, 0.15);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.doctor-consulta-card .form-control::placeholder,
+.doctor-consulta-card textarea.form-control::placeholder {
+  color: var(--dc-text-muted);
+  font-weight: 400;
+}
+
+/* Footer del formulario */
+.doctor-consulta-footer-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: var(--dc-border-light);
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-consulta-footer-row small {
+  color: var(--dc-text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.doctor-consulta-footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.doctor-consulta-footer-actions .btn {
+  border-radius: var(--dc-radius-full);
+  font-size: 0.9rem;
+  padding: 0.65rem 1.5rem;
+  font-weight: 600;
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Efecto de brillo en botones del footer */
+.doctor-consulta-footer-actions .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-consulta-footer-actions .btn:hover::before {
+  left: 100%;
+}
+
+.doctor-consulta-footer-actions .btn-success {
+  background: linear-gradient(135deg, var(--dc-primary), var(--dc-secondary));
+  color: var(--dc-white);
+  box-shadow: 0 4px 16px rgba(10, 110, 125, 0.25);
+}
+
+.doctor-consulta-footer-actions .btn-success:hover {
+  background: linear-gradient(135deg, var(--dc-secondary), var(--dc-primary));
+  box-shadow: 0 6px 20px rgba(10, 110, 125, 0.35);
+  transform: translateY(-2px);
+}
+
+.doctor-consulta-footer-actions .btn-outline-primary {
+  background: var(--dc-white);
+  color: var(--dc-primary);
+  border: var(--dc-border-medium);
+  border-color: var(--dc-primary);
+}
+
+.doctor-consulta-footer-actions .btn-outline-primary:hover {
+  background: var(--dc-primary-light);
+  box-shadow: var(--dc-shadow-soft);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   CARGA / PERMISOS
+   ============================================================ */
+
+.doctor-consulta-loading {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--dc-text-medium);
+  font-size: 1rem;
+  background: linear-gradient(135deg, var(--dc-primary-lighter), var(--dc-white));
+  border-radius: var(--dc-radius-lg);
+  border: var(--dc-border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.doctor-consulta-loading::after {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(10, 110, 125, 0.1);
+  border-top-color: var(--dc-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.doctor-consulta-alert-full {
+  margin-top: 1.75rem;
+  border-radius: var(--dc-radius-lg);
+  border: var(--dc-border-medium);
+  border-color: rgba(220, 53, 69, 0.15);
+  background: linear-gradient(135deg, 
+    rgba(220, 53, 69, 0.04), 
+    rgba(220, 53, 69, 0.01));
+  color: #dc3545;
+  padding: 1.5rem;
+  font-weight: 500;
+}
+
+/* ============================================================
+   MODAL DE RECETA - AJUSTES LIGEROS
+   ============================================================ */
+
+.doctor-receta-modal-content {
+  border-radius: var(--dc-radius-xl);
+  border: var(--dc-border-light);
+  box-shadow: var(--dc-shadow-strong);
+  overflow: hidden;
+}
+
+.doctor-receta-modal-content .modal-header {
+  border-bottom: var(--dc-border-light);
+  background: linear-gradient(135deg, var(--dc-white), var(--dc-primary-lighter));
+  padding: 1.5rem 2rem;
+}
+
+.doctor-receta-modal-content .modal-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--dc-primary);
+  background: linear-gradient(45deg, var(--dc-primary), var(--dc-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.doctor-receta-modal-content .modal-body {
+  background: var(--dc-bg-light);
+  padding: 2rem;
+}
+
+.doctor-receta-modal-content .modal-footer {
+  border-top: var(--dc-border-light);
+  background: linear-gradient(135deg, var(--dc-primary-lighter), var(--dc-white));
+  padding: 1.5rem 2rem;
+}
+
+/* Tarjetas de medicamentos dentro del modal */
+.doctor-receta-med-card {
+  background: linear-gradient(135deg, var(--dc-white), var(--dc-primary-lighter)) !important;
+  border: var(--dc-border-light) !important;
+  border-radius: var(--dc-radius-lg) !important;
+  box-shadow: var(--dc-shadow-soft) !important;
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-receta-med-card:hover {
+  box-shadow: var(--dc-shadow-medium) !important;
+  transform: translateY(-2px);
+  border-color: var(--dc-primary-light) !important;
+}
+
+.doctor-receta-med-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.03) 100%);
+  border-radius: 0 var(--dc-radius-lg) var(--dc-radius-lg) 0;
+  z-index: 0;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  .doctor-consulta-inner {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .doctor-consulta-page {
+    padding: 110px 0 2.5rem 0;
+  }
+
+  .doctor-consulta-header {
+    padding: 2rem 2.25rem 1.75rem 2.25rem;
+  }
+
+  .doctor-consulta-card {
+    padding: 1.75rem 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .doctor-consulta-inner {
+    padding: 0 1.25rem;
+  }
+
+  .doctor-consulta-header-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+
+  .doctor-consulta-header-right {
+    align-items: flex-start;
+  }
+
+  .doctor-consulta-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .doctor-consulta-footer-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .doctor-consulta-footer-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .doctor-consulta-footer-actions .btn {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .doctor-consulta-inner {
+    padding: 0 1rem;
+  }
+
+  .doctor-consulta-header {
+    padding: 1.75rem 1.5rem 1.5rem 1.5rem;
+    border-radius: var(--dc-radius-lg);
+  }
+
+  .doctor-consulta-title {
+    font-size: 1.6rem;
+  }
+
+  .doctor-consulta-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .doctor-consulta-card {
+    padding: 1.5rem 1.25rem;
+    border-radius: var(--dc-radius-lg);
+  }
+
+  .doctor-consulta-chip {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .doctor-consulta-actions .btn,
+  .doctor-consulta-footer-actions .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .doctor-receta-modal-content .modal-body {
+    padding: 1.5rem;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doctor-consulta-header,
+.doctor-consulta-card {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de partículas sutiles para el fondo */
+.doctor-consulta-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 127, 80, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(20, 150, 183, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(10, 110, 125, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -2;
+}

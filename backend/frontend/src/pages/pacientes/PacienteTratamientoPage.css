@@ -1,0 +1,730 @@
+/* src/pages/pacientes/PacienteTratamientoPage.css */
+/* ============================================================
+   PALETA MÉDICA - TRATAMIENTO DEL PACIENTE (CONSISTENTE CON SISTEMA)
+   ============================================================ */
+
+.paciente-tratamiento-container {
+  /* PALETA PRINCIPAL DEL SISTEMA */
+  --pt-primary: #0A6E7D;           /* Azul principal original */
+  --pt-primary-light: #E8F5F6;     /* Azul muy claro para fondos */
+  --pt-primary-lighter: #F4FAFB;   /* Azul casi blanco para fondos claros */
+  --pt-secondary: #1496B7;         /* Azul secundario original */
+  --pt-secondary-light: #88D1E8;   /* Azul claro para efectos */
+  --pt-accent: #FF7F50;            /* Naranja coral original */
+  --pt-accent-light: #FFD1C2;      /* Naranja claro para fondos */
+  
+  /* Colores de texto - Manteniendo contraste */
+  --pt-text-dark: #1A2C3A;         /* Un poco más oscuro para mejor legibilidad */
+  --pt-text-medium: #4A5C6A;       /* Gris azulado medio */
+  --pt-text-light: #7A8B99;        /* Gris azulado claro */
+  
+  /* Fondos - Manteniendo la claridad médica */
+  --pt-white: #FFFFFF;
+  --pt-bg-page: #F5F9FA;           /* Fondo de página azul muy suave */
+  --pt-bg-light: #FAFDFE;          /* Fondo de tarjetas muy claro */
+  --pt-bg-card: #FFFFFF;
+  
+  /* Sombras - Con tono azulado sutil */
+  --pt-shadow-soft: 0 2px 16px rgba(10, 110, 125, 0.06);
+  --pt-shadow-medium: 0 4px 24px rgba(10, 110, 125, 0.08);
+  --pt-shadow-hover: 0 6px 32px rgba(10, 110, 125, 0.12);
+  --pt-shadow-strong: 0 8px 40px rgba(10, 110, 125, 0.15);
+  
+  /* Bordes - Con tu color principal */
+  --pt-border-light: 1px solid rgba(10, 110, 125, 0.08);
+  --pt-border-medium: 1px solid rgba(10, 110, 125, 0.12);
+  --pt-border-accent: 1px solid rgba(255, 127, 80, 0.2);
+  
+  /* Radios - Consistentes con tu diseño */
+  --pt-radius-sm: 8px;
+  --pt-radius-md: 12px;
+  --pt-radius-lg: 16px;
+  --pt-radius-xl: 20px;
+  --pt-radius-full: 999px;
+  
+  /* Transiciones - Suaves como en tu diseño */
+  --pt-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --pt-transition-smooth: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  --pt-transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--pt-bg-page) 0%, var(--pt-primary-light) 100%);
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pt-text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   LAYOUT PRINCIPAL
+   ============================================================ */
+
+.paciente-tratamiento-page {
+  padding: 130px 0 3rem 0; /* margen bajo el navbar */
+  min-height: calc(100vh - 130px);
+  position: relative;
+  z-index: 1;
+}
+
+.paciente-tratamiento-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.03) 0%, 
+    rgba(20, 150, 183, 0.01) 100%);
+  z-index: -1;
+}
+
+.paciente-tratamiento-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+}
+
+/* ============================================================
+   HEADER PRINCIPAL - DISEÑO CLÍNICO ACTUALIZADO
+   ============================================================ */
+
+.paciente-tratamiento-main-header {
+  background: linear-gradient(135deg, var(--pt-white) 0%, var(--pt-primary-lighter) 100%);
+  border-radius: var(--pt-radius-xl);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--pt-shadow-medium);
+  border: var(--pt-border-light);
+  position: relative;
+  overflow: hidden;
+  transition: var(--pt-transition-smooth);
+}
+
+.paciente-tratamiento-main-header:hover {
+  box-shadow: var(--pt-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* Fondo suave a la derecha, tipo consultorio limpio */
+.paciente-tratamiento-main-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 220px;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.05) 100%
+  );
+  border-radius: 0 var(--pt-radius-xl) var(--pt-radius-xl) 0;
+  z-index: 0;
+}
+
+.paciente-tratamiento-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.paciente-tratamiento-header-left {
+  flex: 1;
+}
+
+.paciente-tratamiento-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--pt-primary);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(45deg, var(--pt-primary), var(--pt-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.paciente-tratamiento-subtitle {
+  font-size: 1.05rem;
+  color: var(--pt-text-medium);
+  margin: 0 0 1.5rem 0;
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* Perfil del paciente */
+.paciente-tratamiento-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.paciente-name-badge,
+.paciente-id-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--pt-radius-full);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: var(--pt-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.paciente-name-badge {
+  background: var(--pt-white);
+  color: var(--pt-text-dark);
+  border: var(--pt-border-medium);
+  box-shadow: var(--pt-shadow-soft);
+}
+
+.paciente-name-badge:hover {
+  border-color: var(--pt-secondary);
+  transform: translateY(-2px);
+  box-shadow: var(--pt-shadow-medium);
+}
+
+.paciente-id-badge {
+  background: linear-gradient(45deg, var(--pt-primary), var(--pt-secondary));
+  color: var(--pt-white);
+  box-shadow: 0 4px 12px rgba(10, 110, 125, 0.25);
+}
+
+.paciente-id-badge:hover {
+  background: linear-gradient(45deg, var(--pt-secondary), var(--pt-primary));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 110, 125, 0.35);
+}
+
+.paciente-tratamiento-header-right {
+  display: flex;
+  align-items: center;
+}
+
+/* ============================================================
+   CARD PRINCIPAL - RESULTADO DE TRATAMIENTO
+   ============================================================ */
+
+.paciente-tratamiento-main-card {
+  background: var(--pt-white);
+  border-radius: var(--pt-radius-xl);
+  box-shadow: var(--pt-shadow-medium);
+  border: var(--pt-border-light);
+  overflow: hidden;
+  transition: var(--pt-transition-smooth);
+}
+
+.paciente-tratamiento-main-card:hover {
+  box-shadow: var(--pt-shadow-hover);
+}
+
+.tratamiento-card-body {
+  padding: 2.5rem;
+  position: relative;
+}
+
+.tratamiento-card-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.02) 100%);
+  border-radius: 0 var(--pt-radius-xl) var(--pt-radius-xl) 0;
+  z-index: 0;
+}
+
+.tratamiento-card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--pt-text-dark);
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tratamiento-card-title::before {
+  content: '';
+  width: 4px;
+  height: 24px;
+  background: linear-gradient(180deg, var(--pt-primary), var(--pt-secondary));
+  border-radius: 2px;
+}
+
+.tratamiento-card-description {
+  font-size: 1rem;
+  color: var(--pt-text-medium);
+  margin: 0 0 2rem 0;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   LISTA DE DETALLES (dl row)
+   ============================================================ */
+
+.tratamiento-details {
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.tratamiento-details dt {
+  font-weight: 600;
+  color: var(--pt-primary);
+  padding: 1rem 0;
+  font-size: 0.95rem;
+  border-bottom: var(--pt-border-light);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tratamiento-details dd {
+  padding: 1rem 0;
+  margin-left: 0;
+  border-bottom: var(--pt-border-light);
+  font-size: 1rem;
+  color: var(--pt-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tratamiento-details dt.col-sm-4,
+.tratamiento-details dd.col-sm-8 {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.tratamiento-details .row:last-child dt,
+.tratamiento-details .row:last-child dd {
+  border-bottom: none;
+}
+
+/* ============================================================
+   BADGES - SISTEMA CONSISTENTE CON PALETA PRINCIPAL
+   ============================================================ */
+
+.paciente-tratamiento-container .badge {
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--pt-radius-full);
+  font-size: 0.8rem;
+  transition: var(--pt-transition-fast);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid;
+}
+
+.paciente-tratamiento-container .badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: var(--pt-transition-fast);
+}
+
+.paciente-tratamiento-container .badge:hover::before {
+  opacity: 1;
+}
+
+.paciente-tratamiento-container .badge.bg-success {
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.12), 
+    rgba(20, 150, 183, 0.08)) !important;
+  color: var(--pt-primary) !important;
+  border-color: rgba(10, 110, 125, 0.2) !important;
+}
+
+.paciente-tratamiento-container .badge.bg-success:hover {
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.15), 
+    rgba(20, 150, 183, 0.1)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(10, 110, 125, 0.1);
+}
+
+.paciente-tratamiento-container .badge.bg-secondary {
+  background: linear-gradient(135deg, 
+    rgba(108, 117, 125, 0.12), 
+    rgba(159, 166, 173, 0.08)) !important;
+  color: #6c757d !important;
+  border-color: rgba(108, 117, 125, 0.2) !important;
+}
+
+.paciente-tratamiento-container .badge.bg-secondary:hover {
+  background: linear-gradient(135deg, 
+    rgba(108, 117, 125, 0.15), 
+    rgba(159, 166, 173, 0.1)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.1);
+}
+
+.paciente-tratamiento-container .badge.bg-info-subtle {
+  background: linear-gradient(135deg, 
+    rgba(32, 168, 216, 0.12), 
+    rgba(32, 168, 216, 0.08)) !important;
+  color: #1a8cb8 !important;
+  border-color: rgba(32, 168, 216, 0.2) !important;
+}
+
+.paciente-tratamiento-container .badge.bg-info-subtle:hover {
+  background: linear-gradient(135deg, 
+    rgba(32, 168, 216, 0.15), 
+    rgba(32, 168, 216, 0.1)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(32, 168, 216, 0.1);
+}
+
+.paciente-tratamiento-container .badge.bg-light {
+  background: linear-gradient(135deg, 
+    rgba(248, 249, 250, 0.12), 
+    rgba(248, 249, 250, 0.08)) !important;
+  color: var(--pt-text-dark) !important;
+  border-color: rgba(248, 249, 250, 0.2) !important;
+}
+
+.paciente-tratamiento-container .badge.bg-light:hover {
+  background: linear-gradient(135deg, 
+    rgba(248, 249, 250, 0.15), 
+    rgba(248, 249, 250, 0.1)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(248, 249, 250, 0.1);
+}
+
+/* ============================================================
+   ESTADOS (LOADING, ERROR, NO DATA)
+   ============================================================ */
+
+.tratamiento-loading-card {
+  background: linear-gradient(135deg, var(--pt-primary-lighter), var(--pt-white));
+  border-radius: var(--pt-radius-xl);
+  padding: 3rem 2.5rem;
+  text-align: center;
+  box-shadow: var(--pt-shadow-medium);
+  border: var(--pt-border-light);
+  position: relative;
+  overflow: hidden;
+}
+
+.tratamiento-loading-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.05) 100%);
+  border-radius: 0 var(--pt-radius-xl) var(--pt-radius-xl) 0;
+}
+
+.tratamiento-loading-text {
+  color: var(--pt-text-medium);
+  font-size: 1rem;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.tratamiento-error-card {
+  background: linear-gradient(135deg, 
+    rgba(220, 53, 69, 0.04), 
+    rgba(220, 53, 69, 0.01));
+  border: var(--pt-border-medium);
+  border-color: rgba(220, 53, 69, 0.15);
+  border-radius: var(--pt-radius-xl);
+  padding: 2.5rem;
+  color: #dc3545;
+  box-shadow: var(--pt-shadow-soft);
+  position: relative;
+  overflow: hidden;
+}
+
+.tratamiento-error-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #dc3545, #e35d6a);
+  border-radius: var(--pt-radius-xl) 0 0 var(--pt-radius-xl);
+}
+
+.tratamiento-error-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.tratamiento-error-message {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+/* Estado sin tratamiento activo */
+.tratamiento-empty-card {
+  background: linear-gradient(135deg, var(--pt-primary-lighter), var(--pt-white));
+  border-radius: var(--pt-radius-xl);
+  padding: 3rem 2.5rem;
+  text-align: center;
+  box-shadow: var(--pt-shadow-medium);
+  border: 1px dashed rgba(10, 110, 125, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.tratamiento-empty-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    transparent 0%, 
+    rgba(255, 127, 80, 0.03) 100%);
+  z-index: 0;
+}
+
+.tratamiento-empty-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--pt-primary);
+  margin: 0 0 1rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.tratamiento-empty-description {
+  color: var(--pt-text-medium);
+  font-size: 1rem;
+  margin: 0 0 2rem 0;
+  line-height: 1.6;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   BOTONES - ESTILOS CLÍNICOS ACTUALIZADOS
+   ============================================================ */
+
+.paciente-tratamiento-container .btn {
+  border-radius: var(--pt-radius-full);
+  font-size: 0.85rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: var(--pt-transition-smooth);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.paciente-tratamiento-container .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: var(--pt-transition-smooth);
+}
+
+.paciente-tratamiento-container .btn:hover::before {
+  left: 100%;
+}
+
+.paciente-tratamiento-container .btn-primary {
+  background: linear-gradient(135deg, var(--pt-primary), var(--pt-secondary));
+  color: var(--pt-white);
+  box-shadow: 0 4px 16px rgba(10, 110, 125, 0.25);
+}
+
+.paciente-tratamiento-container .btn-primary:hover {
+  background: linear-gradient(135deg, var(--pt-secondary), var(--pt-primary));
+  box-shadow: 0 6px 20px rgba(10, 110, 125, 0.35);
+  transform: translateY(-2px);
+}
+
+.paciente-tratamiento-container .btn-outline-secondary {
+  border: var(--pt-border-medium);
+  border-color: rgba(10, 110, 125, 0.25);
+  color: var(--pt-text-medium);
+  background: var(--pt-white);
+}
+
+.paciente-tratamiento-container .btn-outline-secondary:hover {
+  background: linear-gradient(135deg, var(--pt-primary-light), var(--pt-white));
+  color: var(--pt-primary);
+  border-color: var(--pt-primary);
+  box-shadow: var(--pt-shadow-medium);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  .paciente-tratamiento-content {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .paciente-tratamiento-page {
+    padding: 110px 0 2rem 0;
+  }
+
+  .paciente-tratamiento-main-header {
+    padding: 2rem 1.75rem;
+  }
+
+  .tratamiento-card-body {
+    padding: 2rem 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .paciente-tratamiento-header-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .paciente-tratamiento-header-right {
+    align-self: stretch;
+    width: 100%;
+  }
+
+  .paciente-tratamiento-profile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .tratamiento-details dt,
+  .tratamiento-details dd {
+    padding: 0.85rem 0;
+  }
+
+  .tratamiento-card-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .paciente-tratamiento-content {
+    padding: 0 1rem;
+  }
+
+  .paciente-tratamiento-main-header {
+    padding: 1.5rem 1.25rem;
+    border-radius: var(--pt-radius-lg);
+  }
+
+  .paciente-tratamiento-title {
+    font-size: 1.6rem;
+  }
+
+  .tratamiento-card-body {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .tratamiento-card-title {
+    font-size: 1.1rem;
+  }
+
+  .tratamiento-empty-card,
+  .tratamiento-error-card,
+  .tratamiento-loading-card {
+    padding: 2rem 1.25rem;
+  }
+}
+
+/* Animaciones adicionales */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.paciente-tratamiento-main-header,
+.paciente-tratamiento-main-card,
+.tratamiento-empty-card,
+.tratamiento-error-card,
+.tratamiento-loading-card {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de partículas sutiles para el fondo */
+.paciente-tratamiento-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 127, 80, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(20, 150, 183, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(10, 110, 125, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -2;
+}

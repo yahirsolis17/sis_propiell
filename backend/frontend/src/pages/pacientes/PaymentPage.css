@@ -1,0 +1,762 @@
+/* PaymentPage.css */
+:root {
+  --primary: #0A6E7D;           /* Azul principal */
+  --primary-light: #E8F5F6;     /* Azul muy claro para fondos */
+  --primary-lighter: #F4FAFB;   /* Azul casi blanco */
+  --secondary: #1496B7;         /* Azul secundario */
+  --secondary-light: #88D1E8;   /* Azul claro para efectos */
+  --accent: #FF7F50;            /* Naranja coral */
+  --accent-light: #FFD1C2;      /* Naranja claro para fondos */
+  
+  --text-dark: #1A2C3A;         /* Texto oscuro */
+  --text-medium: #4A5C6A;       /* Texto medio */
+  --text-light: #7A8B99;        /* Texto claro */
+  
+  --white: #FFFFFF;
+  --bg-page: #F5F9FA;           /* Fondo de página */
+  --bg-light: #FAFDFE;          /* Fondo claro */
+  --glass-bg: rgba(255, 255, 255, 0.98);
+  
+  --shadow-soft: 0 2px 16px rgba(10, 110, 125, 0.06);
+  --shadow-medium: 0 4px 24px rgba(10, 110, 125, 0.08);
+  --shadow-hover: 0 6px 32px rgba(10, 110, 125, 0.14);
+  --shadow-strong: 0 8px 40px rgba(10, 110, 125, 0.15);
+  --nav-shadow: 0 4px 30px rgba(10, 110, 125, 0.1);
+  
+  --border-light: 1px solid rgba(10, 110, 125, 0.08);
+  --border-medium: 1px solid rgba(10, 110, 125, 0.12);
+  --border-accent: 1px solid rgba(255, 127, 80, 0.2);
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 999px;
+  
+  --error-red: #dc3545;
+  --warning-yellow: #fff8e1;
+  
+  --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Estructura principal */
+.citas-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 130px 1rem 3rem;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--bg-page) 0%, var(--primary-light) 100%);
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cita-form-card {
+  background: var(--glass-bg);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-strong);
+  backdrop-filter: blur(12px);
+  border: var(--border-light);
+  margin-top: 1rem;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition-smooth);
+}
+
+.cita-form-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-2px);
+}
+
+.cita-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.05) 100%);
+  border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+  z-index: 0;
+}
+
+.citas-title {
+  color: var(--primary);
+  margin-bottom: 2rem;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(45deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  z-index: 1;
+}
+
+/* --------- BLOQUE DE DATOS BANCARIOS --------- */
+
+.payment-info-section {
+  margin-bottom: 2.5rem;
+  color: var(--text-dark);
+  position: relative;
+  z-index: 1;
+}
+
+.payment-info-intro {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-medium);
+}
+
+.payment-info-row {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.payment-info-row-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.payment-info-warning {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-medium);
+  font-style: italic;
+}
+
+/* Botón de copiar */
+.payment-copy-btn {
+  border: var(--border-medium);
+  border-color: var(--secondary);
+  background-color: var(--white);
+  color: var(--secondary);
+  border-radius: var(--radius-full);
+  padding: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.payment-copy-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(20, 150, 183, 0.1),
+    transparent
+  );
+  transition: var(--transition-smooth);
+}
+
+.payment-copy-btn:hover {
+  background-color: var(--primary-light);
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+
+.payment-copy-btn:hover::before {
+  left: 100%;
+}
+
+/* --------- FORMULARIO --------- */
+
+.cita-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--text-dark);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: var(--border-medium);
+  border-radius: var(--radius-full);
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  background: var(--white);
+  transition: var(--transition-smooth);
+  font-family: 'Poppins', sans-serif;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(10, 110, 125, 0.15);
+  background: var(--primary-lighter);
+}
+
+/* Botones */
+.btn-payment-submit {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--white);
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  margin-top: 1rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-payment-submit::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: var(--transition-smooth);
+}
+
+.btn-payment-submit:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
+}
+
+.btn-payment-submit:hover::before {
+  left: 100%;
+}
+
+.btn-payment-submit:disabled {
+  background: #ccc;
+  transform: none;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.btn-payment-submit:disabled:hover::before {
+  left: -100%;
+}
+
+/* Alertas */
+.alert-danger {
+  color: var(--error-red);
+  background: linear-gradient(135deg, 
+    rgba(220, 53, 69, 0.04), 
+    rgba(220, 53, 69, 0.01));
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  border: var(--border-medium);
+  border-color: rgba(220, 53, 69, 0.15);
+  font-size: 0.9rem;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+}
+
+/* --------- BLOQUE DE DATOS BANCARIOS MEJORADO --------- */
+
+.payment-bank-box {
+  background: linear-gradient(135deg, var(--warning-yellow), #fffdf6);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 2rem;
+  border: var(--border-accent);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.payment-bank-box:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+.payment-bank-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--accent), #FF6347);
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+}
+
+.payment-bank-title {
+  margin: 0 0 1rem 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+  position: relative;
+  z-index: 1;
+}
+
+.payment-bank-line {
+  margin: 0.75rem 0;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.payment-bank-note {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--error-red);
+  font-weight: 600;
+  background: rgba(220, 53, 69, 0.05);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--error-red);
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================
+   TABS DE MÉTODO DE PAGO
+   ============================ */
+
+.payment-method-switch {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.payment-tab {
+  border-radius: var(--radius-full);
+  border: var(--border-medium);
+  background-color: var(--white);
+  padding: 0.75rem 1.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-medium);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.payment-tab::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 127, 80, 0.1),
+    transparent
+  );
+  transition: var(--transition-smooth);
+}
+
+.payment-tab:hover {
+  border-color: var(--secondary);
+  color: var(--primary);
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+.payment-tab:hover::before {
+  left: 100%;
+}
+
+.payment-tab.active {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: var(--white);
+  border-color: transparent;
+  box-shadow: 0 6px 20px rgba(10, 110, 125, 0.35);
+}
+
+.payment-tab.active:hover {
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
+}
+
+/* Ajuste suave para el formulario cuando es de pago */
+.cita-form.payment-form {
+  margin-top: 0.5rem;
+}
+
+/* ============================
+   BLOQUE PAGO PRESENCIAL
+   ============================ */
+
+.payment-presencial-box {
+  margin-top: 2rem;
+  padding: 1.75rem 2rem;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #fff8e9, #fffdf6);
+  border-left: 4px solid var(--accent);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.payment-presencial-box:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
+}
+
+.payment-presencial-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(255, 127, 80, 0.03) 100%);
+  border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+.payment-presencial-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.payment-presencial-message {
+  font-size: 1rem;
+  color: var(--text-dark);
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+.payment-presencial-note {
+  font-size: 0.9rem;
+  color: var(--text-medium);
+  margin-bottom: 1.25rem;
+  font-style: italic;
+  position: relative;
+  z-index: 1;
+}
+
+/* Modal (por si lo usas más adelante) */
+.payment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.payment-modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.payment-modal-content {
+  position: relative;
+  background: var(--glass-bg);
+  padding: 2.5rem;
+  border-radius: var(--radius-xl);
+  width: 90%;
+  max-width: 450px;
+  box-shadow: var(--shadow-strong);
+  backdrop-filter: blur(12px);
+  border: var(--border-light);
+  z-index: 2001;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+.close-modal {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--text-medium);
+  transition: var(--transition-fast);
+  padding: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+}
+
+.close-modal:hover {
+  color: var(--primary);
+  background: var(--primary-light);
+}
+
+.modal-title {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  text-align: center;
+  font-weight: 700;
+  background: linear-gradient(45deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.modal-text {
+  color: var(--text-dark);
+  margin-bottom: 1.75rem;
+  text-align: center;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.download-notice {
+  background: linear-gradient(135deg, var(--warning-yellow), #fffdf6);
+  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  margin: 1.75rem 0;
+  border-left: 4px solid var(--accent);
+  position: relative;
+  overflow: hidden;
+}
+
+.notice-text {
+  color: var(--error-red);
+  font-weight: 600;
+  margin: 0;
+  font-size: 0.95rem;
+  text-align: center;
+  line-height: 1.5;
+  position: relative;
+  z-index: 1;
+}
+
+.modal-download-btn {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--accent), #FF6347);
+  color: var(--white);
+  border: none;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  margin-top: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-download-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: var(--transition-smooth);
+}
+
+.modal-download-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 127, 80, 0.35);
+  background: linear-gradient(135deg, #FF6347, var(--accent));
+}
+
+.modal-download-btn:hover::before {
+  left: 100%;
+}
+
+/* Animaciones */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cita-form-card {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de partículas sutiles para el fondo */
+.citas-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 127, 80, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(20, 150, 183, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(10, 110, 125, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .citas-container {
+    padding: 110px 1rem 2rem;
+  }
+  
+  .cita-form-card {
+    padding: 2rem 1.5rem;
+    border-radius: var(--radius-lg);
+  }
+  
+  .citas-title {
+    font-size: 1.7rem;
+  }
+  
+  .payment-modal-content {
+    padding: 2rem 1.5rem;
+  }
+  
+  .payment-method-switch {
+    gap: 0.75rem;
+  }
+  
+  .payment-tab {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .citas-container {
+    padding: 100px 1rem 2rem;
+  }
+  
+  .cita-form-card {
+    padding: 1.75rem 1.25rem;
+  }
+  
+  .citas-title {
+    font-size: 1.5rem;
+  }
+  
+  .payment-method-switch {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .payment-tab {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .payment-bank-box {
+    padding: 1.25rem 1.5rem;
+  }
+  
+  .payment-presencial-box {
+    padding: 1.5rem 1.25rem;
+  }
+  
+  .form-control {
+    padding: 0.85rem 1rem;
+  }
+  
+  .btn-payment-submit {
+    padding: 0.85rem 1.25rem;
+    font-size: 0.95rem;
+  }
+}

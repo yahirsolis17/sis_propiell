@@ -1,0 +1,153 @@
+.table-layout {
+  --tl-primary: var(--dc-primary, var(--pr-primary, #0a6e7d));
+  --tl-primary-light: var(--dc-primary-light, var(--pr-primary-light, #e8f5f6));
+  --tl-primary-lighter: var(--dc-primary-lighter, var(--pr-primary-lighter, #f4fafb));
+  --tl-secondary: var(--dc-secondary, var(--pr-secondary, #1496b7));
+  --tl-text-dark: var(--dc-text-dark, var(--pr-text-dark, #1a2c3a));
+  --tl-text-medium: var(--dc-text-medium, var(--pr-text-medium, #4a5c6a));
+  --tl-border-light: var(--dc-border-light, var(--pr-border-light, 1px solid rgba(10, 110, 125, 0.08)));
+  --tl-shadow-soft: var(--dc-shadow-soft, 0 2px 16px rgba(10, 110, 125, 0.06));
+  --tl-shadow-hover: var(--dc-shadow-hover, 0 6px 32px rgba(10, 110, 125, 0.12));
+  --tl-radius-lg: var(--dc-radius-lg, var(--pr-radius-lg, 16px));
+
+  border-radius: var(--tl-radius-lg);
+  background: var(--dc-bg-card, var(--pr-bg-card, #ffffff));
+  border: var(--tl-border-light);
+  box-shadow: var(--tl-shadow-soft);
+  overflow: hidden;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.table-layout .card-header {
+  background: linear-gradient(135deg, var(--dc-bg-light, var(--pr-bg-light, #f8fbfd)), var(--dc-bg-card, var(--pr-bg-card, #ffffff)));
+  border-bottom: var(--tl-border-light);
+  padding: 1.25rem 1.5rem;
+  transition: background 0.25s ease;
+}
+
+.table-layout .card-header h5 {
+  color: var(--tl-text-dark);
+  font-weight: 600;
+}
+
+.table-layout .card-body {
+  background: var(--dc-bg-card, var(--pr-bg-card, #ffffff));
+}
+
+.table-layout .table thead {
+  background: var(--tl-primary-light);
+  color: var(--tl-text-dark);
+}
+
+.table-layout .table thead th {
+  border-color: rgba(10, 110, 125, 0.15);
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+}
+
+.table-layout .table tbody tr:hover {
+  background: rgba(10, 110, 125, 0.04);
+}
+
+.table-layout .table-striped > tbody > tr:nth-of-type(odd) > * {
+  --bs-table-accent-bg: rgba(10, 110, 125, 0.02);
+}
+
+.table-layout .table-hover > tbody > tr:hover > * {
+  --bs-table-accent-bg: rgba(10, 110, 125, 0.04);
+}
+
+.table-layout .table td {
+  color: var(--tl-text-dark);
+}
+
+.table-layout .table tbody tr {
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.table-layout .table tbody tr:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(10, 110, 125, 0.06) 0%,
+    rgba(20, 150, 183, 0.05) 100%
+  );
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(10, 110, 125, 0.12);
+}
+
+.table-layout .card-footer {
+  background: var(--dc-bg-light, var(--pr-bg-light, #fafdfc));
+  border-top: var(--tl-border-light);
+  padding: 1rem 1.25rem;
+}
+
+.table-layout .btn-outline-secondary {
+  border-color: rgba(10, 110, 125, 0.2);
+  color: var(--tl-text-medium);
+}
+
+.table-layout .btn-outline-secondary:hover {
+  color: var(--tl-primary);
+  background: var(--tl-primary-light);
+  border-color: var(--tl-primary);
+}
+
+.table-layout .btn-primary {
+  background: var(--tl-primary);
+  border-color: var(--tl-primary);
+  box-shadow: 0 4px 12px rgba(10, 110, 125, 0.15);
+  transition: all 0.2s ease;
+}
+
+.table-layout .btn-primary:hover {
+  background: var(--tl-secondary);
+  border-color: var(--tl-secondary);
+  box-shadow: 0 6px 16px rgba(10, 110, 125, 0.22);
+  transform: translateY(-1px);
+}
+
+.table-layout .btn-outline-primary {
+  border-color: rgba(10, 110, 125, 0.35);
+  color: var(--tl-primary);
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.table-layout .btn-outline-primary:hover,
+.table-layout .btn-outline-primary:focus {
+  background: var(--tl-primary);
+  color: #ffffff;
+  border-color: var(--tl-primary);
+  box-shadow: 0 4px 12px rgba(10, 110, 125, 0.18);
+}
+
+.table-layout .input-group-text,
+.table-layout .form-select,
+.table-layout .form-control {
+  border-radius: 999px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.table-layout .input-group-text {
+  background: var(--tl-primary-light);
+  border-color: rgba(10, 110, 125, 0.2);
+}
+
+.table-layout .form-select:focus,
+.table-layout .form-control:focus {
+  border-color: var(--tl-primary);
+  box-shadow: 0 0 0 3px rgba(10, 110, 125, 0.15);
+}
+
+.table-layout .btn,
+.table-layout .input-group-text,
+.table-layout .form-select,
+.table-layout .form-control {
+  font-weight: 500;
+}
+
+.table-layout:hover {
+  box-shadow: var(--tl-shadow-hover);
+  transform: translateY(-2px);
+}

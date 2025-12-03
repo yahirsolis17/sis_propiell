@@ -2,11 +2,12 @@
 
 /* Lógica de deshabilitado similar a la que usas en tus otros componentes */
 .datepicker-disabled {
-    background-color: #f2f2f2 !important;
-    color: #aaa !important;
-    cursor: not-allowed !important;
-    -webkit-appearance: button;
-    appearance: button;
+  background-color: #f2f2f2 !important;
+  color: #aaa !important;
+  cursor: not-allowed !important;
+}
 
-  }
-  
+/* 🔝 Aseguramos que el calendario siempre quede por encima de modales/overlays */
+.react-datepicker-popper {
+  z-index: 3000 !important;
+}

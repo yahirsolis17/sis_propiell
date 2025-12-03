@@ -1,0 +1,397 @@
+/* src/pages/doctores/DoctorPacientesPage.css */
+/* ============================================================
+   PALETA MÉDICA - LISTA DE PACIENTES (SCOPE LOCAL)
+   ============================================================ */
+
+.doctor-pacientes-page {
+  /* Variables locales - Usando tu paleta principal consistente */
+  --dc-primary: #0A6E7D;           /* Azul principal */
+  --dc-primary-dark: #085766;      /* Azul más oscuro para hover */
+  --dc-primary-light: #E8F5F6;     /* Azul muy claro para fondos */
+  --dc-primary-lighter: #F4FAFB;   /* Azul casi blanco */
+  --dc-secondary: #1496B7;         /* Azul secundario */
+  --dc-secondary-light: #88D1E8;   /* Azul claro para efectos */
+  --dc-accent: #FF7F50;            /* Naranja coral - acento */
+  --dc-accent-light: #FFD1C2;      /* Naranja claro para fondos */
+  
+  /* Colores de texto - Manteniendo contraste */
+  --dc-text-dark: #1A2C3A;         /* Texto oscuro */
+  --dc-text-medium: #4A5C6A;       /* Texto medio */
+  --dc-text-light: #7A8B99;        /* Texto claro */
+  --dc-text-muted: #9CA3AF;        /* Texto atenuado */
+  
+  /* Fondos - Enfoque médico claro */
+  --dc-white: #FFFFFF;
+  --dc-bg-page: #F5F9FA;           /* Fondo de página azul suave */
+  --dc-bg-light: #FAFDFE;          /* Fondo claro */
+  --dc-bg-card: #FFFFFF;
+  --dc-glass-bg: rgba(255, 255, 255, 0.98); /* Fondo glass */
+  
+  /* Sombras - Con tono azulado */
+  --dc-shadow-soft: 0 2px 16px rgba(10, 110, 125, 0.06);
+  --dc-shadow-medium: 0 4px 24px rgba(10, 110, 125, 0.08);
+  --dc-shadow-hover: 0 6px 32px rgba(10, 110, 125, 0.12);
+  --dc-shadow-strong: 0 8px 40px rgba(10, 110, 125, 0.15);
+  
+  /* Bordes - Con tu color principal */
+  --dc-border-light: 1px solid rgba(10, 110, 125, 0.08);
+  --dc-border-medium: 1px solid rgba(10, 110, 125, 0.12);
+  --dc-border-accent: 1px solid rgba(255, 127, 80, 0.2);
+  
+  /* Radios - Consistentes */
+  --dc-radius-sm: 8px;
+  --dc-radius-md: 12px;
+  --dc-radius-lg: 16px;
+  --dc-radius-xl: 20px;
+  --dc-radius-full: 999px;
+  
+  /* Transiciones - Suaves */
+  --dc-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --dc-transition-smooth: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  --dc-transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  min-height: 100vh;
+  padding: 130px 0 3rem 0; /* margen para el navbar fijo */
+  background: linear-gradient(135deg, var(--dc-bg-page) 0%, var(--dc-primary-light) 100%);
+  font-family: 'Poppins', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--dc-text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   CONTENEDOR PRINCIPAL
+   ============================================================ */
+
+.doctor-pacientes-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 2.5rem;
+  position: relative;
+}
+
+/* Efecto de partículas sutiles para el fondo */
+.doctor-pacientes-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 127, 80, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(20, 150, 183, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(10, 110, 125, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ============================================================
+   HEADER - LISTA DE PACIENTES
+   ============================================================ */
+
+.doctor-pacientes-header {
+  background: linear-gradient(135deg, var(--dc-white) 0%, var(--dc-primary-lighter) 100%);
+  border-radius: var(--dc-radius-xl);
+  padding: 2.5rem 2.75rem 2rem 2.75rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--dc-shadow-medium);
+  border: var(--dc-border-light);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-pacientes-header:hover {
+  box-shadow: var(--dc-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* Fondo suave tipo consultorio en lado derecho */
+.doctor-pacientes-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 220px;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.05) 100%
+  );
+  border-radius: 0 var(--dc-radius-xl) var(--dc-radius-xl) 0;
+  z-index: 0;
+}
+
+.doctor-pacientes-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-pacientes-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem 0;
+  color: var(--dc-primary);
+  letter-spacing: -0.02em;
+  background: linear-gradient(45deg, var(--dc-primary), var(--dc-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.doctor-pacientes-subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 1.05rem;
+  color: var(--dc-text-medium);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* Buscador */
+.doctor-pacientes-search-wrapper {
+  width: 100%;
+  max-width: 320px;
+}
+
+.doctor-pacientes-search-input {
+  border-radius: var(--dc-radius-full);
+  font-size: 0.9rem;
+  padding: 0.75rem 1.25rem;
+  border: var(--dc-border-medium);
+  color: var(--dc-text-dark);
+  background: var(--dc-white);
+  transition: var(--dc-transition-smooth);
+  box-shadow: var(--dc-shadow-soft);
+}
+
+.doctor-pacientes-search-input::placeholder {
+  color: var(--dc-text-light);
+  font-weight: 400;
+}
+
+.doctor-pacientes-search-input:focus {
+  outline: none;
+  border-color: var(--dc-primary);
+  box-shadow: 0 0 0 3px rgba(10, 110, 125, 0.15),
+    0 6px 18px rgba(10, 110, 125, 0.12);
+  background: var(--dc-white);
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   CARD PRINCIPAL - TABLELAYOUT
+   ============================================================ */
+
+.doctor-pacientes-card {
+  background: var(--dc-white);
+  border-radius: var(--dc-radius-xl);
+  padding: 2rem 2.5rem;
+  box-shadow: var(--dc-shadow-medium);
+  border: var(--dc-border-light);
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-pacientes-card:hover {
+  box-shadow: var(--dc-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.doctor-pacientes-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 120px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.03) 100%);
+  border-radius: 0 var(--dc-radius-xl) var(--dc-radius-xl) 0;
+  z-index: 0;
+}
+
+/* Estados de la vista (fallback por si TableLayout no los maneja) */
+.doctor-pacientes-loading,
+.doctor-pacientes-empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  color: var(--dc-text-medium);
+  font-size: 1rem;
+  background: linear-gradient(135deg, var(--dc-primary-lighter), var(--dc-white));
+  border-radius: var(--dc-radius-lg);
+  border: var(--dc-border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.doctor-pacientes-loading::after {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(10, 110, 125, 0.1);
+  border-top-color: var(--dc-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.doctor-pacientes-empty {
+  border: 1px dashed rgba(10, 110, 125, 0.2);
+}
+
+/* ============================================================
+   BOTONES EN LA TABLA (Acciones)
+   ============================================================ */
+
+.doctor-pacientes-card .btn-outline-primary.btn-sm {
+  border-radius: var(--dc-radius-full);
+  font-size: 0.85rem;
+  padding: 0.6rem 1.25rem;
+  border: var(--dc-border-medium);
+  border-color: rgba(10, 110, 125, 0.25);
+  color: var(--dc-primary);
+  background: var(--dc-white);
+  transition: var(--dc-transition-smooth);
+  position: relative;
+  overflow: hidden;
+  font-weight: 600;
+}
+
+.doctor-pacientes-card .btn-outline-primary.btn-sm::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 127, 80, 0.1),
+    transparent
+  );
+  transition: var(--dc-transition-smooth);
+}
+
+.doctor-pacientes-card .btn-outline-primary.btn-sm:hover {
+  background: linear-gradient(135deg, var(--dc-primary), var(--dc-secondary));
+  color: var(--dc-white);
+  border-color: var(--dc-primary);
+  box-shadow: 0 4px 16px rgba(10, 110, 125, 0.25);
+  transform: translateY(-2px);
+}
+
+.doctor-pacientes-card .btn-outline-primary.btn-sm:hover::before {
+  left: 100%;
+}
+
+/* ============================================================
+   ANIMACIONES
+   ============================================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doctor-pacientes-header,
+.doctor-pacientes-card {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  .doctor-pacientes-container {
+    padding: 0 1.5rem 2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .doctor-pacientes-page {
+    padding: 110px 0 2rem 0;
+  }
+
+  .doctor-pacientes-header {
+    padding: 2rem 2.25rem 1.75rem 2.25rem;
+  }
+
+  .doctor-pacientes-card {
+    padding: 1.75rem 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .doctor-pacientes-header {
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .doctor-pacientes-title {
+    font-size: 1.8rem;
+  }
+
+  .doctor-pacientes-container {
+    padding: 0 1.25rem 2rem;
+  }
+
+  .doctor-pacientes-search-wrapper {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .doctor-pacientes-container {
+    padding: 0 1rem 1.75rem;
+  }
+
+  .doctor-pacientes-header {
+    padding: 1.75rem 1.5rem 1.5rem 1.5rem;
+    border-radius: var(--dc-radius-lg);
+  }
+
+  .doctor-pacientes-title {
+    font-size: 1.6rem;
+  }
+
+  .doctor-pacientes-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .doctor-pacientes-card {
+    padding: 1.5rem 1.25rem;
+    border-radius: var(--dc-radius-lg);
+  }
+
+  .doctor-pacientes-card .btn-outline-primary.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}

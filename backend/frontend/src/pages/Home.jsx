@@ -1,3 +1,4 @@
+﻿// Home.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +25,8 @@ const servicesData = [
     id: 1,
     title: "Dermatología Clínica",
     shortDesc: "Diagnóstico y tratamiento especializado de enfermedades cutáneas",
-    longDesc: "Ofrecemos diagnóstico y tratamiento integral para una gran variedad de afecciones de la piel con tecnología de última generación y enfoque multidisciplinario.",
+    longDesc:
+      "Ofrecemos diagnóstico y tratamiento integral para una gran variedad de afecciones de la piel con tecnología de última generación y enfoque multidisciplinario.",
     image: dermatologia,
     video: dermatologiaVideo,
     features: [
@@ -42,7 +44,8 @@ const servicesData = [
     id: 2,
     title: "Tamiz Neonatal",
     shortDesc: "Tecnología de punta para detección temprana de alteraciones metabólicas",
-    longDesc: "Nuestro tamiz neonatal incluye un amplio espectro de pruebas para detectar a tiempo alteraciones congénitas que pueden afectar el desarrollo del bebé.",
+    longDesc:
+      "Nuestro tamiz neonatal incluye un amplio espectro de pruebas para detectar a tiempo alteraciones congénitas que pueden afectar el desarrollo del bebé.",
     image: tamiz,
     video: tamizVideo,
     features: [
@@ -60,7 +63,8 @@ const servicesData = [
     id: 3,
     title: "Podología Avanzada",
     shortDesc: "Soluciones integrales para salud podológica y ortopedia especializada",
-    longDesc: "Contamos con servicios especializados para el cuidado integral de tus pies, desde tratamientos convencionales hasta cirugías reconstructivas.",
+    longDesc:
+      "Contamos con servicios especializados para el cuidado integral de tus pies, desde tratamientos convencionales hasta cirugías reconstructivas.",
     image: podologia,
     video: podologiaVideo,
     features: [
@@ -80,8 +84,10 @@ function Home() {
   const navigate = useNavigate();
   const [activeService, setActiveService] = useState(null);
   const [closing, setClosing] = useState(false);
-  const videoRef = useRef(null);
-  const modalVideoRef = useRef(null);
+  const [videoLoading, setVideoLoading] = useState(false);
+
+  const videoRef = useRef(null);       // Video del hero
+  const modalVideoRef = useRef(null);  // Video del modal
 
   // Animación de reveal en scroll
   useEffect(() => {
@@ -119,12 +125,15 @@ function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Sistema de partículas MEJORADO
+  // Sistema de partículas (optimizado para no saturar DOM)
   useEffect(() => {
     const cleanups = [];
 
     const createParticle = (container) => {
       if (!container || !document.body.contains(container)) return;
+
+      // 🔥 No generamos partículas nuevas mientras un modal esté abierto
+      if (document.body.classList.contains("modal-open")) return;
 
       const particle = document.createElement("div");
       particle.className = "particle-dot";
@@ -139,7 +148,7 @@ function Home() {
 
       const angle = Math.random() * Math.PI * 2;
       const distance = Math.random() * 100 + 50;
-      
+
       const endX = startX + Math.cos(angle) * distance;
       const endY = startY + Math.sin(angle) * distance;
 
@@ -174,15 +183,16 @@ function Home() {
       for (let i = 0; i < 15; i++) {
         setTimeout(() => createParticle(heroContainer), Math.random() * 2000);
       }
-      
+
       const startHeroParticles = () => {
         createParticle(heroContainer);
         const nextTime = Math.random() * 900 + 300;
-        setTimeout(startHeroParticles, nextTime);
+        const timeout = setTimeout(startHeroParticles, nextTime);
+        cleanups.push(() => clearTimeout(timeout));
       };
-      
-      const heroTimeout = setTimeout(startHeroParticles, 500);
-      cleanups.push(() => clearTimeout(heroTimeout));
+
+      const initialTimeout = setTimeout(startHeroParticles, 500);
+      cleanups.push(() => clearTimeout(initialTimeout));
     }
 
     // Partículas en el footer
@@ -191,15 +201,16 @@ function Home() {
       for (let i = 0; i < 12; i++) {
         setTimeout(() => createParticle(footerContainer), Math.random() * 2500);
       }
-      
+
       const startFooterParticles = () => {
         createParticle(footerContainer);
         const nextTime = Math.random() * 1200 + 400;
-        setTimeout(startFooterParticles, nextTime);
+        const timeout = setTimeout(startFooterParticles, nextTime);
+        cleanups.push(() => clearTimeout(timeout));
       };
-      
-      const footerTimeout = setTimeout(startFooterParticles, 800);
-      cleanups.push(() => clearTimeout(footerTimeout));
+
+      const initialFooterTimeout = setTimeout(startFooterParticles, 800);
+      cleanups.push(() => clearTimeout(initialFooterTimeout));
     }
 
     // Partículas en cards (solo en hover)
@@ -220,7 +231,7 @@ function Home() {
         }
 
         const createParticleWhileHover = () => {
-          if (cardParticlesContainer.parentElement.matches(':hover')) {
+          if (card.matches(":hover") && !document.body.classList.contains("modal-open")) {
             createParticle(cardParticlesContainer);
             const nextTime = Math.random() * 500 + 150;
             const timeout = setTimeout(createParticleWhileHover, nextTime);
@@ -233,7 +244,7 @@ function Home() {
       };
 
       const handleMouseLeave = () => {
-        cardParticleTimeouts.forEach(timeout => clearTimeout(timeout));
+        cardParticleTimeouts.forEach((timeout) => clearTimeout(timeout));
         cardParticleTimeouts = [];
       };
 
@@ -243,7 +254,7 @@ function Home() {
       cleanups.push(() => {
         card.removeEventListener("mouseenter", handleMouseEnter);
         card.removeEventListener("mouseleave", handleMouseLeave);
-        cardParticleTimeouts.forEach(timeout => clearTimeout(timeout));
+        cardParticleTimeouts.forEach((timeout) => clearTimeout(timeout));
       });
     });
 
@@ -252,95 +263,114 @@ function Home() {
     };
   }, []);
 
-  // Abrir modal
+  // Abrir modal de servicio
   const openServiceModal = (service) => {
     setClosing(false);
     setActiveService(service);
+    setVideoLoading(true);
+
+    // Pausar video del hero para liberar GPU
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+
+    // Congelar fondo lógicamente (clase para estilos + partículas)
+    document.body.classList.add("modal-open");
   };
 
   // Cerrar modal
   const closeServiceModal = () => {
     setClosing(true);
 
+    // Detener video del modal
     if (modalVideoRef.current) {
       modalVideoRef.current.pause();
       modalVideoRef.current.currentTime = 0;
     }
 
+    // Reanudar video del hero
+    if (videoRef.current) {
+      videoRef.current
+        .play()
+        .catch(() => {
+          // ignorar error de autoplay
+        });
+    }
+
+    document.body.classList.remove("modal-open");
+
     setTimeout(() => {
       setClosing(false);
       setActiveService(null);
+      setVideoLoading(false);
     }, 300);
   };
 
-  // Video del modal: reproducción fluida sin recargas agresivas ni pantallas negras
+  // Video del modal – reproducción optimizada
   useEffect(() => {
     const videoEl = modalVideoRef.current;
     if (!activeService || !videoEl) return;
 
-    // Configuración estable
+    setVideoLoading(true);
+
     videoEl.muted = true;
     videoEl.loop = true;
     videoEl.playsInline = true;
     videoEl.preload = "auto";
     videoEl.currentTime = 0;
 
-    const playVideo = () => {
+    const handleCanPlayThrough = () => {
+      setVideoLoading(false);
       const playPromise = videoEl.play();
       if (playPromise && typeof playPromise.then === "function") {
         playPromise.catch(() => {
-          // Si el navegador bloquea autoplay, no rompemos nada visual
+          videoEl.muted = true;
+          videoEl.play().catch(() => {
+            // Si el navegador bloquea autoplay, simplemente no forzamos más
+          });
         });
       }
     };
 
-    let handleCanPlay;
-
-    if (videoEl.readyState >= 2) {
-      // Ya hay datos suficientes: reproducimos de inmediato
-      playVideo();
+    if (videoEl.readyState >= 4) {
+      handleCanPlayThrough();
     } else {
-      // Esperamos a que esté listo y entonces reproducimos
-      handleCanPlay = () => {
-        playVideo();
-      };
-      videoEl.addEventListener("canplay", handleCanPlay, { once: true });
+      videoEl.addEventListener("canplaythrough", handleCanPlayThrough, {
+        once: true,
+      });
     }
 
-    // Limpieza al cerrar modal o cambiar de servicio
     return () => {
-      if (handleCanPlay) {
-        videoEl.removeEventListener("canplay", handleCanPlay);
-      }
+      videoEl.removeEventListener("canplaythrough", handleCanPlayThrough);
       videoEl.pause();
-      videoEl.currentTime = 0;
     };
   }, [activeService]);
 
-  // Optimizar video de fondo del hero
+  // Video de fondo del Hero
   useEffect(() => {
-    if (videoRef.current) {
-      const video = videoRef.current;
-      video.preload = "auto";
-      video.muted = true;
-      video.playsInline = true;
-      video.loop = true;
-      
-      const handleCanPlay = () => {
-        video.play().catch(e => {
-          console.log("Hero video play error:", e);
+    if (!videoRef.current) return;
+    const video = videoRef.current;
+
+    video.preload = "auto";
+    video.muted = true;
+    video.playsInline = true;
+    video.loop = true;
+
+    const handleCanPlay = () => {
+      video
+        .play()
+        .catch(() => {
           video.muted = true;
-          video.play();
+          video.play().catch(() => {});
         });
-      };
+    };
 
-      video.addEventListener('canplay', handleCanPlay, { once: true });
-      video.load();
+    video.addEventListener("canplay", handleCanPlay, { once: true });
+    video.load();
 
-      return () => {
-        video.removeEventListener('canplay', handleCanPlay);
-      };
-    }
+    return () => {
+      video.removeEventListener("canplay", handleCanPlay);
+    };
   }, []);
 
   // Desactivar scroll cuando el modal está abierto
@@ -391,19 +421,31 @@ function Home() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <div
+            className="collapse navbar-collapse justify-content-end"
+            id="navbarNav"
+          >
             <ul className="navbar-nav align-items-center">
               <li className="nav-item hover-underline">
-                <a className="nav-link" href="#servicios">Servicios</a>
+                <a className="nav-link" href="#servicios">
+                  Servicios
+                </a>
               </li>
               <li className="nav-item hover-underline">
-                <a className="nav-link" href="#nosotros">Nosotros</a>
+                <a className="nav-link" href="#nosotros">
+                  Nosotros
+                </a>
               </li>
               <li className="nav-item hover-underline">
-                <a className="nav-link" href="#ubicacion">Ubicación</a>
+                <a className="nav-link" href="#ubicacion">
+                  Ubicación
+                </a>
               </li>
               <li className="nav-item">
-                <button className="btn-appointment glass-button ms-lg-4" onClick={() => navigate("/login")}>
+                <button
+                  className="btn-appointment glass-button ms-lg-4"
+                  onClick={() => navigate("/login")}
+                >
                   <span>Acceder al Sistema</span>
                   <div className="liquid"></div>
                 </button>
@@ -416,7 +458,14 @@ function Home() {
       {/* Hero */}
       <section className="hero">
         <div className="video-background">
-          <video ref={videoRef} className="background-video" autoPlay muted loop playsInline preload="auto">
+          <video
+            ref={videoRef}
+            className="background-video"
+            muted
+            loop
+            playsInline
+            preload="auto"
+          >
             <source src={medicalVideo} type="video/mp4" />
           </video>
           <div className="video-overlay"></div>
@@ -428,9 +477,13 @@ function Home() {
           <div className="hero-text-container">
             <h1 className="hero-title">Excelencia en Salud Dermatológica</h1>
             <p className="hero-subtitle">
-              Cuidado especializado con <span className="highlight">tecnología de vanguardia</span>
+              Cuidado especializado con{" "}
+              <span className="highlight">tecnología de vanguardia</span>
             </p>
-            <button className="btn-cta glass-button pulse" onClick={() => navigate("/login")}>
+            <button
+              className="btn-cta glass-button pulse"
+              onClick={() => navigate("/login")}
+            >
               <span className="btn-text">Agenda tu Consulta</span>
               <div className="btn-glow"></div>
             </button>
@@ -453,12 +506,17 @@ function Home() {
         <div className="container">
           <h2 className="section-title reveal">Nuestros Servicios Especializados</h2>
           <p className="section-subtitle reveal">
-            Descubre nuestra gama completa de tratamientos dermatológicos con los más altos estándares de calidad
+            Descubre nuestra gama completa de tratamientos dermatológicos con los
+            más altos estándares de calidad
           </p>
 
           <div className="services-grid">
             {servicesData.map((service, index) => (
-              <div key={service.id} className={`service-card reveal delay-${index}`} onClick={() => openServiceModal(service)}>
+              <div
+                key={service.id}
+                className={`service-card reveal delay-${index}`}
+                onClick={() => openServiceModal(service)}
+              >
                 <div className="card-inner">
                   <div className="particle-layer card-particles"></div>
                   <div className="card-image">
@@ -490,9 +548,15 @@ function Home() {
         <div className="container">
           <div className="about-content">
             <div className="about-text reveal">
-              <h2 className="section-title about-title">Comprometidos con tu Salud Dermatológica</h2>
+              <h2 className="section-title about-title">
+                Comprometidos con tu Salud Dermatológica
+              </h2>
               <p className="about-description">
-                En <strong className="brand-highlight">Pro-Piel</strong>, nos dedicamos a proporcionar atención médica especializada de la más alta calidad. Nuestro equipo de profesionales altamente capacitados combina experiencia con tecnología de punta para garantizar diagnósticos precisos y tratamientos efectivos.
+                En <strong className="brand-highlight">Pro-Piel</strong>, nos
+                dedicamos a proporcionar atención médica especializada de la más
+                alta calidad. Nuestro equipo de profesionales altamente capacitados
+                combina experiencia con tecnología de punta para garantizar
+                diagnósticos precisos y tratamientos efectivos.
               </p>
 
               <div className="stats-grid">
@@ -538,21 +602,30 @@ function Home() {
                 <i className="bi bi-shield-check"></i>
               </div>
               <h4>Certificaciones Internacionales</h4>
-              <p>Estándares de calidad avalados por las principales organizaciones dermatológicas mundiales</p>
+              <p>
+                Estándares de calidad avalados por las principales organizaciones
+                dermatológicas mundiales
+              </p>
             </div>
             <div className="differentiator-card reveal">
               <div className="icon-box glass-icon">
                 <i className="bi bi-robot"></i>
               </div>
               <h4>Tecnología de Punta</h4>
-              <p>Equipamiento dermatológico de última generación para diagnósticos precisos</p>
+              <p>
+                Equipamiento dermatológico de última generación para diagnósticos
+                precisos
+              </p>
             </div>
             <div className="differentiator-card reveal">
               <div className="icon-box glass-icon">
                 <i className="bi bi-heart-pulse"></i>
               </div>
               <h4>Enfoque Preventivo</h4>
-              <p>Programas personalizados de cuidado preventivo y seguimiento continuo</p>
+              <p>
+                Programas personalizados de cuidado preventivo y seguimiento
+                continuo
+              </p>
             </div>
           </div>
         </div>
@@ -562,7 +635,9 @@ function Home() {
       <section id="ubicacion" className="contact-section">
         <div className="container">
           <h2 className="section-title reveal">Nuestra Ubicación</h2>
-          <p className="section-subtitle reveal">Visítanos en nuestro moderno centro dermatológico</p>
+          <p className="section-subtitle reveal">
+            Visítanos en nuestro moderno centro dermatológico
+          </p>
 
           <div className="map-container reveal">
             <iframe
@@ -590,9 +665,14 @@ function Home() {
         <div className="container">
           <div className="footer-grid">
             <div className="footer-brand reveal">
-              <img src={logo} alt="Logo" className="footer-logo silhouette" />
+              <img
+                src={logo}
+                alt="Logo"
+                className="footer-logo silhouette"
+              />
               <p className="footer-text">
-                Cuidando tu salud dermatológica con excelencia y calidez humana desde 2010
+                Cuidando tu salud dermatológica con excelencia y calidez humana
+                desde 2010
               </p>
               <div className="social-links">
                 <a href="#" className="social-link glass-button">
@@ -613,11 +693,21 @@ function Home() {
             <div className="footer-menu reveal">
               <h5>Servicios</h5>
               <ul>
-                <li><a href="#servicios">Dermatología Clínica</a></li>
-                <li><a href="#servicios">Cirugía Dermatológica</a></li>
-                <li><a href="#servicios">Podología Especializada</a></li>
-                <li><a href="#servicios">Tamiz Neonatal</a></li>
-                <li><a href="#servicios">Dermatología Estética</a></li>
+                <li>
+                  <a href="#servicios">Dermatología Clínica</a>
+                </li>
+                <li>
+                  <a href="#servicios">Cirugía Dermatológica</a>
+                </li>
+                <li>
+                  <a href="#servicios">Podología Especializada</a>
+                </li>
+                <li>
+                  <a href="#servicios">Tamiz Neonatal</a>
+                </li>
+                <li>
+                  <a href="#servicios">Dermatología Estética</a>
+                </li>
               </ul>
             </div>
 
@@ -626,7 +716,11 @@ function Home() {
               <div className="contact-info">
                 <p>
                   <i className="bi bi-geo-alt"></i>
-                  <span>Cedro No. 0, Col. El Hujal<br />Zihuatanejo, Gro.</span>
+                  <span>
+                    Cedro No. 0, Col. El Hujal
+                    <br />
+                    Zihuatanejo, Gro.
+                  </span>
                 </p>
                 <p>
                   <i className="bi bi-telephone"></i>
@@ -638,7 +732,11 @@ function Home() {
                 </p>
                 <p>
                   <i className="bi bi-clock"></i>
-                  <span>Lun-Vie: 8:00-20:00<br />Sáb: 9:00-14:00</span>
+                  <span>
+                    Lun-Vie: 8:00-20:00
+                    <br />
+                    Sáb: 9:00-14:00
+                  </span>
                 </p>
               </div>
             </div>
@@ -655,28 +753,34 @@ function Home() {
         </div>
       </footer>
 
-      {/* Modal - VIDEO OPTIMIZADO MEJORADO */}
+      {/* Modal de Servicio */}
       {activeService && (
-        <div className={`service-modal ${closing ? "closing" : ""}`} onClick={closeServiceModal}>
-          <div className="modal-content glass-card" onClick={(e) => e.stopPropagation()}>
+        <div
+          className={`service-modal ${closing ? "closing" : ""}`}
+          onClick={closeServiceModal}
+        >
+          <div
+            className="modal-content glass-card"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button className="modal-close glass-button" onClick={closeServiceModal}>
               <i className="bi bi-x-lg"></i>
             </button>
 
             <div className="modal-video-wrapper">
+              {videoLoading && (
+                <div className="modal-video-loader">
+                  <div className="spinner"></div>
+                </div>
+              )}
+
               <video
                 ref={modalVideoRef}
-                key={`modal-video-${activeService.id}`}
                 className="modal-video"
                 muted
                 loop
                 playsInline
-                preload="auto"
-                autoPlay
-                data-loaded="false"
-                onCanPlay={(e) => {
-                  e.target.setAttribute("data-loaded", "true");
-                }}
+                preload="metadata"
               >
                 <source src={activeService.video} type="video/mp4" />
                 Tu navegador no soporta el elemento de video.
@@ -712,7 +816,10 @@ function Home() {
               </div>
 
               <div className="modal-actions">
-                <button className="btn-primary glass-button" onClick={() => navigate("/login")}>
+                <button
+                  className="btn-primary glass-button"
+                  onClick={() => navigate("/login")}
+                >
                   <i className="bi bi-calendar-check"></i>
                   Agendar Cita
                 </button>

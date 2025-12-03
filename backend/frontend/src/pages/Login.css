@@ -1,4 +1,7 @@
-:root {
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+.login-container {
+  /* Variables locales del componente */
   --primary-color: #0088A9;
   --secondary-color: #128EAE;
   --accent-color: #1690B0;
@@ -11,17 +14,12 @@
   --particle-opacity-start: 0.3;
   --particle-opacity-end: 0.8;
   --animation-duration: 5s;
-}
 
-body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
   background-color: var(--background-color);
   color: var(--text-color);
   overflow: hidden;
-}
-
-.login-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,7 +30,7 @@ body {
   z-index: 1;
 }
 
-.particle {
+.login-container .particle {
   position: absolute;
   width: var(--particle-size);
   height: var(--particle-size);
@@ -60,17 +58,17 @@ body {
   50% { opacity: var(--particle-opacity-end); }
 }
 
-.particle:nth-child(odd) {
+.login-container .particle:nth-child(odd) {
   filter: blur(2px);
   z-index: 1;
 }
 
-.particle:nth-child(even) {
+.login-container .particle:nth-child(even) {
   filter: blur(0.5px);
   z-index: -1;
 }
 
-.particle::after {
+.login-container .particle::after {
   content: '';
   position: absolute;
   top: 0;
@@ -88,7 +86,7 @@ body {
   50% { opacity: 1; }
 }
 
-.login-card {
+.login-container .login-card {
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(12px);
   border-radius: 20px;
@@ -108,23 +106,23 @@ body {
   100% { transform: translateY(0); opacity: 1; }
 }
 
-.login-header {
+.login-container .login-header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.login-logo {
+.login-container .login-logo {
   width: 120px;
   margin-bottom: 1rem;
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
   transition: var(--transition-default);
 }
 
-.login-logo:hover {
+.login-container .login-logo:hover {
   transform: scale(1.05);
 }
 
-.login-title {
+.login-container .login-title {
   color: var(--primary-color);
   font-size: 1.8rem;
   font-weight: 600;
@@ -132,7 +130,7 @@ body {
   position: relative;
 }
 
-.login-title::after {
+.login-container .login-title::after {
   content: '';
   position: absolute;
   bottom: -10px;
@@ -144,25 +142,25 @@ body {
   border-radius: 2px;
 }
 
-.login-form {
+.login-container .login-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.form-group {
+.login-container .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.form-label {
+.login-container .form-label {
   color: var(--text-color);
   font-size: 0.9rem;
   font-weight: 500;
 }
 
-.form-control {
+.login-container .form-control {
   padding: 0.8rem 1rem;
   border: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: 10px;
@@ -171,23 +169,23 @@ body {
   background-color: #F8FAFA;
 }
 
-.form-control:focus {
+.login-container .form-control:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(0, 136, 169, 0.2);
   outline: none;
 }
 
-.is-invalid {
+.login-container .is-invalid {
   border-color: var(--error-color) !important;
 }
 
-.invalid-feedback {
+.login-container .invalid-feedback {
   color: var(--error-color);
   font-size: 0.8rem;
   margin-top: 0.25rem;
 }
 
-.login-button {
+.login-container .login-button {
   background: linear-gradient(
     90deg,
     var(--primary-color) 0%,
@@ -208,7 +206,7 @@ body {
   will-change: transform, background-position;
 }
 
-.login-button::before {
+.login-container .login-button::before {
   content: '';
   position: absolute;
   top: 0;
@@ -224,23 +222,23 @@ body {
   transition: left 0.6s ease-in-out;
 }
 
-.login-button:hover::before {
+.login-container .login-button:hover::before {
   left: 150%;
 }
 
-.login-button:hover {
+.login-container .login-button:hover {
   background-position: right center;
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 8px 25px rgba(0, 136, 169, 0.4);
 }
 
-.login-footer {
+.login-container .login-footer {
   text-align: center;
   margin-top: 1.5rem;
   font-size: 0.9rem;
 }
 
-.register-link {
+.login-container .register-link {
   color: var(--accent-color);
   background: none;
   border: none;
@@ -250,38 +248,38 @@ body {
   transition: var(--transition-default);
 }
 
-.register-link:hover {
+.login-container .register-link:hover {
   color: var(--primary-color);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .login-card {
+  .login-container .login-card {
     padding: 2rem;
     max-width: 90%;
   }
 
-  .login-title {
+  .login-container .login-title {
     font-size: 1.6rem;
   }
 }
 
 @media (max-width: 480px) {
-  .login-card {
+  .login-container .login-card {
     padding: 1.5rem;
   }
 
-  .login-logo {
+  .login-container .login-logo {
     width: 100px;
   }
 
-  .login-title {
+  .login-container .login-title {
     font-size: 1.4rem;
   }
 }
 
 @media (max-width: 600px) {
-  .particle {
+  .login-container .particle {
     width: calc(var(--particle-size) / 2);
     height: calc(var(--particle-size) / 2);
   }

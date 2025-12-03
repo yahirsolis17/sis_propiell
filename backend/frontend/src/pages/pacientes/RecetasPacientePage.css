@@ -1,0 +1,771 @@
+/* src/pages/pacientes/RecetasPacientePage.css */
+/* ============================================================
+   PALETA MÉDICA - RECETAS DEL PACIENTE (CONSISTENTE CON SISTEMA)
+   ============================================================ */
+
+.paciente-recetas-container {
+  /* PALETA PRINCIPAL DEL SISTEMA */
+  --pr-primary: #0A6E7D;           /* Azul principal original */
+  --pr-primary-light: #E8F5F6;     /* Azul muy claro para fondos */
+  --pr-primary-lighter: #F4FAFB;   /* Azul casi blanco para fondos claros */
+  --pr-secondary: #1496B7;         /* Azul secundario original */
+  --pr-secondary-light: #88D1E8;   /* Azul claro para efectos */
+  --pr-accent: #FF7F50;            /* Naranja coral original */
+  --pr-accent-light: #FFD1C2;      /* Naranja claro para fondos */
+  
+  /* Colores de texto - Manteniendo contraste */
+  --pr-text-dark: #1A2C3A;         /* Un poco más oscuro para mejor legibilidad */
+  --pr-text-medium: #4A5C6A;       /* Gris azulado medio */
+  --pr-text-light: #7A8B99;        /* Gris azulado claro */
+  
+  /* Fondos - Manteniendo la claridad médica */
+  --pr-white: #FFFFFF;
+  --pr-bg-page: #F5F9FA;           /* Fondo de página azul muy suave */
+  --pr-bg-light: #FAFDFE;          /* Fondo de tarjetas muy claro */
+  --pr-bg-card: #FFFFFF;
+  
+  /* Sombras - Con tono azulado sutil */
+  --pr-shadow-soft: 0 2px 16px rgba(10, 110, 125, 0.06);
+  --pr-shadow-medium: 0 4px 24px rgba(10, 110, 125, 0.08);
+  --pr-shadow-hover: 0 6px 32px rgba(10, 110, 125, 0.12);
+  --pr-shadow-strong: 0 8px 40px rgba(10, 110, 125, 0.15);
+  
+  /* Bordes - Con tu color principal */
+  --pr-border-light: 1px solid rgba(10, 110, 125, 0.08);
+  --pr-border-medium: 1px solid rgba(10, 110, 125, 0.12);
+  --pr-border-accent: 1px solid rgba(255, 127, 80, 0.2);
+  
+  /* Radios - Consistentes con tu diseño */
+  --pr-radius-sm: 8px;
+  --pr-radius-md: 12px;
+  --pr-radius-lg: 16px;
+  --pr-radius-xl: 20px;
+  --pr-radius-full: 999px;
+  
+  /* Transiciones - Suaves como en tu diseño */
+  --pr-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --pr-transition-smooth: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  --pr-transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--pr-bg-page) 0%, var(--pr-primary-light) 100%);
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--pr-text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   LAYOUT PRINCIPAL
+   ============================================================ */
+
+.paciente-recetas-page {
+  padding: 130px 0 3rem 0; /* margen bajo el navbar */
+  min-height: calc(100vh - 130px);
+  position: relative;
+  z-index: 1;
+}
+
+.paciente-recetas-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.03) 0%, 
+    rgba(20, 150, 183, 0.01) 100%);
+  z-index: -1;
+}
+
+.paciente-recetas-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+}
+
+/* ============================================================
+   HEADER PRINCIPAL - DISEÑO CLÍNICO ACTUALIZADO
+   ============================================================ */
+
+.paciente-recetas-main-header {
+  background: linear-gradient(135deg, var(--pr-white) 0%, var(--pr-primary-lighter) 100%);
+  border-radius: var(--pr-radius-xl);
+  padding: 2.5rem 2.5rem 2rem 2.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--pr-shadow-medium);
+  border: var(--pr-border-light);
+  position: relative;
+  overflow: hidden;
+  transition: var(--pr-transition-smooth);
+}
+
+.paciente-recetas-main-header:hover {
+  box-shadow: var(--pr-shadow-hover);
+  transform: translateY(-2px);
+}
+
+/* Fondo suave a la derecha, tipo consultorio limpio */
+.paciente-recetas-main-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 220px;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.05) 100%
+  );
+  border-radius: 0 var(--pr-radius-xl) var(--pr-radius-xl) 0;
+  z-index: 0;
+}
+
+.paciente-recetas-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.paciente-recetas-header-left {
+  flex: 1;
+}
+
+.paciente-recetas-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--pr-primary);
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(45deg, var(--pr-primary), var(--pr-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.paciente-recetas-subtitle {
+  font-size: 1.05rem;
+  color: var(--pr-text-medium);
+  margin: 0 0 1.5rem 0;
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* Perfil del paciente */
+.paciente-recetas-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.paciente-name-badge,
+.paciente-id-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--pr-radius-full);
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: var(--pr-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.paciente-name-badge {
+  background: var(--pr-white);
+  color: var(--pr-text-dark);
+  border: var(--pr-border-medium);
+  box-shadow: var(--pr-shadow-soft);
+}
+
+.paciente-name-badge:hover {
+  border-color: var(--pr-secondary);
+  transform: translateY(-2px);
+  box-shadow: var(--pr-shadow-medium);
+}
+
+.paciente-id-badge {
+  background: linear-gradient(45deg, var(--pr-primary), var(--pr-secondary));
+  color: var(--pr-white);
+  box-shadow: 0 4px 12px rgba(10, 110, 125, 0.25);
+}
+
+.paciente-id-badge:hover {
+  background: linear-gradient(45deg, var(--pr-secondary), var(--pr-primary));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(10, 110, 125, 0.35);
+}
+
+/* Contador de recetas */
+.recetas-summary-card {
+  background: linear-gradient(135deg, var(--pr-white), var(--pr-primary-lighter));
+  border-radius: var(--pr-radius-lg);
+  padding: 1.75rem 2rem;
+  border: var(--pr-border-light);
+  box-shadow: var(--pr-shadow-soft);
+  min-width: 160px;
+  text-align: center;
+  transition: var(--pr-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.recetas-summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--pr-shadow-strong);
+  border-color: var(--pr-secondary-light);
+}
+
+.recetas-summary-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--pr-primary), var(--pr-secondary));
+  border-radius: 0 0 var(--pr-radius-lg) var(--pr-radius-lg);
+}
+
+.recetas-count {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--pr-primary);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(45deg, var(--pr-primary), var(--pr-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.recetas-label {
+  font-size: 0.85rem;
+  color: var(--pr-text-medium);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   CARD PRINCIPAL (CONTENIDO)
+   ============================================================ */
+
+.paciente-recetas-main-card {
+  background: var(--pr-white);
+  border-radius: var(--pr-radius-xl);
+  box-shadow: var(--pr-shadow-medium);
+  border: var(--pr-border-light);
+  overflow: hidden;
+  transition: var(--pr-transition-smooth);
+}
+
+.paciente-recetas-main-card:hover {
+  box-shadow: var(--pr-shadow-hover);
+}
+
+/* ============================================================
+   FILTRO DE BÚSQUEDA
+   ============================================================ */
+
+.recetas-search-card {
+  background: linear-gradient(135deg, var(--pr-bg-light), var(--pr-white));
+  border: var(--pr-border-light);
+  border-radius: var(--pr-radius-lg);
+  padding: 1.75rem;
+  margin: 2rem 2.5rem 1.5rem 2.5rem;
+  box-shadow: var(--pr-shadow-soft);
+  transition: var(--pr-transition-smooth);
+}
+
+.recetas-search-card:hover {
+  border-color: rgba(10, 110, 125, 0.15);
+  box-shadow: var(--pr-shadow-medium);
+}
+
+.recetas-search-label {
+  font-weight: 600;
+  color: var(--pr-text-dark);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.paciente-recetas-container .form-control {
+  border-radius: var(--pr-radius-full);
+  border: var(--pr-border-medium);
+  padding: 0.85rem 1.25rem;
+  font-size: 0.9rem;
+  color: var(--pr-text-dark);
+  background: var(--pr-white);
+  transition: var(--pr-transition-smooth);
+}
+
+.paciente-recetas-container .form-control:focus {
+  outline: none;
+  border-color: var(--pr-primary);
+  box-shadow: 0 0 0 3px rgba(10, 110, 125, 0.15);
+  background: var(--pr-primary-lighter);
+}
+
+.recetas-filter-loading {
+  font-size: 0.8rem;
+  color: var(--pr-text-medium);
+  text-align: center;
+  padding: 0.75rem 0;
+  font-style: italic;
+}
+
+/* ============================================================
+   TABLA DE RECETAS
+   ============================================================ */
+
+.recetas-table-wrapper {
+  border-radius: var(--pr-radius-lg);
+  border: var(--pr-border-light);
+  background: var(--pr-white);
+  overflow: hidden;
+  box-shadow: var(--pr-shadow-soft);
+  margin: 0 2.5rem 2.5rem 2.5rem;
+}
+
+.recetas-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--pr-white);
+}
+
+.recetas-table thead {
+  background: linear-gradient(135deg, var(--pr-primary-light), var(--pr-primary-lighter));
+}
+
+.recetas-table thead th {
+  padding: 1.25rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--pr-text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: var(--pr-border-medium);
+  text-align: left;
+  position: sticky;
+  top: 0;
+  background: inherit;
+}
+
+.recetas-table tbody tr {
+  transition: var(--pr-transition-fast);
+  border-bottom: 1px solid rgba(10, 110, 125, 0.04);
+}
+
+.recetas-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.recetas-table tbody tr:hover {
+  background: linear-gradient(90deg, 
+    rgba(10, 110, 125, 0.02) 0%, 
+    rgba(20, 150, 183, 0.01) 100%);
+}
+
+.recetas-table tbody td {
+  padding: 1.25rem 1rem;
+  font-size: 0.9rem;
+  color: var(--pr-text-dark);
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(10, 110, 125, 0.04);
+}
+
+.recetas-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.recetas-table td.small {
+  font-size: 0.85rem;
+  color: var(--pr-text-medium);
+}
+
+/* ============================================================
+   BADGES - SISTEMA CONSISTENTE CON PALETA PRINCIPAL
+   ============================================================ */
+
+.paciente-recetas-container .badge {
+  font-weight: 500;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--pr-radius-full);
+  font-size: 0.8rem;
+  transition: var(--pr-transition-fast);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid;
+}
+
+.paciente-recetas-container .badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  transition: var(--pr-transition-fast);
+}
+
+.paciente-recetas-container .badge:hover::before {
+  opacity: 1;
+}
+
+.paciente-recetas-container .badge.bg-success {
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.12), 
+    rgba(20, 150, 183, 0.08)) !important;
+  color: var(--pr-primary) !important;
+  border-color: rgba(10, 110, 125, 0.2) !important;
+}
+
+.paciente-recetas-container .badge.bg-success:hover {
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.15), 
+    rgba(20, 150, 183, 0.1)) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(10, 110, 125, 0.1);
+}
+
+/* ============================================================
+   ESTADOS DE CARGA Y MENSAJES
+   ============================================================ */
+
+.recetas-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem;
+  color: var(--pr-text-medium);
+  font-size: 1rem;
+  background: linear-gradient(135deg, 
+    var(--pr-primary-lighter), 
+    var(--pr-white));
+  border-radius: var(--pr-radius-md);
+  border: var(--pr-border-light);
+}
+
+.recetas-error {
+  background: linear-gradient(135deg, 
+    rgba(220, 53, 69, 0.04), 
+    rgba(220, 53, 69, 0.01));
+  border: var(--pr-border-medium);
+  border-color: rgba(220, 53, 69, 0.15);
+  border-radius: var(--pr-radius-md);
+  padding: 1.5rem;
+  color: #dc3545;
+  text-align: center;
+  margin: 2.5rem;
+}
+
+.recetas-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--pr-text-medium);
+  background: linear-gradient(135deg, 
+    var(--pr-primary-lighter), 
+    var(--pr-white));
+  border-radius: var(--pr-radius-md);
+  border: 1px dashed rgba(10, 110, 125, 0.2);
+  margin: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.recetas-empty::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, 
+    transparent 0%, 
+    rgba(255, 127, 80, 0.03) 100%);
+  z-index: 0;
+}
+
+.recetas-empty h4 {
+  color: var(--pr-text-dark);
+  font-weight: 600;
+  margin: 1rem 0 0.5rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.recetas-empty p {
+  color: var(--pr-text-medium);
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   BOTONES - ESTILOS CLÍNICOS ACTUALIZADOS
+   ============================================================ */
+
+.paciente-recetas-container .btn {
+  border-radius: var(--pr-radius-full);
+  font-size: 0.85rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: var(--pr-transition-smooth);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.paciente-recetas-container .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: var(--pr-transition-smooth);
+}
+
+.paciente-recetas-container .btn:hover::before {
+  left: 100%;
+}
+
+.paciente-recetas-container .btn-outline-secondary {
+  border: var(--pr-border-medium);
+  border-color: rgba(10, 110, 125, 0.25);
+  color: var(--pr-text-medium);
+  background: var(--pr-white);
+}
+
+.paciente-recetas-container .btn-outline-secondary:hover {
+  background: linear-gradient(135deg, var(--pr-primary-light), var(--pr-white));
+  color: var(--pr-primary);
+  border-color: var(--pr-primary);
+  box-shadow: var(--pr-shadow-medium);
+  transform: translateY(-2px);
+}
+
+.paciente-recetas-container .btn-primary {
+  background: linear-gradient(135deg, var(--pr-primary), var(--pr-secondary));
+  color: var(--pr-white);
+  box-shadow: 0 4px 16px rgba(10, 110, 125, 0.25);
+}
+
+.paciente-recetas-container .btn-primary:hover {
+  background: linear-gradient(135deg, var(--pr-secondary), var(--pr-primary));
+  box-shadow: 0 6px 20px rgba(10, 110, 125, 0.35);
+  transform: translateY(-2px);
+}
+
+.paciente-recetas-container .btn-accent {
+  background: linear-gradient(135deg, var(--pr-accent), #FF6347);
+  color: var(--pr-white);
+  box-shadow: 0 4px 16px rgba(255, 127, 80, 0.25);
+}
+
+.paciente-recetas-container .btn-accent:hover {
+  background: linear-gradient(135deg, #FF6347, var(--pr-accent));
+  box-shadow: 0 6px 20px rgba(255, 127, 80, 0.35);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   PERMISOS - ALERTA DE NO ACCESO
+   ============================================================ */
+
+.recetas-permission-denied {
+  background: linear-gradient(135deg, var(--pr-white), var(--pr-primary-lighter));
+  border-radius: var(--pr-radius-xl);
+  padding: 2.5rem;
+  text-align: center;
+  box-shadow: var(--pr-shadow-medium);
+  border: var(--pr-border-light);
+  margin: 2rem auto;
+  max-width: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+.recetas-permission-denied::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #dc3545, #e35d6a);
+  border-radius: var(--pr-radius-xl) var(--pr-radius-xl) 0 0;
+}
+
+.recetas-permission-denied-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #dc3545;
+  margin: 0 0 1rem 0;
+}
+
+.recetas-permission-denied-message {
+  color: var(--pr-text-medium);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  .paciente-recetas-content {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .paciente-recetas-page {
+    padding: 110px 0 2rem 0;
+  }
+
+  .paciente-recetas-main-header {
+    padding: 2rem 1.75rem;
+  }
+
+  .recetas-search-card {
+    padding: 1.5rem;
+    margin: 1.5rem 1.75rem;
+  }
+
+  .recetas-table-wrapper {
+    margin: 0 1.75rem 1.75rem 1.75rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .paciente-recetas-header-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .paciente-recetas-header-right {
+    align-self: stretch;
+    width: 100%;
+  }
+
+  .recetas-summary-card {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .recetas-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .recetas-table {
+    min-width: 700px;
+  }
+
+  .recetas-error,
+  .recetas-empty {
+    margin: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .paciente-recetas-content {
+    padding: 0 1rem;
+  }
+
+  .paciente-recetas-main-header {
+    padding: 1.5rem 1.25rem;
+    border-radius: var(--pr-radius-lg);
+  }
+
+  .paciente-recetas-title {
+    font-size: 1.6rem;
+  }
+
+  .paciente-recetas-profile {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .recetas-search-card {
+    padding: 1.25rem;
+    margin: 1.25rem;
+  }
+
+  .recetas-table-wrapper {
+    margin: 0 1.25rem 1.25rem 1.25rem;
+  }
+
+  .recetas-permission-denied {
+    padding: 2rem 1.5rem;
+    margin: 1.5rem;
+  }
+}
+
+/* Animaciones adicionales */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.paciente-recetas-main-header,
+.paciente-recetas-main-card {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de partículas sutiles para el fondo */
+.paciente-recetas-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 127, 80, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(20, 150, 183, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(10, 110, 125, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -2;
+}

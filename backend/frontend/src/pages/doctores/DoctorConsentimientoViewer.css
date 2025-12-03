@@ -1,0 +1,603 @@
+/* src/pages/doctores/DoctorConsentimientoViewer.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ============================================================
+   VIEWER DE CONSENTIMIENTO - DOCTOR
+   Paleta consistente con el resto de la aplicación
+   ============================================================ */
+
+.doctor-cons-viewer-root {
+  /* Variables locales - Usando tu paleta principal */
+  --dcv-primary: #0A6E7D;           /* Azul principal */
+  --dcv-primary-dark: #085766;      /* Azul más oscuro para hover */
+  --dcv-primary-light: #E8F5F6;     /* Azul muy claro para fondos */
+  --dcv-primary-lighter: #F4FAFB;   /* Azul casi blanco */
+  --dcv-secondary: #1496B7;         /* Azul secundario */
+  --dcv-secondary-light: #88D1E8;   /* Azul claro para efectos */
+  --dcv-accent: #FF7F50;            /* Naranja coral - acento */
+  --dcv-accent-light: #FFD1C2;      /* Naranja claro para fondos */
+  
+  /* Colores de texto - Manteniendo contraste */
+  --dcv-text-dark: #1A2C3A;         /* Texto oscuro */
+  --dcv-text-medium: #4A5C6A;       /* Texto medio */
+  --dcv-text-muted: #7A8B99;        /* Texto atenuado */
+  --dcv-text-light: #7A8B99;        /* Texto claro sobre fondos oscuros */
+  
+  /* Fondos - Enfoque médico claro */
+  --dcv-bg-page: #F5F9FA;           /* Fondo de página azul suave */
+  --dcv-bg-light: #FAFDFE;          /* Fondo claro */
+  --dcv-white: #FFFFFF;
+  --dcv-glass-bg: rgba(255, 255, 255, 0.98); /* Fondo glass */
+  
+  /* Sombras - Con tono azulado */
+  --dcv-shadow-soft: 0 2px 16px rgba(10, 110, 125, 0.06);
+  --dcv-shadow-medium: 0 4px 24px rgba(10, 110, 125, 0.08);
+  --dcv-shadow-hover: 0 6px 32px rgba(10, 110, 125, 0.12);
+  --dcv-shadow-strong: 0 8px 40px rgba(10, 110, 125, 0.15);
+  
+  /* Bordes - Con tu color principal */
+  --dcv-border-light: 1px solid rgba(10, 110, 125, 0.08);
+  --dcv-border-medium: 1px solid rgba(10, 110, 125, 0.12);
+  --dcv-border-accent: 1px solid rgba(255, 127, 80, 0.2);
+  --dcv-border-dashed: 1px dashed rgba(10, 110, 125, 0.25);
+  
+  /* Radios - Consistentes */
+  --dcv-radius-sm: 8px;
+  --dcv-radius-md: 12px;
+  --dcv-radius-lg: 16px;
+  --dcv-radius-xl: 20px;
+  --dcv-radius-full: 999px;
+  
+  /* Transiciones - Suaves */
+  --dcv-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --dcv-transition-smooth: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  --dcv-transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--dcv-bg-page) 0%, var(--dcv-primary-light) 100%);
+  font-family: 'Poppins', sans-serif;
+  color: var(--dcv-text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Página bajo el navbar fijo */
+.doctor-cons-viewer-page {
+  padding: 130px 0 3rem 0;
+  min-height: calc(100vh - 130px);
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-cons-viewer-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.03) 0%, 
+    rgba(20, 150, 183, 0.01) 100%);
+  z-index: -1;
+}
+
+.doctor-cons-viewer-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+}
+
+/* ============================================================
+   ADAPTACIÓN DEL LAYOUT DEL PACIENTE
+   ============================================================ */
+
+.doctor-cons-viewer-root .cons-page-container {
+  padding-top: 0;
+  background: transparent;
+}
+
+.doctor-cons-viewer-root .cons-card {
+  background: var(--dcv-white);
+  border-radius: var(--dcv-radius-xl);
+  box-shadow: var(--dcv-shadow-medium);
+  border: var(--dcv-border-light);
+  padding: 2.5rem 2.75rem;
+  transition: var(--dcv-transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.doctor-cons-viewer-root .cons-card:hover {
+  box-shadow: var(--dcv-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.doctor-cons-viewer-root .cons-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 150px;
+  height: 100%;
+  background: linear-gradient(135deg,
+    transparent 0%,
+    rgba(20, 150, 183, 0.03) 100%);
+  border-radius: 0 var(--dcv-radius-xl) var(--dcv-radius-xl) 0;
+  z-index: 0;
+}
+
+/* Header del PDF */
+.doctor-cons-viewer-root .cons-header {
+  border-bottom: 1px solid rgba(10, 110, 125, 0.12);
+  padding-bottom: 1.75rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-cons-viewer-root .cons-main-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--dcv-primary);
+  margin: 0 0 0.5rem 0;
+  background: linear-gradient(45deg, var(--dcv-primary), var(--dcv-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.02em;
+}
+
+.doctor-cons-viewer-root .cons-clinic-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--dcv-text-dark);
+  margin: 0 0 0.25rem 0;
+}
+
+.doctor-cons-viewer-root .cons-subtitle {
+  font-size: 1.05rem;
+  color: var(--dcv-text-medium);
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* Párrafos y contenido */
+.doctor-cons-viewer-root .cons-paragraph {
+  color: var(--dcv-text-dark);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-cons-viewer-root .cons-section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--dcv-primary);
+  margin: 2rem 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(10, 110, 125, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-cons-viewer-root .cons-section-title::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--dcv-primary), var(--dcv-secondary));
+  border-radius: 1px;
+}
+
+/* Campos subrayados */
+.doctor-cons-viewer-root .cons-field-underline {
+  border-bottom: 2px solid rgba(10, 110, 125, 0.8);
+  padding-bottom: 0.25rem;
+  font-weight: 600;
+  color: var(--dcv-text-dark);
+}
+
+/* Listas */
+.doctor-cons-viewer-root .cons-list {
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-cons-viewer-root .cons-list li {
+  margin-bottom: 0.75rem;
+  color: var(--dcv-text-dark);
+  line-height: 1.6;
+}
+
+.doctor-cons-viewer-root .cons-list li::marker {
+  color: var(--dcv-primary);
+}
+
+/* ============================================================
+   ZONA DE FIRMAS
+   ============================================================ */
+
+.doctor-cons-viewer-root .firma-section {
+  margin-top: 2.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-cons-viewer-root .signature-wrapper {
+  border-radius: var(--dcv-radius-lg);
+  border: var(--dcv-border-dashed);
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--dcv-primary-lighter), var(--dcv-white));
+  transition: var(--dcv-transition-smooth);
+}
+
+.doctor-cons-viewer-root .signature-wrapper:hover {
+  border-color: rgba(10, 110, 125, 0.4);
+  box-shadow: var(--dcv-shadow-soft);
+  transform: translateY(-1px);
+}
+
+.doctor-cons-viewer-root .firma-help {
+  color: var(--dcv-text-muted);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 0.75rem;
+}
+
+/* ============================================================
+   BOTONES - ESTILOS MEJORADOS
+   ============================================================ */
+
+.doctor-cons-viewer-root .signature-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-cons-viewer-root .signature-actions .btn,
+.doctor-cons-viewer-root .signature-actions .btn-payment-submit {
+  border-radius: var(--dcv-radius-full);
+  font-size: 0.9rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  transition: var(--dcv-transition-smooth);
+  position: relative;
+  overflow: hidden;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+/* Efecto de brillo en todos los botones */
+.doctor-cons-viewer-root .signature-actions .btn::before,
+.doctor-cons-viewer-root .signature-actions .btn-payment-submit::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: var(--dcv-transition-smooth);
+}
+
+.doctor-cons-viewer-root .signature-actions .btn:hover::before,
+.doctor-cons-viewer-root .signature-actions .btn-payment-submit:hover::before {
+  left: 100%;
+}
+
+/* Botón Volver (outline) */
+.doctor-cons-viewer-root .signature-actions .btn-outline-secondary {
+  background: var(--dcv-white);
+  color: var(--dcv-text-medium);
+  border: var(--dcv-border-medium);
+  border-color: rgba(10, 110, 125, 0.25);
+}
+
+.doctor-cons-viewer-root .signature-actions .btn-outline-secondary:hover {
+  background: var(--dcv-primary-light);
+  color: var(--dcv-primary);
+  border-color: var(--dcv-primary);
+  box-shadow: var(--dcv-shadow-soft);
+  transform: translateY(-2px);
+}
+
+/* Botón Guardar info médica (primary) */
+.doctor-cons-viewer-root .signature-actions .btn-primary {
+  background: linear-gradient(135deg, var(--dcv-primary), var(--dcv-secondary));
+  color: var(--dcv-white);
+  box-shadow: 0 4px 16px rgba(10, 110, 125, 0.25);
+}
+
+.doctor-cons-viewer-root .signature-actions .btn-primary:hover {
+  background: linear-gradient(135deg, var(--dcv-secondary), var(--dcv-primary));
+  box-shadow: 0 6px 20px rgba(10, 110, 125, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Botón Descargar PDF (acento naranja) */
+.doctor-cons-viewer-root .signature-actions .btn-payment-submit {
+  background: linear-gradient(135deg, var(--dcv-accent), #FF6347);
+  color: var(--dcv-white);
+  box-shadow: 0 4px 16px rgba(255, 127, 80, 0.25);
+}
+
+.doctor-cons-viewer-root .signature-actions .btn-payment-submit:hover {
+  background: linear-gradient(135deg, #FF6347, var(--dcv-accent));
+  box-shadow: 0 6px 20px rgba(255, 127, 80, 0.35);
+  transform: translateY(-2px);
+}
+
+/* Estados disabled */
+.doctor-cons-viewer-root .signature-actions .btn:disabled,
+.doctor-cons-viewer-root .signature-actions .btn-payment-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none !important;
+}
+
+.doctor-cons-viewer-root .signature-actions .btn:disabled:hover::before,
+.doctor-cons-viewer-root .signature-actions .btn-payment-submit:disabled:hover::before {
+  left: -100%;
+}
+
+/* ============================================================
+   CARGA / ERRORES
+   ============================================================ */
+
+.doctor-cons-viewer-root .loading-spinner {
+  padding: 3rem 1rem;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--dcv-text-medium);
+  background: linear-gradient(135deg, var(--dcv-primary-lighter), var(--dcv-white));
+  border-radius: var(--dcv-radius-lg);
+  border: var(--dcv-border-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.doctor-cons-viewer-root .loading-spinner::after {
+  content: '';
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(10, 110, 125, 0.1);
+  border-top-color: var(--dcv-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.doctor-cons-viewer-root .alert-danger {
+  border-radius: var(--dcv-radius-md);
+  background: linear-gradient(135deg, 
+    rgba(220, 53, 69, 0.04), 
+    rgba(220, 53, 69, 0.01));
+  border: var(--dcv-border-medium);
+  border-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+  padding: 1.25rem;
+  font-weight: 500;
+}
+
+.doctor-cons-viewer-root .alert-success {
+  border-radius: var(--dcv-radius-md);
+  background: linear-gradient(135deg, 
+    rgba(10, 110, 125, 0.04), 
+    rgba(20, 150, 183, 0.01));
+  border: var(--dcv-border-medium);
+  border-color: rgba(10, 110, 125, 0.15);
+  color: var(--dcv-primary);
+  padding: 1.25rem;
+  font-weight: 500;
+}
+
+/* ============================================================
+   INFORMACIÓN DEL PACIENTE
+   ============================================================ */
+
+.doctor-cons-viewer-root .patient-info-section {
+  background: linear-gradient(135deg, var(--dcv-primary-lighter), var(--dcv-white));
+  border-radius: var(--dcv-radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: var(--dcv-border-light);
+  box-shadow: var(--dcv-shadow-soft);
+  position: relative;
+  z-index: 1;
+}
+
+.doctor-cons-viewer-root .patient-info-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--dcv-primary);
+  margin-bottom: 1rem;
+}
+
+.doctor-cons-viewer-root .patient-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.doctor-cons-viewer-root .patient-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.doctor-cons-viewer-root .patient-info-label {
+  font-size: 0.85rem;
+  color: var(--dcv-text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.doctor-cons-viewer-root .patient-info-value {
+  font-size: 1rem;
+  color: var(--dcv-text-dark);
+  font-weight: 600;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1200px) {
+  .doctor-cons-viewer-inner {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .doctor-cons-viewer-page {
+    padding: 110px 0 2rem 0;
+  }
+
+  .doctor-cons-viewer-root .cons-card {
+    padding: 2rem 2.25rem;
+  }
+
+  .doctor-cons-viewer-root .cons-main-title {
+    font-size: 1.8rem;
+  }
+
+  .doctor-cons-viewer-root .cons-clinic-name {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .doctor-cons-viewer-inner {
+    padding: 0 1.25rem;
+  }
+
+  .doctor-cons-viewer-root .cons-card {
+    padding: 1.75rem 1.5rem;
+    border-radius: var(--dcv-radius-lg);
+  }
+
+  .doctor-cons-viewer-root .cons-card::after {
+    width: 100px;
+  }
+
+  .doctor-cons-viewer-root .cons-main-title {
+    font-size: 1.6rem;
+  }
+
+  .doctor-cons-viewer-root .cons-clinic-name {
+    font-size: 1.1rem;
+  }
+
+  .doctor-cons-viewer-root .cons-subtitle {
+    font-size: 1rem;
+  }
+
+  .doctor-cons-viewer-root .signature-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .doctor-cons-viewer-root .signature-actions .btn,
+  .doctor-cons-viewer-root .signature-actions .btn-payment-submit {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .doctor-cons-viewer-root .patient-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .doctor-cons-viewer-inner {
+    padding: 0 1rem;
+  }
+
+  .doctor-cons-viewer-root .cons-card {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .doctor-cons-viewer-root .cons-main-title {
+    font-size: 1.4rem;
+  }
+
+  .doctor-cons-viewer-root .cons-clinic-name {
+    font-size: 1rem;
+  }
+
+  .doctor-cons-viewer-root .cons-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .doctor-cons-viewer-root .cons-section-title {
+    font-size: 1.15rem;
+  }
+
+  .doctor-cons-viewer-root .signature-wrapper {
+    padding: 1.25rem;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.doctor-cons-viewer-root .cons-card {
+  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efecto de partículas sutiles para el fondo */
+.doctor-cons-viewer-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(255, 127, 80, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(20, 150, 183, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(10, 110, 125, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -2;
+}

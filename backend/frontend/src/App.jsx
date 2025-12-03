@@ -15,7 +15,6 @@ import ReportesPacientePage from "./pages/pacientes/ReportesPacientePage";
 import RecetasPacientePage from "./pages/pacientes/RecetasPacientePage";
 import PacientePagosPage from "./pages/pacientes/PacientePagosPage";
 import PacienteTratamientoPage from "./pages/pacientes/PacienteTratamientoPage";
-
 // 🔹 Páginas DOCTOR
 import DoctorCitasPage from "./pages/doctores/DoctorCitasPage";
 import DoctorPacientesPage from "./pages/doctores/DoctorPacientesPage";

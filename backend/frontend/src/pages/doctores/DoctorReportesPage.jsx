@@ -112,7 +112,7 @@ const DoctorReportePage = () => {
     const fetchData = async () => {
       try {
         setError("");
-        
+
         const valid = await verifyAuth();
         if (!valid) {
           localStorage.removeItem("user");
@@ -124,6 +124,13 @@ const DoctorReportePage = () => {
 
         // MODO DETALLE: Si hay pacienteId, cargar detalle completo
         if (pacienteId) {
+          // Reset de datos previos para evitar mostrar info del paciente anterior
+          setPaciente(null);
+          setCitas([]);
+          setPacienteReportes([]);
+          setRecetas([]);
+          setPagos([]);
+
           setLoadingCitas(true);
           setLoadingPacienteReportes(true);
           setLoadingRecetas(true);

@@ -182,13 +182,7 @@ const Navbar = () => {
             >
               Mis recetas
             </Link>
-            <Link
-              onClick={closeMenu}
-              className={commonStyles}
-              to="/paciente/reportes"
-            >
-              Reportes clínicos
-            </Link>
+
             <Link
               onClick={closeMenu}
               className={commonStyles}

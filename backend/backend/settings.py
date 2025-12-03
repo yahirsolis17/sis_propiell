@@ -13,12 +13,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Clave secreta y Debug
 SECRET_KEY = os.environ.get('SECRET_KEY', '1234')
 DEBUG = True  # En producción, recuerda poner DEBUG=False
-ALLOWED_HOSTS = [
-    'sis-propiell.onrender.com',
-    'sis-propiell.vercel.app',
-    'localhost',
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -45,15 +40,15 @@ MIDDLEWARE = [
 ]
 
 # Configuración CORS (ajusta según tus dominios)
-CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "https://sis-propiell.vercel.app",
     "http://localhost:5173",
+    "https://sis-propiell-nsucnw029-yahirsolis17s-projects.vercel.app",
 ]
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
-    "https://sis-propiell.vercel.app",
     "http://localhost:5173", 
+    "https://sis-propiell-nsucnw029-yahirsolis17s-projects.vercel.app",
 ]
 
 ROOT_URLCONF = 'backend.urls'

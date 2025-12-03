@@ -2,10 +2,8 @@
 import { useEffect } from 'react';
 import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { useSpring, animated } from '@react-spring/web';
-
 import { getCurrentUser, verifyAuth } from "../services/authService";
 import Navbar from "../components/Navbar";
-
 import BlurText from "../components/dashboards/BlurText";
 import AdminDashboard from "../components/dashboards/AdminDashboard";
 import PacienteDashboard from "../components/dashboards/PacienteDashboard";

@@ -129,8 +129,7 @@ const PaymentPage = () => {
       await crearPagoTransferencia({
         citaId,
         comprobanteFile: comprobante,
-        // Si más adelante agregas monto personalizado:
-        // total: <valor>,
+
       });
 
       toast.success(
@@ -300,8 +299,7 @@ const PaymentPage = () => {
               <p className="payment-presencial-message">
                 Tu cita quedará registrada con <strong>pago pendiente</strong>.
                 Por favor, realiza tu pago directamente en el consultorio el día
-                de tu cita. El personal de la clínica registrará tu pago en el
-                sistema.
+                de tu cita.
               </p>
               <p className="payment-presencial-note">
                 Si decides más adelante pagar por depósito o transferencia,

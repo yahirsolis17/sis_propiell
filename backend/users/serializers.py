@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.utils import timezone
 
 from .models import(
@@ -17,10 +17,59 @@ from .models import(
     ProcedimientoConsulta,
 )
 
+# Obtenemos el modelo de usuario actual (users_user en tu DB)
+UserModel = get_user_model()
 
-# =========================
-#  Users / Auth
-# =========================
+# Serializador CRUD general de usuarios (admin dashboard)
+class UserSerializer(serializers.ModelSerializer):
+    edad = serializers.IntegerField(required=False, allow_null=True)
+    sexo = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    peso = serializers.FloatField(required=False, allow_null=True)
+
+    class Meta:
+        model = UserModel
+        fields = [
+            "id",
+            "username",
+            "email",
+            "nombre",
+            "apellidos",
+            "edad",
+            "sexo",
+            "peso",
+            "telefono",
+            "role",
+            "is_active",
+            "password",
+        ]
+
+        # La contraseña es solo para escribir (crear/editar), no para leer
+        extra_kwargs = {
+            "password": {"write_only": True, "required": False},
+            "edad": {"required": False},
+            "sexo": {"required": False},
+            "peso": {"required": False},
+        }
+
+    def create(self, validated_data):
+        # Encriptamos la contraseña al crear
+        password = validated_data.pop("password", None)
+        user = UserModel.objects.create(**validated_data)
+        if password:
+            user.set_password(password)
+            user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        # Encriptamos la contraseña si se está modificando
+        password = validated_data.pop("password", None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
+
 
 class BaseUserSerializer(serializers.ModelSerializer):
     """Datos básicos de usuario después del login"""
@@ -34,46 +83,6 @@ class BaseUserSerializer(serializers.ModelSerializer):
             "apellidos",
             "role",
         ]
-
-
-class UserSerializer(serializers.ModelSerializer):
-    """CRUD completo para administración de usuarios."""
-
-    password = serializers.CharField(write_only=True, required=False, allow_blank=True)
-
-    class Meta:
-        model = User
-        fields = [
-            "id",
-            "password",
-            "nombre",
-            "apellidos",
-            "edad",
-            "sexo",
-            "peso",
-            "telefono",
-            "role",
-            "especialidad",
-            "is_active",
-            "is_staff",
-        ]
-
-    def create(self, validated_data):
-        password = validated_data.pop("password", None)
-        user = User.objects.create_user(**validated_data)
-        if password:
-            user.set_password(password)
-            user.save(update_fields=["password"])
-        return user
-
-    def update(self, instance, validated_data):
-        password = validated_data.pop("password", None)
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        if password:
-            instance.set_password(password)
-        instance.save()
-        return instance
 
 
 class DoctorSerializer(serializers.ModelSerializer):
@@ -304,7 +313,33 @@ class PacienteSerializer(serializers.ModelSerializer):
 #  Pagos / Citas / Tratamientos / Procedimientos
 # =========================
 
+class PagoCitaSerializer(serializers.ModelSerializer):
+    paciente = PacienteSerializer(read_only=True)
+    doctor = DoctorSerializer(read_only=True)
+    especialidad = EspecialidadSerializer(read_only=True)
+    estado = serializers.CharField(source="get_estado_display", read_only=True)
+    estado_codigo = serializers.CharField(source="estado", read_only=True)
+    tipo_display = serializers.CharField(source="get_tipo_display", read_only=True)
+
+    class Meta:
+        model = Cita
+        fields = [
+            "id",
+            "fecha_hora",
+            "paciente",
+            "doctor",
+            "especialidad",
+            "estado",
+            "estado_codigo",
+            "tipo",
+            "tipo_display",
+        ]
+        read_only_fields = fields
+
+
 class PagoSerializer(serializers.ModelSerializer):
+    paciente = PacienteSerializer(read_only=True)
+    cita = PagoCitaSerializer(read_only=True)
     comprobante = serializers.ImageField(
         use_url=True,
         required=False,
@@ -389,13 +424,6 @@ class TratamientoLiteSerializer(serializers.ModelSerializer):
 class CitaSerializer(serializers.ModelSerializer):
     doctor = DoctorSerializer(read_only=True)
     especialidad = EspecialidadSerializer(read_only=True)
-    # Campo write-only para crear/editar
-    especialidad_id = serializers.PrimaryKeyRelatedField(
-        source="especialidad",
-        queryset=Especialidad.objects.all(),
-        write_only=True,
-        required=True,
-    )
     # Texto legible: "Pendiente", "Confirmada", "Cancelada"
     estado = serializers.CharField(source="get_estado_display", read_only=True)
     # Codigo crudo: "P", "C", "X"
@@ -421,7 +449,6 @@ class CitaSerializer(serializers.ModelSerializer):
             "paciente",
             "doctor",
             "especialidad",
-            "especialidad_id",
             "fecha_hora",
             "tipo",
             "tipo_display",
@@ -451,7 +478,12 @@ class CitaSerializer(serializers.ModelSerializer):
         )
 
     def get_pagos(self, obj):
-        pagos = obj.pagos.all()
+        pagos = obj.pagos.select_related(
+            "paciente",
+            "cita",
+            "cita__doctor",
+            "cita__especialidad",
+        )
         return PagoSerializer(
             pagos,
             many=True,
@@ -493,21 +525,34 @@ class CitaSerializer(serializers.ModelSerializer):
         return True
 
     def get_paciente_puede_cancelar(self, obj):
+        """
+        Debe reflejar exactamente las reglas del endpoint CitaCancelarPacienteAPI
+        para PACIENTE (no para admin).
+        """
         if not self._es_paciente_duenio(obj):
             return False
 
         ahora = timezone.now()
 
+        # Solo P o C
         if obj.estado not in ["P", "C"]:
             return False
+
+        # 🔒 NUEVO: no permitir cancelar si la cita ya fue atendida
+        if getattr(obj, "atendida", False):
+            return False
+
+        # No permitir cancelar pasado / mismo día
         if obj.fecha_hora <= ahora:
             return False
 
+        # Regla de 7 días para paciente
         dias_restantes = (obj.fecha_hora.date() - ahora.date()).days
         if dias_restantes < 7:
             return False
 
         return True
+
 
 
 class TratamientoSerializer(serializers.ModelSerializer):

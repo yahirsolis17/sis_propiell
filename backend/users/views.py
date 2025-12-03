@@ -365,25 +365,35 @@ class CitaListCreateAPI(generics.ListCreateAPIView):
         return qs.order_by("fecha_hora")
 
     def perform_create(self, serializer):
-        # Usamos datos ya validados (incluye especialidad_id -> especialidad)
-        especialidad = serializer.validated_data.get("especialidad")
-        fecha_hora = serializer.validated_data.get("fecha_hora")
+        # Aceptar ambos nombres de campo para compatibilidad front: especialidad / especialidad_id
+        especialidad_id = (
+            self.request.data.get("especialidad")
+            or self.request.data.get("especialidad_id")
+        )
+        fecha_hora_str = self.request.data.get("fecha_hora")
 
-        if not especialidad:
+        if not especialidad_id:
             raise serializers.ValidationError(
                 {"especialidad": "Este campo es requerido para asignar un doctor."}
             )
-        if not fecha_hora:
+        if not fecha_hora_str:
             raise serializers.ValidationError(
                 {"fecha_hora": "La fecha y hora son requeridas."}
             )
 
-        # Normalizar a timezone aware
+        # Parsear ISO a datetime con soporte de zona horaria si viene naive
+        fecha_hora = parse_datetime(fecha_hora_str)
+        if fecha_hora is None:
+            raise serializers.ValidationError(
+                {"fecha_hora": "Formato inválido, use ISO 8601."}
+            )
         if timezone.is_naive(fecha_hora):
             fecha_hora = timezone.make_aware(
                 fecha_hora,
                 timezone.get_current_timezone(),
             )
+
+        especialidad = get_object_or_404(Especialidad, pk=especialidad_id)
         dia_semana = fecha_hora.weekday() + 1
         hora = fecha_hora.time()
 
@@ -1416,6 +1426,14 @@ class PagoListAPI(generics.ListAPIView):
             qs = qs.filter(metodo_pago=metodo)
         if estado_pago:
             qs = qs.filter(estado_pago=estado_pago)
+
+        qs = qs.select_related(
+            "paciente",
+            "cita",
+            "cita__paciente",
+            "cita__doctor",
+            "cita__especialidad",
+        )
 
         return qs.order_by("-fecha", "-id")
 

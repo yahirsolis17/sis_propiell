@@ -96,17 +96,52 @@ const DoctorPagosPage = () => {
     };
   }, [user.id, navigate]);
 
-  const formatoFecha = (fechaStr) => {
-    if (!fechaStr) return "-";
-    const fecha = new Date(fechaStr);
-    if (Number.isNaN(fecha.getTime())) return "-";
+  const parseFecha = (valor) => {
+    if (!valor) return null;
+    try {
+      if (typeof valor === "string" && /^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+        const [y, m, d] = valor.split("-").map(Number);
+        return new Date(y, m - 1, d);
+      }
+      const fecha = new Date(valor);
+      return Number.isNaN(fecha.getTime()) ? null : fecha;
+    } catch (err) {
+      console.error("No se pudo parsear la fecha:", err);
+      return null;
+    }
+  };
 
+  const formatoFechaCita = (valor) => {
+    const fecha = parseFecha(valor);
+    if (!fecha) return "-";
     return fecha.toLocaleString("es-MX", {
       day: "numeric",
       month: "long",
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+    });
+  };
+
+  const formatoFechaPago = (valor) => {
+    const fecha = parseFecha(valor);
+    if (!fecha) return "-";
+    return fecha.toLocaleDateString("es-MX", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const formatoMoneda = (valor) => {
+    if (valor === null || valor === undefined || valor === "") return "-";
+    const numero = Number(valor);
+    if (Number.isNaN(numero)) return "-";
+    return numero.toLocaleString("es-MX", {
+      style: "currency",
+      currency: "MXN",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     });
   };
 
@@ -130,41 +165,55 @@ const DoctorPagosPage = () => {
       id: "paciente",
       label: "Paciente",
       render: (pago) => {
-        const paciente = pago.cita?.paciente || pago.paciente || null;
+        const paciente =
+          (pago.cita &&
+            typeof pago.cita.paciente === "object" &&
+            pago.cita.paciente) ||
+          (pago.paciente &&
+            typeof pago.paciente === "object" &&
+            pago.paciente) ||
+          null;
 
-        const nombrePaciente = paciente
-          ? `${paciente.nombre} ${paciente.apellidos || ""}`
-          : "N/A";
+        if (paciente) {
+          const nombrePaciente = `${paciente.nombre || ""} ${
+            paciente.apellidos || ""
+          }`.trim();
+          return nombrePaciente || "Sin nombre";
+        }
 
-        return nombrePaciente;
+        const pacienteId =
+          (typeof pago.paciente === "number" ||
+            typeof pago.paciente === "string") &&
+          pago.paciente
+            ? pago.paciente
+            : (typeof pago.cita?.paciente === "number" ||
+                typeof pago.cita?.paciente === "string") &&
+              pago.cita?.paciente
+            ? pago.cita.paciente
+            : null;
+
+        return pacienteId ? `Paciente #${pacienteId}` : "Sin paciente";
       },
     },
     {
       id: "fecha_cita",
       label: "Fecha cita",
-      render: (pago) =>
-        pago.cita?.fecha_hora ? formatoFecha(pago.cita.fecha_hora) : "-",
+      render: (pago) => formatoFechaCita(pago.cita?.fecha_hora),
     },
     {
       id: "fecha_pago",
       label: "Fecha pago",
-      render: (pago) => (pago.fecha ? formatoFecha(pago.fecha) : "-"),
+      render: (pago) => formatoFechaPago(pago.fecha),
     },
     {
       id: "total",
       label: "Total",
-      render: (pago) =>
-        typeof pago.total === "number" || typeof pago.total === "string"
-          ? `$${pago.total}`
-          : "-",
+      render: (pago) => formatoMoneda(pago.total),
     },
     {
       id: "pagado",
       label: "Pagado",
-      render: (pago) =>
-        typeof pago.pagado === "number" || typeof pago.pagado === "string"
-          ? `$${pago.pagado}`
-          : "-",
+      render: (pago) => formatoMoneda(pago.pagado),
     },
     {
       id: "estado",

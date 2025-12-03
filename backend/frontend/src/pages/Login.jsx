@@ -17,21 +17,18 @@ const Login = () => {
   // Partículas de fondo
   useEffect(() => {
     const createParticle = () => {
-      // Buscamos el contenedor REAL del login
       const container = document.querySelector(".login-container");
-      if (!container) return; // Si no existe (desmontado), no hacemos nada
+      if (!container) return;
 
       const particle = document.createElement("div");
       particle.className = "particle";
 
-      // Tamaño aleatorio
       particle.style.setProperty(
         "--particle-size",
         `${Math.random() * 3 + 2}px`
       );
       particle.style.animationDuration = `${Math.random() * 3 + 2}s`;
 
-      // Puntos de la trayectoria
       const randomXStart = Math.random() * 100 + "vw";
       const randomYStart = Math.random() * 100 + "vh";
       const randomXMid = Math.random() * 100 + "vw";
@@ -66,19 +63,15 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Llamada al servicio de login (ya retorna { user, access, refresh })
       const data = await login(telefono, password);
 
-      // Guardar tokens y user en localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
 
-      // Redirección según rol
       const rolePath = data.user.role?.toLowerCase() || "paciente";
       navigate(`/dashboard/${rolePath}`);
     } catch (err) {
-      // err contiene { telefono, password, nonField }
       setErrors({
         telefono: err.telefono || err.nonField || "Credenciales inválidas",
         password: err.password || "",
@@ -136,7 +129,7 @@ const Login = () => {
 
           <button
             type="submit"
-            className="login-button btn-primary"
+            className="login-button"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -147,11 +140,11 @@ const Login = () => {
           </button>
         </form>
 
-        <div className="login-footer mt-3">
-          <span className="text-muted">¿Primera vez aquí? </span>
+        <div className="login-footer">
+          <span>¿Primera vez aquí? </span>
           <button
             onClick={() => navigate("/register")}
-            className="btn btn-link p-0 register-link"
+            className="register-link"
           >
             Crea una cuenta
           </button>

@@ -78,6 +78,41 @@
   box-shadow: 0 6px 28px rgba(10, 110, 125, 0.12);
 }
 
+/* Admin Dashboard styles */
+.dashboard-container .admin-card {
+  border: 1px solid rgba(20, 150, 183, 0.12);
+  box-shadow: 0 8px 24px rgba(10, 110, 125, 0.08);
+  transition: var(--transition);
+}
+
+.dashboard-container .admin-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(20, 150, 183, 0.35);
+  box-shadow: 0 14px 36px rgba(20, 150, 183, 0.16);
+}
+
+.dashboard-container .admin-users-btn {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.1rem;
+  border-radius: 12px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  box-shadow: 0 8px 20px rgba(20, 150, 183, 0.25);
+  transition: var(--transition);
+}
+
+.dashboard-container .admin-users-btn:hover {
+  filter: brightness(1.03);
+  box-shadow: 0 10px 26px rgba(20, 150, 183, 0.3);
+}
+
+.dashboard-container .admin-users-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 6px 18px rgba(10, 110, 125, 0.25);
+}
+
 /* Botones */
 .dashboard-container .action-button {
   background: linear-gradient(45deg, var(--primary), var(--secondary));

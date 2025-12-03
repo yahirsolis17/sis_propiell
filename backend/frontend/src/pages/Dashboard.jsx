@@ -106,15 +106,16 @@ const Dashboard = () => {
           style={{
             ...headerAnimation,
             fontSize: '1.2rem',
-            color: '#fff',
-            marginTop: '8px',
-            backgroundColor: '#ffffff22',
-            padding: '8px 20px',
-            borderRadius: '30px',
-            fontWeight: '500',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-          }}
-        >
+          color: '#fff',
+          marginTop: '8px',
+          backgroundColor: '#ffffff22',
+          padding: '8px 20px',
+          borderRadius: '30px',
+          fontWeight: '500',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+        }}
+      >
+          {user?.role === 'ADMIN' && 'Admin'}
           {user?.role === 'PACIENTE' && 'Paciente'}
           {user?.role === 'DERMATOLOGO' && 'Dermatólogo'}
           {user?.role === 'PODOLOGO' && 'Podólogo'}

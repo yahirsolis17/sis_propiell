@@ -51,7 +51,7 @@
   --dc-transition-smooth: all 0.24s cubic-bezier(0.4, 0, 0.2, 1);
   --dc-transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-  background: linear-gradient(135deg, #0a5365 0%, #0d7590 50%, #18a5c0 100%);
+  background: linear-gradient(135deg, var(--dc-bg-page) 0%, var(--dc-primary-light) 100%);
   font-family: 'Poppins', 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   font-size: 15px;
   line-height: 1.6;

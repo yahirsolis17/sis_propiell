@@ -288,8 +288,10 @@
   border-radius: var(--dc-radius-xl);
   box-shadow: var(--dc-shadow-medium);
   border: var(--dc-border-light);
-  overflow: hidden;
+  overflow: visible;       /* el menú puede salir de la tarjeta */
   transition: var(--dc-transition-smooth);
+  position: relative;
+  z-index: 2;              /* por encima del header */
 }
 
 .doctor-citas-main-card:hover {
@@ -416,8 +418,6 @@
   position: relative;
   min-height: 300px;
   transition: var(--dc-transition-smooth);
-  /* IMPORTANTE: Esto permite que los menús se muestren fuera del contenedor */
-  overflow: visible !important;
 }
 
 .citas-table-content--refetch {
@@ -438,12 +438,10 @@
 /* ==================== TABLA ==================== */
 .citas-table-wrapper {
   border-radius: var(--dc-radius-lg);
-  overflow: hidden;
+  overflow: visible;            /* el menú puede salir de la tabla */
   border: var(--dc-border-light);
   background: var(--dc-white);
   box-shadow: var(--dc-shadow-soft);
-  /* IMPORTANTE: Cambiado de hidden a visible para los menús */
-  overflow: visible !important;
 }
 
 .citas-table {
@@ -452,14 +450,10 @@
   border-collapse: separate;
   border-spacing: 0;
   background: var(--dc-white);
-  position: relative;
 }
 
 .citas-table thead {
   background: linear-gradient(135deg, var(--dc-primary-light), var(--dc-primary-lighter));
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
 .citas-table thead th {
@@ -471,13 +465,14 @@
   letter-spacing: 0.05em;
   border-bottom: var(--dc-border-medium);
   text-align: left;
+  position: sticky;
+  top: 0;
   background: inherit;
 }
 
 .citas-table tbody tr {
   transition: var(--dc-transition-fast);
   border-bottom: 1px solid rgba(10, 110, 125, 0.04);
-  position: relative;
 }
 
 .citas-table tbody tr:last-child {
@@ -488,7 +483,6 @@
   background: linear-gradient(90deg, 
     rgba(10, 110, 125, 0.02) 0%, 
     rgba(20, 150, 183, 0.01) 100%);
-  z-index: 101;
 }
 
 .citas-table tbody td {
@@ -584,8 +578,10 @@
 /* ==================== ACCIONES ==================== */
 .acciones-container {
   position: relative;
-  display: inline-block;
-  z-index: 102; /* Aumentado para que esté por encima de otros elementos */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
 }
 
 .acciones-toggle-btn {
@@ -603,7 +599,6 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  z-index: 1;
 }
 
 .acciones-toggle-btn::before {
@@ -634,39 +629,37 @@
   left: 100%;
 }
 
-/* Menú desplegable - CORREGIDO: Cambiado la posición y z-index */
+/* Menú desplegable: SIEMPRE hacia abajo del botón */
 .acciones-menu {
   position: absolute;
-  bottom: 100%;
+  top: calc(100% + 8px);   /* 🔑 debajo del botón */
+  bottom: auto;
   right: 0;
   min-width: 240px;
   background: var(--dc-white);
   border: var(--dc-border-light);
   border-radius: var(--dc-radius-md);
   box-shadow: var(--dc-shadow-strong);
-  z-index: 999999; /* MUCHO más alto para asegurar visibilidad */
+  z-index: 9999;
   overflow: hidden;
   opacity: 1;
   transform: translateY(0);
   transition: var(--dc-transition-fast);
   list-style: none;
-  margin-bottom: 8px;
 }
 
-/* Flecha del menú desplegable - CORREGIDO */
 .acciones-menu::before {
   content: "";
   position: absolute;
-  bottom: -6px;
+  top: -6px;               /* 🔑 flecha arriba del menú */
   right: 16px;
   width: 12px;
   height: 12px;
   background: var(--dc-white);
   border: var(--dc-border-light);
-  border-top: none;
-  border-left: none;
-  transform: rotate(225deg);
-  z-index: 1;
+  border-right: none;
+  border-bottom: none;
+  transform: rotate(45deg);
 }
 
 .acciones-menu-item {
@@ -766,7 +759,7 @@
     var(--dc-primary-lighter), 
     var(--dc-white));
   border-radius: var(--dc-radius-md);
-  border: 1px dashed rgba(10, 110, 125, 0.2);
+  border: 1 dashed rgba(10, 110, 125, 0.2);
   position: relative;
   overflow: hidden;
 }
@@ -977,11 +970,6 @@
 
   .acciones-menu {
     min-width: 200px;
-    right: -50px; /* Ajuste para móviles */
-  }
-  
-  .acciones-menu::before {
-    right: 66px; /* Ajuste para móviles */
   }
 }
 
@@ -1016,34 +1004,4 @@
     radial-gradient(circle at 40% 40%, rgba(10, 110, 125, 0.02) 0%, transparent 50%);
   pointer-events: none;
   z-index: -2;
-}
-
-/* Clase para prevenir scroll cuando el menú está abierto */
-.body-no-scroll {
-  overflow: hidden;
-}
-
-/* Mejora para la tabla en dispositivos pequeños */
-@media (max-width: 768px) {
-  .citas-table-wrapper {
-    border-radius: var(--dc-radius-md);
-    margin: 0 -1rem;
-    width: calc(100% + 2rem);
-  }
-  
-  .acciones-menu {
-    position: fixed;
-    bottom: auto;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    min-width: 280px;
-    max-width: 90vw;
-    z-index: 9999999;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  }
-  
-  .acciones-menu::before {
-    display: none;
-  }
 }

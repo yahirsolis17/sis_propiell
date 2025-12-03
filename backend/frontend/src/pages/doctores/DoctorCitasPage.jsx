@@ -239,29 +239,6 @@ const DoctorCitasPage = () => {
     };
   }, []);
 
-  // 👇 Cerrar menús con tecla Escape y clic fuera
-  useEffect(() => {
-    const handleEscapeKey = (event) => {
-      if (event.key === "Escape") {
-        setOpenMenuId(null);
-      }
-    };
-
-    const handleClickOutside = (event) => {
-      if (!event.target.closest(".acciones-container")) {
-        setOpenMenuId(null);
-      }
-    };
-
-    document.addEventListener("keydown", handleEscapeKey);
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("keydown", handleEscapeKey);
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   // 🕒 Cargar horarios para el modal de subsecuente/reprogramar
   useEffect(() => {
     if (!showFechaModal || !selectedCitaFecha || !modalSelectedDate) {
@@ -812,7 +789,6 @@ const DoctorCitasPage = () => {
                 </div>
 
                 <div className="doctor-citas-header-right">
-                  {/* También mostramos el resumen aquí para mantener el layout original */}
                   {toolbarSummary}
                 </div>
               </div>
@@ -909,7 +885,6 @@ const DoctorCitasPage = () => {
             )}
 
             <form onSubmit={handleSubmitFechaModal}>
-              {/* 🔄 CalendarPicker en lugar del input de texto */}
               <CalendarPicker
                 selectedDate={modalSelectedDate}
                 onDateChange={setModalSelectedDate}

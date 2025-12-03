@@ -111,8 +111,6 @@ else:
     }
 
 
-
-
 AUTH_USER_MODEL = 'users.User'
 
 LANGUAGE_CODE = 'es-es'

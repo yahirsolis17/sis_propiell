@@ -9,6 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Configuración de medios
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+# Cloudinary (usa storage remoto si hay credenciales en entorno)
+CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME')
+CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY')
+CLOUDINARY_API_SECRET = os.getenv('CLOUDINARY_API_SECRET')
+USE_CLOUDINARY = all([CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET])
 
 # Clave secreta y Debug
 SECRET_KEY = os.environ.get('SECRET_KEY', '1234')
@@ -22,6 +27,8 @@ ALLOWED_HOSTS = [
 ]
 
 INSTALLED_APPS = [
+    'cloudinary',
+    'cloudinary_storage',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -142,3 +149,13 @@ SIMPLE_JWT = {
     "SIGNING_KEY": SECRET_KEY,
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+# Storage remoto (Cloudinary) si hay credenciales
+if USE_CLOUDINARY:
+    CLOUDINARY_STORAGE = {
+        "CLOUD_NAME": CLOUDINARY_CLOUD_NAME,
+        "API_KEY": CLOUDINARY_API_KEY,
+        "API_SECRET": CLOUDINARY_API_SECRET,
+    }
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+    # Media URL queda en la que devuelve Cloudinary; la de Django no se usa

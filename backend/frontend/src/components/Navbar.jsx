@@ -217,13 +217,7 @@ const Navbar = () => {
             >
               Citas
             </Link>
-            <Link
-              onClick={closeMenu}
-              className={commonStyles}
-              to="/doctor/pacientes"
-            >
-              Pacientes
-            </Link>
+
             <Link
               onClick={closeMenu}
               className={commonStyles}
@@ -267,13 +261,7 @@ const Navbar = () => {
             >
               Citas
             </Link>
-            <Link
-              onClick={closeMenu}
-              className={commonStyles}
-              to="/doctor/pacientes"
-            >
-              Pacientes
-            </Link>
+
             <Link
               onClick={closeMenu}
               className={commonStyles}

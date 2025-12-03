@@ -110,7 +110,13 @@ const DoctorCitasPage = () => {
     if (!date) return null;
     try {
       if (typeof date === "string") {
-        return date.trim() || null;
+        const normalized = date.trim().replace(/[\/.]/g, "-");
+        const match = normalized.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        if (!match) return null;
+        const [, y, m, d] = match;
+        const mm = m.padStart(2, "0");
+        const dd = d.padStart(2, "0");
+        return `${y}-${mm}-${dd}`;
       }
       return date.toISOString().split("T")[0];
     } catch {
@@ -774,7 +780,7 @@ const DoctorCitasPage = () => {
                   placeholder="Ej. 2025-12-02"
                   value={modalSelectedDate || ""}
                   onChange={(e) => {
-                    setModalSelectedDate(e.target.value);
+                    setModalSelectedDate(e.target.value.replace(/[\/.]/g, "-"));
                     setModalSelectedTime("");
                   }}
                   disabled={modalSubmitting}

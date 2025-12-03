@@ -262,7 +262,7 @@ const DoctorReportePage = () => {
       isMounted = false;
       controller.abort();
     };
-  }, [isDoctorOrAdmin, pacienteId, estadoFilter, navigate, user.id, user.role, paciente]);
+  }, [isDoctorOrAdmin, pacienteId, estadoFilter, navigate, user.id, user.role]);
 
   // Efecto para "Actualizando resultados..." al escribir en búsqueda (solo en modo lista)
   useEffect(() => {

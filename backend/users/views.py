@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, Http404
 
-from rest_framework import generics, status, serializers
+from rest_framework import generics, status, serializers, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -33,6 +33,7 @@ from .serializers import (
     AdminUserSerializer,
     LoginSerializer,
     BaseUserSerializer,
+    UserSerializer,
     EspecialidadSerializer,
     HorarioSerializer,
     CitaSerializer,
@@ -44,25 +45,26 @@ from .serializers import (
     RecetaSerializer,
     ProcedimientoConsultaSerializer,
 )
-from .permissions import IsRoleMatching, IsAdmin
+from .permissions import IsRoleMatching, IsAdmin, IsAdminRole
 from .utils.pdf_consentimiento import build_consentimiento_pdf
 
 logger = logging.getLogger(__name__)
 
 
 # =========================
-#  Helpers dominio clínico
+#  Admin Users CRUD
 # =========================
 
-def actualizar_estado_cita_atendida(cita, usuario=None):
-    """
-    Recalcula y actualiza el flag `atendida` de la cita.
 
-    Regla de negocio:
-      - Una cita se considera atendida cuando:
-        * Existe al menos un ReportePaciente en estado FINAL asociado a la cita.
-        * Y existe una Receta asociada a la misma cita.
-    """
+class UserAdminViewSet(viewsets.ModelViewSet):
+
+
+    queryset = User.objects.all().order_by("-id")
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsAdminRole]
+
+def actualizar_estado_cita_atendida(cita, usuario=None):
+
     if cita is None:
         return
 
@@ -315,14 +317,18 @@ class CitaListCreateAPI(generics.ListCreateAPIView):
             super()
             .get_queryset()
             .select_related("paciente", "doctor", "especialidad")
-            .prefetch_related("pagos", "procedimientos")  # 👈 añadimos procedimientos
+            .prefetch_related("pagos", "procedimientos")
         )
 
         user = self.request.user
         estado = self.request.query_params.get("estado")
         paciente_id = self.request.query_params.get("paciente")
         doctor_id = self.request.query_params.get("doctor")
+        especialidad_id = self.request.query_params.get("especialidad")
+        fecha_desde_str = self.request.query_params.get("fecha_desde")
+        fecha_hasta_str = self.request.query_params.get("fecha_hasta")
 
+        # Visibilidad según rol
         if user.role == "PACIENTE":
             qs = qs.filter(paciente=user)
         elif user.role in ["DERMATOLOGO", "PODOLOGO", "TAMIZ"]:
@@ -330,22 +336,40 @@ class CitaListCreateAPI(generics.ListCreateAPIView):
         elif user.role != "ADMIN":
             return Cita.objects.none()
 
+        # Filtros por IDs
         if paciente_id:
             qs = qs.filter(paciente_id=paciente_id)
         if doctor_id:
             qs = qs.filter(doctor_id=doctor_id)
         if estado:
             qs = qs.filter(estado=estado.upper()[0])
+        if especialidad_id:
+            qs = qs.filter(especialidad_id=especialidad_id)
+
+        # Filtros por rango de fechas (YYYY-MM-DD)
+        if fecha_desde_str:
+            try:
+                fecha_desde = datetime.strptime(fecha_desde_str, "%Y-%m-%d").date()
+                qs = qs.filter(fecha_hora__date__gte=fecha_desde)
+            except ValueError:
+                # Si el formato es inválido, ignoramos el filtro sin romper la API
+                pass
+
+        if fecha_hasta_str:
+            try:
+                fecha_hasta = datetime.strptime(fecha_hasta_str, "%Y-%m-%d").date()
+                qs = qs.filter(fecha_hora__date__lte=fecha_hasta)
+            except ValueError:
+                pass
 
         return qs.order_by("fecha_hora")
 
     def perform_create(self, serializer):
-        """
-        Crea una cita inicial solicitada por el paciente.
-        Se asigna automáticamente un doctor disponible según
-        especialidad, día de la semana y hora.
-        """
-        especialidad_id = self.request.data.get("especialidad")
+        # Aceptar ambos nombres de campo para compatibilidad front: especialidad / especialidad_id
+        especialidad_id = (
+            self.request.data.get("especialidad")
+            or self.request.data.get("especialidad_id")
+        )
         fecha_hora_str = self.request.data.get("fecha_hora")
 
         if not especialidad_id:
@@ -357,11 +381,16 @@ class CitaListCreateAPI(generics.ListCreateAPIView):
                 {"fecha_hora": "La fecha y hora son requeridas."}
             )
 
-        try:
-            fecha_hora = datetime.fromisoformat(fecha_hora_str)
-        except ValueError:
+        # Parsear ISO a datetime con soporte de zona horaria si viene naive
+        fecha_hora = parse_datetime(fecha_hora_str)
+        if fecha_hora is None:
             raise serializers.ValidationError(
                 {"fecha_hora": "Formato inválido, use ISO 8601."}
+            )
+        if timezone.is_naive(fecha_hora):
+            fecha_hora = timezone.make_aware(
+                fecha_hora,
+                timezone.get_current_timezone(),
             )
 
         especialidad = get_object_or_404(Especialidad, pk=especialidad_id)
@@ -416,21 +445,13 @@ class CitaListCreateAPI(generics.ListCreateAPIView):
 
 
 class CitaDetailAPI(generics.RetrieveAPIView):
-    """
-    Detail de una sola cita.
-    Visibilidad:
-      - Paciente dueño de la cita
-      - Doctor asignado
-      - ADMIN
-    """
-
     serializer_class = CitaSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return (
             Cita.objects.select_related("paciente", "doctor", "especialidad")
-            .prefetch_related("pagos", "procedimientos")  # 👈 añadimos procedimientos
+            .prefetch_related("pagos", "procedimientos")
         )
 
     def get_object(self):
@@ -444,10 +465,6 @@ class CitaDetailAPI(generics.RetrieveAPIView):
 
 
 class CitaSubsecuenteCreateAPI(APIView):
-    """
-    Crea una cita subsecuente basada en el Tratamiento activo del PACIENTE que llama.
-    Flujo orientado a paciente (no al doctor).
-    """
 
     permission_classes = [IsAuthenticated]
 
@@ -715,27 +732,27 @@ class CitaProgramarSubsecuenteAPI(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-
 class CitaConfirmAPI(APIView):
-    """
-    Procesa una cita (doctor):
-
-    - accion = "confirmar":
-        * Si existe Pago asociado:
-            - pago.estado_pago = "APROBADO"
-            - pago.verificado = True
-            - pago.pagado = pago.total
-            - pago.fecha = timezone.now()
-        * En todo caso:
-            - cita.estado = "C"
-    - accion = "cancelar":
-        * cita.estado = "X"
-    """
 
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        cita = get_object_or_404(Cita, pk=pk, doctor=request.user)
+        cita = get_object_or_404(
+            Cita.objects.select_related("doctor", "paciente"),
+            pk=pk,
+        )
+        user = request.user
+
+        # Permisos: doctor dueño de la cita o admin
+        if user.role in ["DERMATOLOGO", "PODOLOGO", "TAMIZ"]:
+            if cita.doctor_id != user.id:
+                raise PermissionDenied(
+                    "Solo el doctor asignado o un administrador pueden procesar esta cita."
+                )
+        elif user.role == "ADMIN":
+            pass
+        else:
+            raise PermissionDenied("No tienes permiso para procesar esta cita.")
 
         if cita.estado not in ["P"]:
             return Response(
@@ -748,7 +765,7 @@ class CitaConfirmAPI(APIView):
 
         if accion == "cancelar":
             cita.estado = "X"
-            cita.actualizado_por = request.user
+            cita.actualizado_por = user
             cita.save(update_fields=["estado", "actualizado_por"])
             msg = "Cita cancelada correctamente."
             return Response(
@@ -766,7 +783,7 @@ class CitaConfirmAPI(APIView):
                 pago.verificado = True
                 pago.pagado = pago.total
                 pago.fecha = timezone.now()
-                pago.actualizado_por = request.user
+                pago.actualizado_por = user
                 pago.save(
                     update_fields=[
                         "estado_pago",
@@ -784,9 +801,10 @@ class CitaConfirmAPI(APIView):
                 )
 
             cita.estado = "C"
-            cita.actualizado_por = request.user
+            cita.actualizado_por = user
             cita.save(update_fields=["estado", "actualizado_por"])
 
+            # Vinculación de tratamiento para citas iniciales
             if cita.tipo == "I":
                 tratamiento = (
                     Tratamiento.objects.filter(
@@ -803,13 +821,13 @@ class CitaConfirmAPI(APIView):
                         paciente=cita.paciente,
                         doctor=cita.doctor,
                         frecuencia_dias=15,
-                        creado_por=request.user,
-                        actualizado_por=request.user,
+                        creado_por=user,
+                        actualizado_por=user,
                     )
 
                 if cita.tratamiento_id != tratamiento.id:
                     cita.tratamiento = tratamiento
-                    cita.actualizado_por = request.user
+                    cita.actualizado_por = user
                     cita.save(update_fields=["tratamiento", "actualizado_por"])
 
             return Response(
@@ -827,25 +845,9 @@ class CitaConfirmAPI(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-
 # backend/users/views.py
 
 class CitaReprogramarAPI(APIView):
-    """
-    Reprogramar una cita existente (cambiar fecha_hora).
-
-    Reglas:
-      - PACIENTE:
-          * Solo puede reprogramar sus propias citas.
-          * La cita debe estar viva (no cancelada/atendida) y en el futuro.
-          * Si tiene tratamiento asociado, el tratamiento debe estar activo.
-      - DOCTOR asignado o ADMIN:
-          * Pueden reprogramar sin restricción de días.
-      - En todos los casos:
-          * La nueva fecha/hora debe ser futura.
-          * Debe existir horario del doctor para esa fecha/hora.
-          * No debe haber otra cita (no cancelada) del mismo doctor en ese slot.
-    """
 
     permission_classes = [IsAuthenticated]
 
@@ -868,14 +870,17 @@ class CitaReprogramarAPI(APIView):
                     "No puedes reprogramar citas de otros pacientes."
                 )
         elif es_doctor:
-            if cita.doctor_id != user.id and not es_admin:
+            if cita.doctor_id != user.id:
                 raise PermissionDenied(
                     "No puedes reprogramar citas de otros doctores."
                 )
-        elif not es_admin:
+        elif es_admin:
+            # Admin puede reprogramar cualquier cita
+            pass
+        else:
             raise PermissionDenied("No tienes permiso para reprogramar esta cita.")
 
-        # No reprogramar canceladas ni citas en el pasado
+        # No reprogramar canceladas ni citas atendidas
         if cita.estado == "X":
             return Response(
                 {"detail": "No se puede reprogramar una cita cancelada."},
@@ -888,6 +893,7 @@ class CitaReprogramarAPI(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+        # No reprogramar citas en el pasado
         if cita.fecha_hora <= timezone.now():
             return Response(
                 {"detail": "No puedes reprogramar una cita en el pasado."},
@@ -972,21 +978,35 @@ class CitaReprogramarAPI(APIView):
 
 
 class CitaCancelarPacienteAPI(APIView):
-    """
-    Cancelación de cita por el PACIENTE.
-
-    Reglas:
-      - Solo el paciente dueño de la cita.
-      - Solo si la cita está en estado PENDIENTE o CONFIRMADA.
-      - Deben faltar al menos 7 días para la fecha de la cita.
-      - No se tocan los pagos: si ya había pago, la cita se cancela
-        sin reembolso automático (política de la clínica).
-    """
-
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
         user = request.user
+
+        # Caso ADMIN: puede cancelar cualquier cita P/C sin regla de 7 días
+        if user.role == "ADMIN":
+            cita = get_object_or_404(Cita, pk=pk)
+
+            if cita.estado not in ["P", "C"]:
+                return Response(
+                    {
+                        "detail": (
+                            "Solo puedes cancelar citas pendientes o confirmadas."
+                        )
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            cita.estado = "X"
+            cita.actualizado_por = user
+            cita.save(update_fields=["estado", "actualizado_por"])
+
+            return Response(
+                {"detail": "Cita cancelada correctamente por administrador."},
+                status=status.HTTP_200_OK,
+            )
+
+        # Caso PACIENTE (lógica original)
         if user.role != "PACIENTE":
             raise PermissionDenied(
                 "Solo los pacientes pueden cancelar sus citas desde este endpoint."
@@ -1033,14 +1053,8 @@ class CitaCancelarPacienteAPI(APIView):
             status=status.HTTP_200_OK,
         )
 
-
 class TratamientoAPI(generics.RetrieveUpdateAPIView):
-    """
-    Endpoint para que el PACIENTE consulte / actualice su tratamiento actual.
 
-    - GET /tratamiento/  → tratamiento activo más reciente del paciente.
-    - PATCH/PUT          → aplicar cambios sobre ese tratamiento.
-    """
     serializer_class = TratamientoSerializer
     permission_classes = [IsAuthenticated]
 
@@ -1067,14 +1081,6 @@ class TratamientoAPI(generics.RetrieveUpdateAPIView):
 
 
 class TratamientoFinalizarAPI(APIView):
-    """
-    Marca un tratamiento como finalizado (alta del paciente).
-
-    Reglas:
-      - Solo el DOCTOR dueño del tratamiento o un ADMIN pueden cerrarlo.
-      - Si el tratamiento ya está inactivo, devuelve 400.
-    """
-
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
@@ -1111,19 +1117,6 @@ class TratamientoFinalizarAPI(APIView):
 # =========================
 
 class ProcedimientoConsultaListCreateAPI(generics.ListCreateAPIView):
-    """
-    Listar y crear procedimientos ligados a una cita.
-
-    Visibilidad:
-      - PACIENTE: solo sus procedimientos.
-      - DOCTOR (DERMATOLOGO/PODOLOGO/TAMIZ): solo los que él realiza.
-      - ADMIN: todos.
-
-    Crear:
-      - Solo DOCTOR o ADMIN.
-      - Se resuelven paciente y doctor desde la cita (no desde el payload).
-    """
-
     serializer_class = ProcedimientoConsultaSerializer
     permission_classes = [IsAuthenticated]
 
@@ -1192,16 +1185,6 @@ class ProcedimientoConsultaListCreateAPI(generics.ListCreateAPIView):
 
 
 class ProcedimientoConsultaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
-    """
-    Detalle / edición / eliminación de un procedimiento.
-
-    Reglas:
-      - ADMIN: acceso total.
-      - PACIENTE: solo puede VER (GET) procedimientos propios.
-      - DOCTOR (DERMATOLOGO/PODOLOGO/TAMIZ): puede ver/editar/eliminar
-        procedimientos que él mismo registró.
-    """
-
     queryset = ProcedimientoConsulta.objects.select_related(
         "cita", "paciente", "doctor"
     )
@@ -1233,11 +1216,6 @@ class ProcedimientoConsultaDetailAPI(generics.RetrieveUpdateDestroyAPIView):
 # =========================
 
 class PagoCreateAPI(generics.CreateAPIView):
-    """
-    Crea un pago asociado a una cita para TRANSFERENCIA/DEPÓSITO.
-    Lo ejecuta el PACIENTE subiendo un comprobante.
-    """
-
     queryset = Pago.objects.all()
     serializer_class = PagoSerializer
     permission_classes = [IsAuthenticated]
@@ -1305,11 +1283,6 @@ class PagoCreateAPI(generics.CreateAPIView):
 
 
 class PagoConsultorioCreateAPI(APIView):
-    """
-    Registra un pago en CONSULTORIO.
-    Lo ejecuta el DOCTOR asignado a la cita (o ADMIN).
-    """
-
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -1384,14 +1357,6 @@ class PagoConsultorioCreateAPI(APIView):
 
 
 class PagoRevertAPI(APIView):
-    """
-    Reverso / rechazo de un pago existente.
-
-    - Solo ADMIN o el DOCTOR dueño de la cita pueden revertir.
-    - Marca el pago como RECHAZADO, verificado=False, pagado=0,
-      revertido=True, guarda motivo y fecha.
-    """
-
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
@@ -1400,7 +1365,6 @@ class PagoRevertAPI(APIView):
             Pago.objects.select_related("cita", "cita__doctor"),
             pk=pk,
         )
-
         if user.role == "ADMIN":
             pass
         elif user.role in ["DERMATOLOGO", "PODOLOGO", "TAMIZ"] and pago.cita.doctor == user:
@@ -1409,7 +1373,6 @@ class PagoRevertAPI(APIView):
             raise PermissionDenied(
                 "No tienes permiso para revertir este pago."
             )
-
         if pago.revertido:
             return Response(
                 {"detail": "Este pago ya fue revertido previamente."},
@@ -1417,7 +1380,6 @@ class PagoRevertAPI(APIView):
             )
 
         motivo = request.data.get("motivo_reverso", "").strip()
-
         pago.estado_pago = "RECHAZADO"
         pago.verificado = False
         pago.pagado = Decimal("0.00")
@@ -1486,23 +1448,6 @@ class TamizResultadosAPI(APIView):
 # =========================
 
 class CitaConsentimientoAPI(APIView):
-    """
-    GET  /api/citas/<pk>/consentimiento/
-    POST /api/citas/<pk>/consentimiento/
-
-    PACIENTE:
-      - Solo envía firma_paciente (multipart/form-data).
-      - Marca cita.consentimiento_completado = True.
-
-    DOCTOR / ADMIN:
-      - Editan campos médicos (diagnóstico, procedimiento, riesgos, beneficios,
-        alternativas, testigos).
-
-    IMPORTANTE:
-      - Solo aplica a citas cuya especialidad requiere consentimiento
-        (ej. Dermatología). Para Podología/Tamiz se responde error explícito.
-    """
-
     permission_classes = [IsAuthenticated]
 
     def _get_cita(self, pk):
@@ -1512,13 +1457,11 @@ class CitaConsentimientoAPI(APIView):
         cita = self._get_cita(pk)
         user = request.user
 
-        # 🔒 Nuevo: este endpoint solo aplica si la cita requiere consentimiento
         if not cita.requiere_consentimiento():
             return Response(
                 {
                     "detail": (
                         "El consentimiento informado solo aplica a ciertas especialidades "
-                        "(por ejemplo, Dermatología). Esta cita no lo requiere."
                     )
                 },
                 status=status.HTTP_400_BAD_REQUEST,
@@ -1701,13 +1644,6 @@ class CitaConsentimientoAPI(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CitaConsentimientoDownloadAPI(APIView):
-    """
-    Descargar el consentimiento informado en PDF.
-
-    - Solo aplica a citas cuya especialidad requiere consentimiento
-      (ej. Dermatología).
-    """
-
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk):
@@ -1790,10 +1726,6 @@ class PacienteDetailAPI(generics.RetrieveUpdateDestroyAPIView):
 
 
 class PacienteCitasListAPI(generics.ListAPIView):
-    """
-    Lista las citas de un paciente específico.
-    """
-
     serializer_class = CitaSerializer
     permission_classes = [IsAuthenticated]
 
@@ -1805,7 +1737,7 @@ class PacienteCitasListAPI(generics.ListAPIView):
 
         base_qs = (
             Cita.objects.select_related("paciente", "doctor", "especialidad")
-            .prefetch_related("pagos", "procedimientos")  # 👈 añadimos procedimientos
+            .prefetch_related("pagos", "procedimientos")
             .filter(paciente=paciente)
             .order_by("fecha_hora")
         )

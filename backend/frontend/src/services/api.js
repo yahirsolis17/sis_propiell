@@ -1,11 +1,12 @@
 // src/services/api.js
 import axios from 'axios';
 
-// Centralizamos la base para no andar repitiendo el host
-const BASE_URL = 'http://localhost:8000/api/';
+// Usa la URL del backend desde env (producción) y localhost como fallback
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/';
+console.log('baseURL:', baseURL);
 
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
     'X-Requested-With': 'XMLHttpRequest',
@@ -38,7 +39,7 @@ api.interceptors.response.use(
         }
 
         // Usamos axios "crudo" para NO disparar de nuevo este mismo interceptor
-        const refreshUrl = `${BASE_URL}auth/refresh/`;
+        const refreshUrl = `${baseURL}auth/refresh/`;
         const { data } = await axios.post(refreshUrl, {
           refresh: refreshToken,
         });

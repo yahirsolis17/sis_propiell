@@ -349,6 +349,13 @@ class TratamientoLiteSerializer(serializers.ModelSerializer):
 class CitaSerializer(serializers.ModelSerializer):
     doctor = DoctorSerializer(read_only=True)
     especialidad = EspecialidadSerializer(read_only=True)
+    # Campo write-only para crear/editar
+    especialidad_id = serializers.PrimaryKeyRelatedField(
+        source="especialidad",
+        queryset=Especialidad.objects.all(),
+        write_only=True,
+        required=True,
+    )
     # Texto legible: "Pendiente", "Confirmada", "Cancelada"
     estado = serializers.CharField(source="get_estado_display", read_only=True)
     # Codigo crudo: "P", "C", "X"
@@ -374,6 +381,7 @@ class CitaSerializer(serializers.ModelSerializer):
             "paciente",
             "doctor",
             "especialidad",
+            "especialidad_id",
             "fecha_hora",
             "tipo",
             "tipo_display",

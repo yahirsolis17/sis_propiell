@@ -79,7 +79,7 @@ export const crearCita = async ({
   metodoPagoPreferido,
 }) => {
   const formData = new FormData();
-  formData.append("especialidad", especialidadId);
+  formData.append("especialidad_id", especialidadId);
   formData.append("fecha_hora", `${fechaISO}T${hora}`);
   formData.append("tipo", tipo);
 
@@ -87,14 +87,22 @@ export const crearCita = async ({
     formData.append("metodo_pago_preferido", metodoPagoPreferido);
   }
 
-  const response = await api.post("citas/", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-
-  // Devuelve el objeto cita creado (incluye id) normalizado
-  return mapCita(response.data);
+  try {
+    const response = await api.post("citas/", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    // Devuelve el objeto cita creado (incluye id) normalizado
+    return mapCita(response.data);
+  } catch (error) {
+    console.error("Error al crear la cita (debug):", {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message,
+    });
+    throw error;
+  }
 };
 
 /**

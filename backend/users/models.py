@@ -37,8 +37,10 @@ class AuditMixin(models.Model):
     - creado_por / actualizado_por (FK a User, opcional)
     """
 
-    creado_en = models.DateTimeField(auto_now_add=True)
-    actualizado_en = models.DateTimeField(auto_now=True)
+    # Permitimos null para evitar problemas en migraciones iniciales;
+    # se autocompletan en nuevas filas.
+    creado_en = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    actualizado_en = models.DateTimeField(auto_now=True, null=True, blank=True)
     creado_por = models.ForeignKey(
         "User",
         null=True,
@@ -306,6 +308,9 @@ class Pago(AuditMixin, models.Model):
     metodo_pago = models.CharField(
         max_length=20,
         choices=METODO_CHOICES,
+        null=True,
+        blank=True,
+        default=None,
     )
     estado_pago = models.CharField(
         max_length=20,

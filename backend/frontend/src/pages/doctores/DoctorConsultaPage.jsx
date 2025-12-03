@@ -35,7 +35,6 @@ import {
 } from "../../services/procedimientosService";
 
 // 🔹 Sección de procedimientos dentro de la consulta
-import ProcedimientosSection from "../../components/citas/ProcedimientosSection";
 
 import RecetaModal from "../../components/citas/RecetaModal";
 import "./DoctorConsultaPage.css";
@@ -664,7 +663,7 @@ const DoctorConsultaPage = () => {
                             type="button"
                             className="btn btn-outline-primary"
                             onClick={handleAbrirReceta}
-                            disabled={!paciente || savingConsulta}
+                            disabled={!paciente}
                           >
                             {existingReceta
                               ? "Guardar y ver/editar receta"
@@ -675,41 +674,7 @@ const DoctorConsultaPage = () => {
                     </form>
                   </div>
 
-                  {/* 🔹 Card de procedimientos dentro de la consulta */}
-                  <div className="doctor-consulta-card mt-3">
-                    <h5 className="mb-3">Procedimientos realizados en la consulta</h5>
-
-                    {errorProcedimientos && (
-                      <div className="alert alert-danger py-2 mb-3 small">
-                        {errorProcedimientos}
-                      </div>
-                    )}
-
-                    {existingReporte ? (
-                      <>
-                        {loadingProcedimientos && !errorProcedimientos && (
-                          <div className="alert alert-info py-2 mb-3 small">
-                            Cargando procedimientos de esta consulta...
-                          </div>
-                        )}
-
-                        <ProcedimientosSection
-                          procedimientos={procedimientos}
-                          loading={loadingProcedimientos}
-                          error={null} // el mensaje de error ya se muestra arriba
-                          onCreate={handleCreateProcedimiento}
-                          onUpdate={handleUpdateProcedimiento}
-                          onDelete={handleDeleteProcedimiento}
-                          readOnly={false}
-                        />
-                      </>
-                    ) : (
-                      <div className="alert alert-info py-2 small mb-0">
-                        Guarda primero la consulta para habilitar el registro de
-                        procedimientos asociados.
-                      </div>
-                    )}
-                  </div>
+                  {/* Procedimientos ocultados temporalmente */}
                 </section>
               </>
             )}

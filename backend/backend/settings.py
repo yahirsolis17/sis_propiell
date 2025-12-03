@@ -7,8 +7,9 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Configuración de medios
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# Si no hay valor en entorno, usamos la URL pública del backend para evitar rutas relativas.
+MEDIA_URL = os.getenv("MEDIA_URL", "https://sis-propiell.onrender.com/media/")
+MEDIA_ROOT = BASE_DIR / "media"
 # Cloudinary (usa storage remoto si hay credenciales en entorno)
 CLOUDINARY_CLOUD_NAME = os.getenv('CLOUDINARY_CLOUD_NAME')
 CLOUDINARY_API_KEY = os.getenv('CLOUDINARY_API_KEY')

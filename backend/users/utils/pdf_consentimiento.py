@@ -227,47 +227,48 @@ def build_consentimiento_pdf(cita, consentimiento):
     y -= 30
 
     # =========================
-    # FIRMAS
+    # FIRMA DEL PACIENTE (única)
     # =========================
     if y < bottom_margin + 120:
         c.showPage()
         y = top_margin
 
-    linea_firma_ancho = 60 * mm
+    c.setFont("Helvetica-Bold", 11)
+    c.drawString(left_margin, y, "Firma del paciente")
+    y -= 18
 
-    # Firma del paciente (con imagen si existe)
-    c.setFont("Helvetica", 10)
+    caja_altura = 30 * mm
+    caja_ancho = 80 * mm
     firma_y = y
 
+    # Marco para la firma
+    c.setLineWidth(1)
+    c.rect(left_margin, firma_y - caja_altura + 6, caja_ancho, caja_altura, stroke=1, fill=0)
+
+    # Imagen de la firma (si existe)
     if consentimiento.firma_paciente:
         try:
-            # Dibuja la imagen de la firma justo encima de la línea
             img_path = consentimiento.firma_paciente.path
             img_height = 20 * mm
             img_width = 40 * mm
             c.drawImage(
                 img_path,
-                left_margin,
-                firma_y + 5,
+                left_margin + (caja_ancho - img_width) / 2,
+                firma_y - img_height + 4,
                 width=img_width,
                 height=img_height,
                 preserveAspectRatio=True,
                 mask="auto",
             )
         except Exception:
-            # Si falla la carga de la imagen, simplemente mostramos la línea
             pass
 
-    # Línea de firma del paciente
-    c.line(left_margin, firma_y, left_margin + linea_firma_ancho, firma_y)
-    c.drawString(left_margin, firma_y - 12, "Firma del paciente")
+    # Línea guía centrada
+    c.line(left_margin + 8, firma_y - caja_altura + 12, left_margin + caja_ancho - 8, firma_y - caja_altura + 12)
+    c.setFont("Helvetica", 9)
+    c.drawCentredString(left_margin + caja_ancho / 2, firma_y - caja_altura + 2, "Nombre y firma del paciente")
 
-    # Firma del médico
-    medico_x = left_margin + linea_firma_ancho + 40 * mm
-    c.line(medico_x, firma_y, medico_x + linea_firma_ancho, firma_y)
-    c.drawString(medico_x, firma_y - 12, "Firma del médico")
-
-    y = firma_y - 40
+    y = firma_y - caja_altura - 20
 
     # Nota final
     c.setFont("Helvetica-Oblique", 8)

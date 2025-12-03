@@ -25,7 +25,6 @@ const Citas = () => {
   const [selectedEspecialidad, setSelectedEspecialidad] = useState("");
   const [selectedDate, setSelectedDate] = useState(null); // Date
   const [selectedTime, setSelectedTime] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [loadingEspecialidades, setLoadingEspecialidades] = useState(false);
   const [loadingHorarios, setLoadingHorarios] = useState(false);
